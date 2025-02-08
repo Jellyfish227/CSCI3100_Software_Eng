@@ -1,133 +1,17 @@
 \documentclass[a4paper, 11pt]{scrreprt}
-\usepackage{listings}
-\usepackage{underscore}
-\usepackage{tabularx}  % Add tabularx package
-\usepackage{enumitem}  % Add enumitem package for list spacing control
-\usepackage{booktabs}  % Add booktabs package
-\usepackage{mathptmx}  % Times New Roman font for text and math
-\usepackage[T1]{fontenc}  % Better font encoding
-\usepackage[bookmarks=true]{hyperref}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{scrlayer-scrpage}
-\usepackage{xcolor}  % For background colors
-\usepackage{hyperref}
+\usepackage{srs}  % Load SRS document style
 
-% Setup headers and footers
-\automark[chapter]{chapter}  % Automatically mark chapters for header
-
-% Configure page layout
-\KOMAoptions{
-    headheight=1.5cm,      % Height of the header
-    footheight=1.2cm,      % Height of the footer
-    % headsepline=true,      % Enable header separator line
-    % footsepline=true,      % Enable footer separator line
-    % headwidth=\linewidth,  % Width of header
-    % footwidth=\linewidth   % Width of footer
-}
-
-% Set separator line thickness
-
-% Set margins
-\usepackage[left=2cm,right=2cm,top=2.5cm,bottom=3cm]{geometry}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Header and footer content
-\ihead{Software Requirements Specification for Kaiju Academy}  % Inner header (left on odd, right on even pages)
-\chead{}  % Center header (empty)
-\ohead{\headmark}  % Outer header (right on odd, left on even pages)
-% \lehead{}  % Left header on even pages
-% \cehead{}  % Center header on even pages (empty)
-% \rehead{}  % Right header on even pages
-% \lohead{}  % Left header on odd pages
-% \cohead{}  % Center header on odd pages (empty)
-% \rohead{}  % Right header on odd pages
-\ifoot{}  % Inner footer (empty)
-\cfoot{}  % Center footer (empty)
-\ofoot{Page \pagemark}  % Outer footer with page number
-\setkomafont{pagehead}{\normalfont}  % Set header font
-\setkomafont{headsepline}{\color{black}\rule{\textwidth}{1pt}}  % Header line thickness
-\setkomafont{footsepline}{\color{black}\rule{\textwidth}{1pt}}  % Footer line thickness
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Ensure consistent page style on chapter pages
-\renewcommand*{\chapterpagestyle}{scrheadings}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set chapter spacing
-\RedeclareSectionCommand[
-  beforeskip=0pt,     % Space before chapter title
-  afterskip=1cm,      % Space after chapter title
-  innerskip=1cm,      % Space between chapter number and title
-  font=\normalfont\huge\bfseries\centering    % Centered, bold font
-]{chapter}
-
-% Style chapter titles with gray background
-\renewcommand{\chapterformat}{\thechapter.}  % Chapter number followed by space
-\renewcommand*{\chapterlinesformat}[3]{%
-  \colorbox{gray!150}{%
-    \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-      \centering\color{white}#2 #3%
-    }%
-  }%
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set section title fonts
-\setkomafont{chapter}{\normalfont\huge\bfseries}  % Chapter titles
-\setkomafont{section}{\normalfont\Large\bfseries}  % Section titles
-\setkomafont{subsection}{\normalfont\large\bfseries}  % Subsection titles
-\setkomafont{subsubsection}{\normalfont\normalsize\bfseries}  % Subsubsection titles
-\setkomafont{paragraph}{\normalfont\normalsize\bfseries}  % Paragraph titles
-\setkomafont{subparagraph}{\normalfont\normalsize\bfseries}  % Subparagraph titles
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Table of contents formatting
-\addtokomafont{disposition}{\rmfamily}  % Set Times New Roman for ToC
-\setkomafont{descriptionlabel}{\normalfont\bfseries}  % Description labels
-\setkomafont{dictum}{\normalfont\small}  % Dictum text
-\setkomafont{captionlabel}{\normalfont\bfseries}  % Caption labels
-\setkomafont{caption}{\normalfont\small}  % Caption text
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Define revision history item environment
-\newenvironment{revisionitem}[1][]{%
-    \begin{minipage}[t]{\linewidth}%
-        #1
-        \begin{itemize}[
-            itemsep=0pt,
-            parsep=0pt,
-            topsep=0pt,
-            leftmargin=*,
-            labelsep=0em,
-            label=\textendash
-        ]%
-}{%
-        \end{itemize}%
-    \end{minipage}%
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% Document-specific settings
 \hypersetup{
-    pdftitle={Software Requirement Specification},    % title
-    pdfauthor={C. H. Yu},                     % author
-    pdfsubject={Technical Documentation},                        % subject of the document
-    pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}, % list of keywords
-    colorlinks=true,        % false: boxed links; true: colored links
-    linkcolor=black,         % color of internal links
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,        % color of file links
-    urlcolor=black,        % color of external links
-    linktoc=all             % both page numbers and text in ToC are linked
-}%
-\def\myversion{0.2}
-\def\projectname{Kaiju Academy}  % Define project name variable
-\date{}
-%\title{%
+    pdftitle={Software Requirement Specification},
+    pdfauthor={C. H. Yu},
+    pdfsubject={Technical Documentation},
+    pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
+}
 
-%}
+\def\myversion{0.2}
+\def\projectname{Kaiju Academy}
+\date{}
 
 \begin{document}
 
@@ -149,6 +33,8 @@
             Group A2\\
             \begin{tabularx}{\textwidth}{X l X}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+            <name> & <student id> & <email>\\
+            <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
@@ -210,7 +96,7 @@ TODO: 1-2 paragraphs describing the scope of the product. Make sure to describe 
 $>$
 
 \section{Intended Audience and Document Overview}
-$<$Describe the different types of reader that the document is intended for, such as developers, project managers, marketing staff, users, testers, and documentation writers (In your case it would probably be the “client” and the professor). Describe what the rest of this SRS contains and how it is organized. Suggest a sequence for reading the document, beginning with the overview sections and proceeding through the sections that are most pertinent to each reader type.$>$
+$<$Describe the different types of reader that the document is intended for, such as developers, project managers, marketing staff, users, testers, and documentation writers (In your case it would probably be the "client" and the professor). Describe what the rest of this SRS contains and how it is organized. Suggest a sequence for reading the document, beginning with the overview sections and proceeding through the sections that are most pertinent to each reader type.$>$
 
 \section{Definitions, Acronyms and Abbreviations}
 $<$Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may wish to build a separate glossary that spans multiple projects or the entire organization, and just include terms specific to a single project in each SRS.
@@ -218,7 +104,7 @@ TODO: Please provide a list of all abbreviations and acronyms used in this docum
 $>$
 
 \section{Document Conventions}
-$<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1” margins found in this template. For Section and Subsection titles please follow the template. 
+$<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1" margins found in this template. For Section and Subsection titles please follow the template. 
 
 TODO: Describe any standards or typographical conventions that were followed when writing this SRS, such as fonts or highlighting that have special significance. Sometimes, it is useful to divide this section to several sections, e.g., Formatting Conventions, Naming Conventions, etc
 $>$
