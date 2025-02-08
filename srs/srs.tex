@@ -22,7 +22,7 @@
     urlcolor=purple,        % color of external links
     linktoc=all             % both page numbers and text in ToC are linked
 }%
-\def\myversion{1.0}
+\def\myversion{0.2}
 \def\projectname{I have no idea what the project name is}  % Define project name variable
 \date{}
 %\title{%
@@ -89,6 +89,14 @@
 \setkomafont{subparagraph}{\normalfont\normalsize\bfseries}  % Subparagraph titles
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents formatting
+\addtokomafont{disposition}{\rmfamily}  % Set Times New Roman for ToC
+\setkomafont{descriptionlabel}{\normalfont\bfseries}  % Description labels
+\setkomafont{dictum}{\normalfont\small}  % Dictum text
+\setkomafont{captionlabel}{\normalfont\bfseries}  % Caption labels
+\setkomafont{caption}{\normalfont\small}  % Caption text
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define revision history item environment
@@ -123,7 +131,7 @@
             \vspace{1.8cm}
             \LARGE{Version \myversion}\\
             \vspace{1.8cm}
-            Prepared by C. H. Yu\\
+            Prepared by Yu Ching Hei(1155193237)\\
             \vspace{1.8cm}
             The Chinese University of Hong Kong\\
             Department of CSE\\
@@ -147,6 +155,9 @@
         0.1 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
             \item Initial document structure
             \item Basic template setup
+        \end{revisionitem}\\
+        0.2 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
+            \item Formatting
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
