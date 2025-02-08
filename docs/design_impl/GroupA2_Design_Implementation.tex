@@ -19,11 +19,11 @@
     linkcolor=black,         % color of internal links
     citecolor=black,        % color of links to bibliography
     filecolor=black,        % color of file links
-    urlcolor=purple,        % color of external links
+    urlcolor=black,        % color of external links
     linktoc=all             % both page numbers and text in ToC are linked
 }%
 \def\myversion{0.2}
-\def\projectname{I have no idea what the project name is}  % Define project name variable
+\def\projectname{Kaiju Academy}  % Define project name variable
 \date{}
 %\title{%
 
@@ -53,15 +53,15 @@
 \ihead{Software Requirements Specification}  % Inner header (left on odd, right on even pages)
 \chead{}  % Center header (empty)
 \ohead{\headmark}  % Outer header (right on odd, left on even pages)
-% \lehead{Software Requirements Specification}  % Left header on even pages
-%\cehead{}  % Center header on even pages (empty)
-%\rehead{\headmark}  % Right header on even pages
-% \lohead{Software Requirements Specification}  % Left header on odd pages
-%\cohead{}  % Center header on odd pages (empty)
-%\rohead{}  % Right header on odd pages
+% \lehead{}  % Left header on even pages
+% \cehead{}  % Center header on even pages (empty)
+% \rehead{}  % Right header on even pages
+% \lohead{}  % Left header on odd pages
+% \cohead{}  % Center header on odd pages (empty)
+% \rohead{}  % Right header on odd pages
 \ifoot{}  % Inner footer (empty)
 \cfoot{}  % Center footer (empty)
-\ofoot[\pagemark]{\pagemark}  % Outer footer with page number
+\ofoot{Page \pagemark}  % Outer footer with page number
 \setkomafont{pagehead}{\normalfont}  % Set header font
 \setkomafont{headsepline}{\color{black}\rule{\textwidth}{1pt}}  % Header line thickness
 \setkomafont{footsepline}{\color{black}\rule{\textwidth}{1pt}}  % Footer line thickness
@@ -119,24 +119,33 @@
 
 \begin{document}
 
+\pagenumbering{roman}  % Start with roman numerals for front matter
+
 \begin{titlepage}
     \begin{flushright}
         \rule{\textwidth}{5pt}\vskip1cm
         \begin{bfseries}
             \Huge{SOFTWARE REQUIREMENTS\\ SPECIFICATION}\\
-            \vspace{1.8cm}
+            \vspace{1.6cm}
             for\\
-            \vspace{1.8cm}
+            \vspace{1.6cm}
             \projectname\\  % Use project name variable
-            \vspace{1.8cm}
+            \vspace{1.6cm}
             \LARGE{Version \myversion}\\
-            \vspace{1.8cm}
-            Prepared by Yu Ching Hei(1155193237)\\
-            \vspace{1.8cm}
+            \vspace{1.6cm}
+            Prepared by\\
+            Group A2\\
+            \begin{tabularx}{\textwidth}{X l X}
+            YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+            <name> & <student id> & <email>\\
+            <name> & <student id> & <email>\\
+            <name> & <student id> & <email>\\
+            \end{tabularx}\\
+            \vspace{1.6cm}
             The Chinese University of Hong Kong\\
-            Department of CSE\\
+            Department of Computer Science and Engineering\\
             CSCI3100: Software Engineering\\
-            \vspace{1.8cm}
+            \vspace{1.6cm}
             \today\\
         \end{bfseries}
     \end{flushright}
@@ -162,6 +171,9 @@
         \bottomrule
     \end{tabularx}
 \end{center}
+
+\clearpage
+\pagenumbering{arabic}  % Switch to arabic numbers for main content
 
 \chapter{Introduction}
 
