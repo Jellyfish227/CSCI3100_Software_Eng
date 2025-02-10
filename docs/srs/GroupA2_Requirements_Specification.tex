@@ -1,17 +1,121 @@
 \documentclass[a4paper, 11pt]{scrreprt}
-\usepackage{srs}  % Load SRS document style
-
-% Document-specific settings
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{tabularx}  % Add tabularx package
+\usepackage{enumitem}  % Add enumitem package for list spacing control
+\usepackage{booktabs}  % Add booktabs package
+\usepackage{mathptmx}  % Times New Roman font for text and math
+\usepackage[T1]{fontenc}  % Better font encoding
+\usepackage[bookmarks=true]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{scrlayer-scrpage}
 \hypersetup{
-    pdftitle={Software Requirement Specification},
-    pdfauthor={C. H. Yu},
-    pdfsubject={Technical Documentation},
-    pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
+    pdftitle={Software Requirement Specification},    % title
+    pdfauthor={C. H. Yu},                     % author
+    pdfsubject={Technical Documentation},                        % subject of the document
+    pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}, % list of keywords
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=black,         % color of internal links
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,        % color of file links
+    urlcolor=black,        % color of external links
+    linktoc=all             % both page numbers and text in ToC are linked
+}%
+\def\myversion{0.2}
+\def\projectname{Kaiju Academy}  % Define project name variable
+\date{}
+%\title{%
+
+%}
+\usepackage{hyperref}
+
+% Setup headers and footers
+\automark[chapter]{chapter}  % Automatically mark chapters for header
+
+% Configure page layout
+\KOMAoptions{
+    headheight=1.5cm,      % Height of the header
+    footheight=1.2cm,      % Height of the footer
+    % headsepline=true,      % Enable header separator line
+    % footsepline=true,      % Enable footer separator line
+    % headwidth=\linewidth,  % Width of header
+    % footwidth=\linewidth   % Width of footer
 }
 
-\def\myversion{0.2}
-\def\projectname{Kaiju Academy}
-\date{}
+% Set separator line thickness
+
+% Set margins
+\usepackage[left=2cm,right=2cm,top=2.5cm,bottom=3cm]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header and footer content
+\ihead{Software Requirements Specification}  % Inner header (left on odd, right on even pages)
+\chead{}  % Center header (empty)
+\ohead{\headmark}  % Outer header (right on odd, left on even pages)
+% \lehead{}  % Left header on even pages
+% \cehead{}  % Center header on even pages (empty)
+% \rehead{}  % Right header on even pages
+% \lohead{}  % Left header on odd pages
+% \cohead{}  % Center header on odd pages (empty)
+% \rohead{}  % Right header on odd pages
+\ifoot{}  % Inner footer (empty)
+\cfoot{}  % Center footer (empty)
+\ofoot{Page \pagemark}  % Outer footer with page number
+\setkomafont{pagehead}{\normalfont}  % Set header font
+\setkomafont{headsepline}{\color{black}\rule{\textwidth}{1pt}}  % Header line thickness
+\setkomafont{footsepline}{\color{black}\rule{\textwidth}{1pt}}  % Footer line thickness
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensure consistent page style on chapter pages
+\renewcommand*{\chapterpagestyle}{scrheadings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set chapter spacing
+\RedeclareSectionCommand[
+  beforeskip=0pt,     % Space before chapter title
+  afterskip=1cm,      % Space after chapter title
+  innerskip=1cm,      % Space between chapter number and title
+  font=\normalfont    % Use Times New Roman (inherited from mathptmx)
+]{chapter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set section title fonts
+\setkomafont{chapter}{\normalfont\huge\bfseries}  % Chapter titles
+\setkomafont{section}{\normalfont\Large\bfseries}  % Section titles
+\setkomafont{subsection}{\normalfont\large\bfseries}  % Subsection titles
+\setkomafont{subsubsection}{\normalfont\normalsize\bfseries}  % Subsubsection titles
+\setkomafont{paragraph}{\normalfont\normalsize\bfseries}  % Paragraph titles
+\setkomafont{subparagraph}{\normalfont\normalsize\bfseries}  % Subparagraph titles
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of contents formatting
+\addtokomafont{disposition}{\rmfamily}  % Set Times New Roman for ToC
+\setkomafont{descriptionlabel}{\normalfont\bfseries}  % Description labels
+\setkomafont{dictum}{\normalfont\small}  % Dictum text
+\setkomafont{captionlabel}{\normalfont\bfseries}  % Caption labels
+\setkomafont{caption}{\normalfont\small}  % Caption text
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define revision history item environment
+\newenvironment{revisionitem}[1][]{%
+    \begin{minipage}[t]{\linewidth}%
+        #1
+        \begin{itemize}[
+            itemsep=0pt,
+            parsep=0pt,
+            topsep=0pt,
+            leftmargin=*,
+            labelsep=0em,
+            label=\textendash
+        ]%
+}{%
+        \end{itemize}%
+    \end{minipage}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
@@ -33,9 +137,7 @@
             Group A2\\
             \begin{tabularx}{\textwidth}{X l X}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
+            Leung Chung Wang & 1155194650 & \href{mailto:1155194650@link.cuhk.edu.hk}{1155194650@link.cuhk.edu.hk}\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             \end{tabularx}\\
@@ -49,10 +151,10 @@
     \end{flushright}
 \end{titlepage}
 
-\setuptoc{toc}{totoc}  % Add ToC to itself using KOMA-Script
 \tableofcontents
 
-\addchap{Document Revision History}  % Unnumbered chapter that appears in ToC
+
+\chapter{Document Revision History}
 
 \begin{center}
     \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}X}
@@ -63,16 +165,11 @@
             \item Initial document structure
             \item Basic template setup
         \end{revisionitem}\\
-        \midrule
         0.2 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
             \item Formatting
         \end{revisionitem}\\
-        \midrule
-        0.3 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
-            \item Titlepage formatting
-            \item Page numbering
-            \item Chapters title formatting
-            \item Chapter and sections arrangement
+        0.4 & C. W. Leung & 2025-02-10 & \begin{revisionitem}[Updated:]
+            \item Introduction without abbreviations
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
@@ -83,38 +180,22 @@
 
 \chapter{Introduction}
 
-\section{Document Purpose}
-$<$Identify the product whose software requirements are specified in this document, 
-including the revision or release number. Describe the scope of the product that is 
-covered by this SRS, particularly if this SRS describes only part of the system or a 
-single subsystem.$>$
-TODO: Write 1-2 paragraphs describing the purpose of this document as explained above
-
-\section{Project Scope}
-$<$Provide a short description of the software being specified and its purpose, including relevant benefits, objectives, and goals. 
-TODO: 1-2 paragraphs describing the scope of the product. Make sure to describe the benefits associated with the product.
-$>$
-
-\section{Intended Audience and Document Overview}
-$<$Describe the different types of reader that the document is intended for, such as developers, project managers, marketing staff, users, testers, and documentation writers (In your case it would probably be the "client" and the professor). Describe what the rest of this SRS contains and how it is organized. Suggest a sequence for reading the document, beginning with the overview sections and proceeding through the sections that are most pertinent to each reader type.$>$
-
-\section{Definitions, Acronyms and Abbreviations}
-$<$Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may wish to build a separate glossary that spans multiple projects or the entire organization, and just include terms specific to a single project in each SRS.
-TODO: Please provide a list of all abbreviations and acronyms used in this document sorted in alphabetical order
-$>$
+\section{Purpose}
+This document outlines the software requirements for Kaiju Academy, an online self-learning platform for coding education, Version 0.2 and prepared by Group A2. The document encompasses all essential functionalities, including course delivery, user progress tracking, community interaction, and assessment tools, providing both high-level and specific requirements.  This document shall form the basis for all stakeholders and developers to understand intended features and constraints of the platform.
 
 \section{Document Conventions}
-$<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1" margins found in this template. For Section and Subsection titles please follow the template. 
+This Project Requirements Specification adheres to the IEEE Std 830-1998 standard.It utilizes Times New Roman font in size 11 for consistency and readability. Important terms are highlighted in bold, while supplementary notes are presented in italics. Each requirement is uniquely identified, with higher-level requirements inheriting their priority unless otherwise specified. Sections and requirements are sequentially numbered to facilitate easy navigation. Additionally, technical terms and acronyms are clearly defined in the Glossary.
+\section{Intended Audience and Reading Suggestions}
+This document is intended for a diverse audience, including software developers, project managers, quality assurance testers, and stakeholders involved in the Kaiju Academy project, organized into sections that detail the overall description of the product, specific requirements, system features, and non-functional requirements. Readers are encouraged to start with the overall description to understand the context and then proceed to the specific requirements relevant to their roles.
 
-TODO: Describe any standards or typographical conventions that were followed when writing this SRS, such as fonts or highlighting that have special significance. Sometimes, it is useful to divide this section to several sections, e.g., Formatting Conventions, Naming Conventions, etc
-$>$
+\section{Project Scope}
+Kaiju Academy is an innovative online self-learning platform aiming to innovate code education. The aspire of Kaiju is to make users' learning of programming easier and more interactive in course-and-assessment-driven environment with community support, enhancing accessibility as users can learn at their own pace, while interactive and game-like experiences drive engagement and completion. Key objectives include a wide variety of coding courses, progress tracking, and instant feedback through assessments.\\\\
+Kaiju Academy aligns with corporate goals of expanding digital education and enhancing user engagement through technology-driven solutions, supporting the development of a skilled workforce ready for the digital age.
 
-\section{References and Acknowledgments}
-$<$List any other documents or Web addresses to which this SRS refers. These may 
-include user interface style guides, contracts, standards, system requirements 
-specifications, use case documents, or a vision and scope document. Provide 
-enough information so that the reader could access a copy of each reference, 
-including title, author, version number, date, and source or location.$>$
+
+\section{References}
+IEEE. IEEE Std 830-1998 IEEE Recommended Practice for Software Requirements Specifications. IEEE Computer Society, 1998.
+
 
 \chapter{Overall Description}
 
@@ -128,7 +209,7 @@ identify interfaces between the two. A simple diagram that shows the major
 components of the overall system, subsystem interconnections, and external 
 interfaces can be helpful.$>$
 
-\section{Product Functionality}
+\section{Product Functions}
 $<$Summarize the major functions the product must perform or must let the user 
 perform. Details will be provided in Section 3, so only a high level summary 
 (such as a bullet list) is needed here. Organize the functions to make them 
@@ -160,7 +241,12 @@ considerations; design conventions or programming standards (for example, if the
 customer's organization will be responsible for maintaining the delivered 
 software).$>$
 
+\section{User Documentation}
+$<$List the user documentation components (such as user manuals, on-line help, 
+and tutorials) that will be delivered along with the software. Identify any 
+known user documentation delivery formats or standards.$>$
 \section{Assumptions and Dependencies}
+
 $<$List any assumed factors (as opposed to known facts) that could affect the 
 requirements stated in the SRS. These could include third-party or commercial 
 components that you plan to use, issues around the development or operating 
@@ -170,16 +256,10 @@ project has on external factors, such as software components that you intend to
 reuse from another project, unless they are already documented elsewhere (for 
 example, in the vision and scope document or the project plan).$>$
 
-\section{User Documentation}
-$<$List the user documentation components (such as user manuals, on-line help, 
-and tutorials) that will be delivered along with the software. Identify any 
-known user documentation delivery formats or standards.$>$
 
+\chapter{External Interface Requirements}
 
-\chapter{Specific Requirements}
-
-\section{External Interface Requirements}
-\subsection{User Interfaces}
+\section{User Interfaces}
 $<$Describe the logical characteristics of each interface between the software 
 product and the users. This may include sample screen images, any GUI standards 
 or product family style guides that are to be followed, screen layout 
@@ -189,14 +269,14 @@ Define the software components for which a user interface is needed. Details of
 the user interface design should be documented in a separate user interface 
 specification.$>$
 
-\subsection{Hardware Interfaces}
+\section{Hardware Interfaces}
 $<$Describe the logical and physical characteristics of each interface between 
 the software product and the hardware components of the system. This may include 
 the supported device types, the nature of the data and control interactions 
 between the software and the hardware, and communication protocols to be 
 used.$>$
 
-\subsection{Software Interfaces}
+\section{Software Interfaces}
 $<$Describe the connections between this product and other specific software 
 components (name and version), including databases, operating systems, tools, 
 libraries, and integrated commercial components. Identify the data items or 
@@ -208,23 +288,13 @@ sharing mechanism must be implemented in a specific way (for example, use of a
 global data area in a multitasking operating system), specify this as an 
 implementation constraint.$>$
 
-\section{Functional Requirements}
-$<$Functional requirements capture the intended behavior of the system. This 
-behavior may be expressed as services, tasks or functions the system is required 
-to perform. This section is the direct continuation of section 2.2 where you have 
-specified the general functional requirements. Here, you should list in detail the
-different product functions. $>$
-
-\section{Use Case Model}
-$<$This section is the direct continuation of section 2.3 where you have specified 
-the general use cases. Here, you should list in detail the different use cases. 
-$>$
-\subsection{Use Case \#1}
-$<$Describe the use case in detail.$>$
-
-\subsection{Use Case \#2}
-$<$Describe the use case in detail.$>$
-
+\section{Communications Interfaces}
+$<$Describe the requirements associated with any communications functions 
+required by this product, including e-mail, web browser, network server 
+communications protocols, electronic forms, and so on. Define any pertinent 
+message formatting. Identify any communication standards that will be used, such 
+as FTP or HTTP. Specify any communication security or encryption issues, data 
+transfer rates, and synchronization mechanisms.$>$
 
 
 \chapter{System Features}
@@ -313,19 +383,19 @@ include database requirements, internationalization requirements, legal
 requirements, reuse objectives for the project, and so on. Add any new sections 
 that are pertinent to the project.$>$
 
-\addchap{Appendix A: Glossary}
+\section{Appendix A: Glossary}
 %see https://en.wikibooks.org/wiki/LaTeX/Glossary
 $<$Define all the terms necessary to properly interpret the SRS, including 
 acronyms and abbreviations. You may wish to build a separate glossary that spans 
 multiple projects or the entire organization, and just include terms specific to 
 a single project in each SRS.$>$
 
-\addchap{Appendix B: Analysis Models}
+\section{Appendix B: Analysis Models}
 $<$Optionally, include any pertinent analysis models, such as data flow 
 diagrams, class diagrams, state-transition diagrams, or entity-relationship 
 diagrams.$>$
 
-\addchap{Appendix C: To Be Determined List}
+\section{Appendix C: To Be Determined List}
 $<$Collect a numbered list of the TBD (to be determined) references that remain 
 in the SRS so they can be tracked to closure.$>$
 
