@@ -12,7 +12,6 @@
     pdfsubject={Technical Documentation},
     pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
 }
-    
 
 \begin{document}
 
@@ -85,7 +84,11 @@
         \end{revisionitem}\\
         \midrule
         0.5 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Added:]
-            \item Product Perspective Content
+            \item Product Overview
+            \item Product Functionality
+            \item User Classes and Characteristics
+            \item Design and Implementation Constraints
+            \item Assumptions and Dependencies
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
@@ -114,6 +117,28 @@ $<$Describe the different types of reader that the document is intended for, suc
 $<$Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may wish to build a separate glossary that spans multiple projects or the entire organization, and just include terms specific to a single project in each SRS.
 TODO: Please provide a list of all abbreviations and acronyms used in this document sorted in alphabetical order
 $>$
+\begin{center}
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Abbreviation} & \textbf{Definition} \\
+        \midrule
+        LMS & Learning Management System \\
+        API & Application Programming Interface \\
+        CSS & Cascading Style Sheets \\
+        HTML & HyperText Markup Language \\
+        HTTP & HyperText Transfer Protocol \\
+        IDE & Integrated Development Environment \\
+        JS & JavaScript \\
+        LMS & Learning Management System \\
+        REST & Representational State Transfer \\
+        SRS & Software Requirements Specification \\
+        UI & User Interface \\
+        URL & Uniform Resource Locator \\
+        UX & User Experience \\
+        \bottomrule
+    \end{tabularx}
+\end{center}
+
 
 \section{Document Conventions}
 $<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1" margins found in this template. For Section and Subsection titles please follow the template. 
@@ -130,7 +155,7 @@ including title, author, version number, date, and source or location.$>$
 
 
 \chapter{Overall Description}
-\section{Product Perspective}
+\section{Product Overview}
 % $<$Describe the context and origin of the product being specified in this SRS.  
 % For example, state whether this product is a follow-on member of a product 
 % family, a replacement for certain existing systems, or a new, self-contained 
@@ -140,26 +165,23 @@ including title, author, version number, date, and source or location.$>$
 % components of the overall system, subsystem interconnections, and external 
 % interfaces can be helpful.$>$
 
-Kaiju Academy is a new, self-contained e-learning platform designed to provide an interactive and comprehensive coding education experience. The system is built as a web-based application that combines modern learning management capabilities with specialized features for programming education.
+Kaiju Academy is a web-based e-learning platform that provides interactive programming education through modern LMS capabilities and specialized coding features, facilitating the learning of programming anytime and anywhere as long as you are connected to the internet.\\
 
-The platform consists of several interconnected components:
+The platform serves as a comprehensive learning environment where students can engage with programming concepts through a structured curriculum. Users access the platform through web browsers, eliminating the need for software installation reducing the barrier to entry for users. \\
 
-\begin{description}
-    \item[$\cdot$ Frontend Application:] Built using modern web frameworks (React/Angular/Vue.js) to provide a responsive and intuitive user interface.
-    \item[$\cdot$ Backend Services:] RESTful APIs built with Node.js/Django/Ruby on Rails handling business logic and data management.
-    \item[$\cdot$ Database System:] Utilizes both relational (PostgreSQL/MySQL) and NoSQL databases for efficient data storage and retrieval.
-    \item[$\cdot$ Code Execution Engine:] Containerized environment (Docker) for secure code execution and testing.
-    \item[$\cdot$ Video Content Delivery:] Integration with third-party video hosting services (YouTube/Vimeo) for efficient content streaming.
-    \item[$\cdot$ Cloud Infrastructure:] Hosted on cloud platforms (AWS/Google Cloud/DigitalOcean) for scalability and reliability.
-\end{description}
+The platform employs a module-based learning approach, where content is organized into discrete units that build upon each other. Each module typically contains:
 
-The system integrates with various external services:
-\begin{description}
-    \item[$\cdot$ Authentication Services:] OAuth providers for user authentication
-    \item[$\cdot$ Video Hosting Platforms:] For course content delivery
-    \item[$\cdot$ Code Editor Components:] Integration with CodeMirror or Monaco editor
-    \item[$\cdot$ Cloud Services:] For hosting and scaling
-\end{description}
+\begin{itemize}
+    \item Video lectures with synchronized transcripts
+    \item Interactive coding exercises
+    \item Supplementary reading materials
+    \item Practice problems and assignments
+    \item Progress assessments
+\end{itemize}
+
+Students can track their progress through a personalized dashboard, which displays completed modules, upcoming assignments, and achievement metrics. The integrated code editor allows students to practice coding directly within the browser, with immediate feedback and automated grading capabilities. \\
+
+Educators can utilize the platform to create courses, manage course materials and provide targeted assistance where needed. They could also answer questions from students in the discussion forum. The system's analytics tools help identify areas where students may be struggling, enabling educators to provide additional teaching resources. The platform features automated grading and feedback for assignments, allowing educators to have more flexible arrangement. 
 
 \section{Product Functionality}
 % $<$Summarize the major functions the product must perform or must let the user 
@@ -183,25 +205,25 @@ Kaiju Academy provides the following major functionalities:
     \item Course Management
         \begin{itemize}
             \item Course creation and organization
-            \item Content management (videos, PDFs, quizzes)
+            \item Content management (videos, PDFs, quizzes, assignments)
             \item Course enrollment and progress tracking
-            \item Module-based learning paths
         \end{itemize}
     
     \item Learning Content Delivery
         \begin{itemize}
             \item Video streaming with playback controls
             \item Document viewing and download
-            \item Interactive quizzes and assessments
+            \item Interactive quizzes
+            \item Code examples and assignments
             \item Progress tracking and roadmaps
         \end{itemize}
     
     \item Interactive Coding Environment
         \begin{itemize}
             \item Integrated code editor
+            \item Secure code execution
             \item Automated code testing
             \item Real-time error feedback
-            \item Secure code execution
         \end{itemize}
     
     \item Discussion and Community
@@ -225,7 +247,7 @@ Kaiju Academy provides the following major functionalities:
             \item User management dashboard
             \item Content management interface
             \item System monitoring tools
-            \item Analytics and reporting
+            \item Resource analytics and reporting
         \end{itemize}
 \end{itemize}
 
@@ -241,84 +263,37 @@ Kaiju Academy provides the following major functionalities:
 Kaiju Academy serves several distinct user classes, each with specific characteristics and needs:
 
 \begin{description}
-    \item[Students]
-        \begin{itemize}
-            \item Primary users of the learning platform
-            \item Various technical expertise levels (beginner to advanced)
+    \item[Administrators:] Manage platform operations and user access
+        \begin{itemize}[leftmargin=*]
+            \item High technical expertise with system administration
+            \item High privilage access for maintenance and monitoring
+            \item Need complete system control and monitoring tools
+            \item Require access to all platform features and settings
+        \end{itemize}
+
+    \item[Students:] Primary users of the learning platform
+        \begin{itemize}[leftmargin=*]
+            \item From various technical expertise levels (beginner to advanced)
             \item Regular access for course participation and completion
             \item Need intuitive interface and clear learning paths
+            \item Need interactive learning environment
             \item Require progress tracking and performance feedback
         \end{itemize}
     
-    \item[Educators]
-        \begin{itemize}
-            \item Create and manage course content
+    \item[Educators:] Create and manage course content
+        \begin{itemize}[leftmargin=*]
             \item Technical expertise in their teaching domains
             \item Regular access for content updates and student monitoring
             \item Need comprehensive content management tools
             \item Require analytics and student progress tracking capabilities
         \end{itemize}
     
-    \item[Administrators]
-        \begin{itemize}
-            \item Manage platform operations and user access
-            \item High technical expertise with system administration
-            \item Regular access for maintenance and monitoring
-            \item Need complete system control and monitoring tools
-            \item Require access to all platform features and settings
-        \end{itemize}
-    
-    \item[Content Moderators]
-        \begin{itemize}
-            \item Monitor and manage forum discussions
+    \item[Content Moderators:] Monitor and manage forum discussions
+        \begin{itemize}[leftmargin=*]
             \item Moderate technical expertise required
             \item Regular access for content moderation
             \item Need moderation tools and user management features
             \item Require access to communication and reporting tools
-        \end{itemize}
-\end{description}
-
-\section{Operating Environment}
-% $<$Describe the environment in which the software will operate, including the 
-% hardware platform, operating system and versions, and any other software 
-% components or applications with which it must peacefully coexist.$>$
-
-Kaiju Academy is a web-based platform that operates in the following environment:
-
-\begin{description}
-    \item[Client-Side Requirements]
-        \begin{itemize}
-            \item Modern web browsers (Chrome, Firefox, Safari, Edge - latest 2 versions)
-            \item Minimum 4GB RAM for smooth operation
-            \item Stable internet connection (minimum 5 Mbps)
-            \item HTML5 and JavaScript enabled
-            \item Support for WebSocket connections
-        \end{itemize}
-    
-    \item[Server-Side Infrastructure]
-        \begin{itemize}
-            \item Cloud-based hosting (AWS/Google Cloud/DigitalOcean)
-            \item Linux-based operating system
-            \item Container orchestration with Docker and Kubernetes
-            \item Load balancing for high availability
-            \item SSL/TLS encryption for secure communications
-        \end{itemize}
-    
-    \item[Database Environment]
-        \begin{itemize}
-            \item PostgreSQL/MySQL for relational data
-            \item MongoDB for NoSQL requirements
-            \item Redis for caching and session management
-            \item Regular backup and recovery systems
-        \end{itemize}
-    
-    \item[Integration Requirements]
-        \begin{itemize}
-            \item OAuth2 compatible authentication services
-            \item RESTful API endpoints
-            \item WebSocket support for real-time features
-            \item CDN integration for content delivery
-            \item Third-party video hosting platform compatibility
         \end{itemize}
 \end{description}
 
@@ -335,17 +310,7 @@ Kaiju Academy is a web-based platform that operates in the following environment
 The development and implementation of Kaiju Academy must adhere to the following constraints:
 
 \begin{description}
-    \item[Technical Constraints]
-        \begin{itemize}
-            \item Must use modern web frameworks (React/Angular/Vue.js) for frontend development
-            \item Backend must be implemented using Node.js/Django/Ruby on Rails
-            \item Database implementation must use PostgreSQL/MySQL for relational data
-            \item Code execution environment must be containerized using Docker
-            \item Must support WebSocket for real-time features
-            \item Video content must be hosted on third-party platforms (YouTube/Vimeo)
-        \end{itemize}
-    
-    \item[Security Constraints]
+    \item[Security Constraints]\mbox{}
         \begin{itemize}
             \item Must implement OAuth2 for authentication
             \item All communications must be encrypted using SSL/TLS
@@ -355,7 +320,7 @@ The development and implementation of Kaiju Academy must adhere to the following
             \item Must comply with data protection regulations
         \end{itemize}
     
-    \item[Performance Constraints]
+    \item[Performance Constraints]\mbox{}
         \begin{itemize}
             \item Page load time must not exceed 3 seconds
             \item System must support at least 1000 concurrent users
@@ -364,7 +329,7 @@ The development and implementation of Kaiju Academy must adhere to the following
             \item Database queries must complete within 1 second
         \end{itemize}
     
-    \item[Development Constraints]
+    \item[Development Constraints]\mbox{}
         \begin{itemize}
             \item Must follow Git version control practices
             \item Code must pass automated testing before deployment
@@ -373,7 +338,7 @@ The development and implementation of Kaiju Academy must adhere to the following
             \item Must maintain comprehensive API documentation
         \end{itemize}
     
-    \item[Operational Constraints]
+    \item[Operational Constraints]\mbox{}
         \begin{itemize}
             \item System must achieve 99.9\% uptime
             \item Must implement automated backup systems
@@ -393,94 +358,48 @@ The development and implementation of Kaiju Academy must adhere to the following
 % reuse from another project, unless they are already documented elsewhere (for 
 % example, in the vision and scope document or the project plan).$>$
 
-The development of Kaiju Academy is based on the following assumptions and dependencies:
-
-\begin{description}
-    \item[Technical Assumptions]
-        \begin{itemize}
-            \item Users have access to modern web browsers
-            \item Third-party services (video hosting, OAuth) remain available
-            \item Cloud service providers maintain their service levels
-            \item Required development tools remain available and supported
-            \item Open-source libraries maintain compatibility
-        \end{itemize}
-    
-    \item[External Dependencies]
-        \begin{itemize}
-            \item Third-party video hosting platforms
-            \item OAuth authentication providers
-            \item Cloud infrastructure services
-            \item Code editor components (CodeMirror/Monaco)
-            \item Content delivery networks
-        \end{itemize}
-    
-    \item[Business Assumptions]
-        \begin{itemize}
-            \item User base will grow gradually
-            \item Internet connectivity is generally available to users
-            \item Users have basic computer literacy
-            \item Educational content will be provided by educators
-            \item System will be maintained by technical staff
-        \end{itemize}
-\end{description}
-
-\section{User Documentation}
-% $<$List the user documentation components (such as user manuals, on-line help, 
-% and tutorials) that will be delivered along with the software. Identify any 
-% known user documentation delivery formats or standards.$>$
-
-Kaiju Academy will provide comprehensive documentation for all user classes:
-
-\begin{description}
-    \item[Student Documentation]
-        \begin{itemize}
-            \item Getting Started Guide
-            \item Platform Navigation Tutorial
-            \item Course Enrollment Guide
-            \item Code Editor Usage Manual
-            \item Assessment Guidelines
-            \item FAQ Section
-        \end{itemize}
-    
-    \item[Educator Documentation]
-        \begin{itemize}
-            \item Course Creation Guide
-            \item Content Management Manual
-            \item Assessment Creation Tutorial
-            \item Student Progress Tracking Guide
-            \item Best Practices for Course Design
-            \item Video Content Guidelines
-        \end{itemize}
-    
-    \item[Administrator Documentation]
-        \begin{itemize}
-            \item System Administration Guide
-            \item User Management Manual
-            \item Security Guidelines
-            \item Backup and Recovery Procedures
-            \item Performance Monitoring Guide
-            \item Troubleshooting Manual
-        \end{itemize}
-    
-    \item[Documentation Formats]
-        \begin{itemize}
-            \item Interactive Web-based Documentation
-            \item Downloadable PDF Manuals
-            \item Video Tutorials
-            \item Context-sensitive Help
-            \item API Documentation
-            \item Regular Documentation Updates
-        \end{itemize}
-\end{description}
-
-All documentation will be:
+\subsection{Assumptions}
 \begin{itemize}
-    \item Accessible through the platform's help center
-    \item Searchable with comprehensive indexing
-    \item Available in multiple languages
-    \item Regularly updated to reflect system changes
-    \item Version controlled and archived
-    \item Mobile-responsive for various devices
+    \item \textbf{Internet access:} Since the application relies on a web interface, users must have stable internet connectivity with minimum 5 Mbps bandwidth or access through institution's local network
+    
+    \item \textbf{System Requirements:} All client devices must feature:
+        \begin{itemize}
+            \item Minimum 4GB RAM for smooth performance
+            \item Web browser (Chrome, Firefox, Safari, Edge - latest 2 versions)
+            \item HTML5 and JavaScript enabled
+        \end{itemize}
+\end{itemize}
+
+\subsection{Dependencies}
+\begin{itemize}
+    \item \textbf{Third-Party Libraries and Services:}
+        \begin{itemize}
+            \item Authentication protocols (OAuth2)
+            \item Database management systems (PostgreSQL, MongoDB, Redis)
+            \item Cloud infrastructure services (AWS/Google Cloud/DigitalOcean)
+            \item Content delivery networks (CDN)
+            \item Video hosting platforms
+            \item Code editor components (CodeMirror/Monaco)
+        \end{itemize}
+    
+    \item \textbf{Development Methodologies:}
+        \begin{itemize}
+            \item UML Modeling: System architecture documentation and design specifications
+            \item COMET Methodology: Concurrent object modeling for workflow integration
+            \item Container orchestration with Docker and Kubernetes
+            \item CI/CD pipeline implementation
+        \end{itemize}
+\end{itemize}
+
+\subsection{Critical Risks}
+\begin{itemize}
+    \item \textbf{External System Failures:}
+        \begin{itemize}
+            \item Third-party service disruptions (authentication, video hosting)
+            \item Cloud infrastructure outages
+            \item CDN performance issues
+            \item Database system failures
+        \end{itemize}
 \end{itemize}
 
 
