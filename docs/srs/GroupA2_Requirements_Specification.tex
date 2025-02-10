@@ -35,7 +35,7 @@
             \begin{tabularx}{\textwidth}{X l r}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
             Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
+            Yum Ho Kan & 1155195234 & \href{mailto:1155195234@link.cuhk.edu.hk}{1155195234@link.cuhk.edu.hk}\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
@@ -82,6 +82,10 @@
         \midrule
         0.5 & H. T. Lei & 2025-02-09 & \begin{revisionitem}[Added:]
             \item Other requirements
+        \end{revisionitem}\\
+        \midrule
+        0.5 & H. K. Yum & 2025-02-10 & \begin{revisionitem}[Updated:]
+            \item Nonfunctional Requirements
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
@@ -157,7 +161,7 @@ to satisfy.$>$
 \section{Operating Environment}
 $<$Describe the environment in which the software will operate, including the 
 hardware platform, operating system and versions, and any other software 
-components or applications with which it must peacefully coexist.$>$
+components or applications with which it must peacefully coexist.$>$ 
 
 \section{Design and Implementation Constraints}
 $<$Describe any items or issues that will limit the options available to the 
@@ -348,7 +352,7 @@ information is not yet available.$>$
 $<$Each requirement should be uniquely identified with a sequence number or a 
 meaningful tag of some kind.$>$
 
-REQ-1:	REQ-2:
+REQ-1:  REQ-2:
 
 \section{System Feature 2 (and so on)}
 
@@ -356,42 +360,142 @@ REQ-1:	REQ-2:
 \chapter{Other Nonfunctional Requirements}
 
 \section{Performance Requirements}
-$<$If there are performance requirements for the product under various 
-circumstances, state them here and explain their rationale, to help the 
-developers understand the intent and make suitable design choices. Specify the 
-timing relationships for real time systems. Make such requirements as specific 
-as possible. You may need to state performance requirements for individual 
-functional requirements or features.$>$
+\begin{itemize}
+    \item \textbf{Response Time:}
+    \begin{itemize}
+        \item The platform must load within \textbf{2 seconds} for 95\% of users under normal load conditions.
+        \item Code execution results must be returned within \textbf{5 seconds} for 99\% of submissions, even during peak usage.
+        \item Real-time collaboration features (if any) must have a latency of less than \textbf{200ms} for seamless interaction.
+    \end{itemize}
+    
+    \item \textbf{Scalability:}
+    \begin{itemize}
+        \item The platform must support up to \textbf{10,000 concurrent users} without degradation in performance.
+    \end{itemize}
+    
+    \item \textbf{Availability:}
+    \begin{itemize}
+        \item The platform must have an uptime of \textbf{99.9\%} (excluding scheduled maintenance).
+        \item Downtime for scheduled maintenance must not exceed \textbf{10 hours per month} and must be communicated to users at least \textbf{24 hours} in advance.
+    \end{itemize}
+
+    \item \textbf{Resource Usage:}
+    \begin{itemize}
+        \item Code execution environments must not exceed \textbf{10MB of memory} per user session.
+        \item The platform must handle \textbf{10,000 code submissions per minute} without performance degradation.
+    \end{itemize}
+\end{itemize}
 
 \section{Safety Requirements}
-$<$Specify those requirements that are concerned with possible loss, damage, or 
-harm that could result from the use of the product. Define any safeguards or 
-actions that must be taken, as well as actions that must be prevented. Refer to 
-any external policies or regulations that state safety issues that affect the 
-product's design or use. Define any safety certifications that must be 
-satisfied.$>$
+\begin{itemize}
+    \item \textbf{User Safety:}
+    \begin{itemize}
+        \item The platform must prevent users from executing malicious code that could harm the system.
+        \item A sandboxed environment must be used for code execution.
+    \end{itemize}
+
+    \item \textbf{Data Safety:}
+    \begin{itemize}
+        \item Regular backups of user data must be performed daily and stored securely for at least \textbf{30 days}.
+        \item In case of data loss, user data must be restorable to a state no older than \textbf{24 hours}.
+    \end{itemize}
+
+    \item \textbf{Compliance:}
+    \begin{itemize}
+        \item The platform must comply with \textbf{GDPR} and \textbf{COPPA}.
+    \end{itemize}
+\end{itemize}
 
 \section{Security Requirements}
-$<$Specify any requirements regarding security or privacy issues surrounding use 
-of the product or protection of the data used or created by the product. Define 
-any user identity authentication requirements. Refer to any external policies or 
-regulations containing security issues that affect the product. Define any 
-security or privacy certifications that must be satisfied.$>$
+\begin{itemize}
+    \item \textbf{Authentication and Authorization:}
+    \begin{itemize}
+        \item Users must authenticate via \textbf{OAuth 2.0} or email/password with \textbf{MFA} support.
+        \item Role-based access control (RBAC) must be implemented.
+    \end{itemize}
+
+    \item \textbf{Data Security:}
+    \begin{itemize}
+        \item All sensitive data must be encrypted using \textbf{AES-256}.
+        \item All data in transit must be secured using \textbf{TLS 1.2} or higher.
+    \end{itemize}
+
+    \item \textbf{Prevention of Abuse:}
+    \begin{itemize}
+        \item The platform must prevent brute-force attacks, SQL injection, and XSS attacks.
+        \item Rate limiting must be implemented (e.g., max \textbf{10 submissions per minute} per user).
+    \end{itemize}
+
+    \item \textbf{Compliance:}
+    \begin{itemize}
+        \item The platform must comply with \textbf{ISO/IEC 27001} and \textbf{SOC 2 Type II}.
+    \end{itemize}
+\end{itemize}
 
 \section{Software Quality Attributes}
-$<$Specify any additional quality characteristics for the product that will be 
-important to either the customers or the developers. Some to consider are: 
-adaptability, availability, correctness, flexibility, interoperability, 
-maintainability, portability, reliability, reusability, robustness, testability, 
-and usability. Write these to be specific, quantitative, and verifiable when 
-possible. At the least, clarify the relative preferences for various attributes, 
-such as ease of use over ease of learning.$>$
+\begin{itemize}
+    \item \textbf{Usability:}
+    \begin{itemize}
+        \item The platform must have an intuitive UI with a \textbf{90\% satisfaction rate}.
+        \item The learning curve for new users should not exceed \textbf{10 minutes}.
+    \end{itemize}
+
+    \item \textbf{Reliability:}
+    \begin{itemize}
+        \item The platform must have \textbf{99.9\% uptime} and recover from failures within \textbf{5 minutes}.
+    \end{itemize}
+
+    \item \textbf{Maintainability:}
+    \begin{itemize}
+        \item The codebase must follow modular design principles, with at least \textbf{80\% test coverage}.
+        \item The platform must support seamless updates with zero downtime.
+    \end{itemize}
+
+    \item \textbf{Portability:}
+    \begin{itemize}
+        \item The platform must be compatible with major browsers and OSs.
+        \item Mobile responsiveness must be ensured for screen sizes as small as \textbf{320px}.
+    \end{itemize}
+
+    \item \textbf{Performance:}
+    \begin{itemize}
+        \item The platform must support \textbf{10,000 concurrent users} with a response time of less than \textbf{2 seconds}.
+    \end{itemize}
+\end{itemize}
 
 \section{Business Rules}
-$<$List any operating principles about the product, such as which individuals or 
-roles can perform which functions under specific circumstances. These are not 
-functional requirements in themselves, but they may imply certain functional 
-requirements to enforce the rules.$>$
+\begin{itemize}
+    \item \textbf{User Roles and Permissions:}
+    \begin{itemize}
+        \item \textbf{Admins}: Manage challenges, accounts, and analytics.
+        \item \textbf{Premium Users}: Access advanced features.
+        \item \textbf{Users}: Access basic challenges and competitions.
+    \end{itemize}
+
+    \item \textbf{Content Moderation:}
+    \begin{itemize}
+        \item User-submitted content must be reviewed for inappropriate content.
+        \item Users violating the code of conduct must be warned or banned.
+    \end{itemize}
+
+    \item \textbf{Monetization:}
+    \begin{itemize}
+        \item Premium features must be available via a subscription model.
+        \item Free users must be limited to \textbf{10 challenges per day}.
+    \end{itemize}
+
+    \item \textbf{Competitions and Rankings:}
+    \begin{itemize}
+        \item Coding competitions must occur at least \textbf{once a month}.
+        \item User rankings must be updated in real-time.
+    \end{itemize}
+
+    \item \textbf{Data Retention:}
+    \begin{itemize}
+        \item User data must be retained for at least \textbf{6 months} after account deletion.
+        \item Inactive accounts (no login for \textbf{1 year}) must be archived and deleted after \textbf{3 months} of notification.
+    \end{itemize}
+\end{itemize}
 
 
 \chapter{Other Requirements}
