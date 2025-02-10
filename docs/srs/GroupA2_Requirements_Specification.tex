@@ -9,7 +9,7 @@
     pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
 }
 
-\def\myversion{0.4}
+\def\myversion{0.4.1}
 \def\projectname{Kaiju Academy}
 \date{}
 
@@ -31,10 +31,9 @@
             \vspace{1.6cm}
             Prepared by\\
             Group A2\\
-            \begin{tabularx}{\textwidth}{X l X}
+            \begin{tabularx}{\textwidth}{l l >{\raggedleft\arraybackslash}X}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
             Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
@@ -77,6 +76,11 @@
         \midrule
         0.4 & H. T. Lei & 2025-02-09 & \begin{revisionitem}[Added:]
             \item Specific requirements
+        \end{revisionitem}\\
+        \midrule
+        0.4.1 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Updated:]
+            \item Specific requirements: fixed compilation error
+            \item Titlepage formatting: fixed alignment issue
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
@@ -292,9 +296,10 @@ Functional requirements capture the intended behavior of the system. This behavi
     \item[$\cdot$ Search and Filter:] Users can search and filter courses, discussions, and assessments.
     \item[$\cdot$ Calendar Integration:] Displays course schedules, assignment deadlines, and learning reminders.
     \item[$\cdot$ Discussion Forum:] Users can ask questions, respond, and interact with educators.
-    \item[$\cdot$ Daily Assessment & Learning Reminders:] Personalized daily learning tasks and notifications.
-    \item[$\cdot$ Learning Path Review & Recommendations:] System-generated personalized course suggestions based on progress.
+    \item[$\cdot$ Daily Assessment \& Learning Reminders:] Personalized daily learning tasks and notifications.
+    \item[$\cdot$ Learning Path Review \& Recommendations:] System-generated personalized course suggestions based on progress.
     \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
+\end{description}
 
 \section{Use Case Model}
 $<$This section is the direct continuation of section 2.3 where you have specified 
