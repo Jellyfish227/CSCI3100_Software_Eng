@@ -137,7 +137,9 @@
             Group A2\\
             \begin{tabularx}{\textwidth}{X l X}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+            Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
             Leung Chung Wang & 1155194650 & \href{mailto:1155194650@link.cuhk.edu.hk}{1155194650@link.cuhk.edu.hk}\\
+            <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             \end{tabularx}\\
@@ -168,6 +170,12 @@
         0.2 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
             \item Formatting
         \end{revisionitem}\\
+        0.3 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
+            \item Titlepage formatting
+            \item Page numbering
+            \item Chapters title formatting
+            \item Chapter and sections arrangement
+        \end{revisionitem}\\
         0.4 & C. W. Leung & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item Introduction without abbreviations
         \end{revisionitem}\\
@@ -189,7 +197,7 @@ This Project Requirements Specification adheres to the IEEE Std 830-1998 standar
 This document is intended for a diverse audience, including software developers, project managers, quality assurance testers, and stakeholders involved in the Kaiju Academy project, organized into sections that detail the overall description of the product, specific requirements, system features, and non-functional requirements. Readers are encouraged to start with the overall description to understand the context and then proceed to the specific requirements relevant to their roles.
 
 \section{Project Scope}
-Kaiju Academy is an innovative online self-learning platform aiming to innovate code education. The aspire of Kaiju is to make users' learning of programming easier and more interactive in course-and-assessment-driven environment with community support, enhancing accessibility as users can learn at their own pace, while interactive and game-like experiences drive engagement and completion. Key objectives include a wide variety of coding courses, progress tracking, and instant feedback through assessments.\\\\
+Kaiju Academy is an online self-learning platform aiming to innovate code education. The aspire of Kaiju is to make users' learning of programming easier and more interactive in course-and-assessment-driven environment with community support, enhancing accessibility as users can learn at their own pace, while interactive and game-like experiences drive engagement and completion. Key objectives include a wide variety of coding courses, progress tracking, and instant feedback through assessments.\\\\
 Kaiju Academy aligns with corporate goals of expanding digital education and enhancing user engagement through technology-driven solutions, supporting the development of a skilled workforce ready for the digital age.
 
 
@@ -269,12 +277,60 @@ Define the software components for which a user interface is needed. Details of
 the user interface design should be documented in a separate user interface 
 specification.$>$
 
+Kaiju Academy will have a graphical user interface (GUI) designed for ease of use and accessibility across different roles, including students, educators, and administrators. The UI components include:
+\begin{description}
+    \item[$\cdot$ Dashboard:] Upon login, users will be presented with a dashboard displaying their enrolled courses, upcoming deadlines, progress tracking, and notifications.
+    \item[$\cdot$ Navigation:] A global navigation bar providing quick access to Courses, Assessments, Calendar, Discussion Forum, and Profile settings.
+    \item[$\cdot$ Course Pages:] Each course contains a structured layout displaying modules, videos, PDFs, quizzes, and assessments with a progress tracker.
+    \item[$\cdot$ Assessment Interface:] Interactive assessment screens allowing multiple-choice (MC) questions with self-checking, short-answer autograded questions, and long-answer questions submitted for manual grading.
+    \item[$\cdot$ Progress Tracking:] A visual roadmap for students to track completed and pending modules and overall course progress.
+    \item[$\cdot$ Discussion Forum:] A interactive discussion forum with search, filter, and sort options.
+    \item[$\cdot$ Calendar:] An integrated calendar highlighting course schedules, assignment deadlines, and upcoming events.
+    \item[$\cdot$ Notifications:] A notification center alerting users about new content, deadlines, and updates.
+    \item[$\cdot$ Coding Environment] An embedded coding environment for practice exercises and coding competitions, similar to LeetCode.
+    \item[$\cdot$ Error Handling] Consistent error messages displayed in case of invalid input, failed login attempts, or system errors.
+    \item[$\cdot$ Keyboard Shortcuts] Common keyboard shortcuts for navigation and execution of commands, enhancing efficiency.
+    \item[$\cdot$ Mobile Compatibility:] A responsive design ensuring accessibility on desktops, tablets, and mobile devices.
+\end{description}
+
+Kaiju Academy will have a graphical user interface (GUI) designed for ease of use and accessibility across different roles, including students, educators, and administrators. The UI components include:
+\begin{description}
+    \item[$\cdot$ Dashboard:] Upon login, users will be presented with a dashboard displaying their enrolled courses, upcoming deadlines, progress tracking, and notifications.
+    \item[$\cdot$ Navigation:] A global navigation bar providing quick access to Courses, Assessments, Calendar, Discussion Forum, and Profile settings.
+    \item[$\cdot$ Course Pages:] Each course contains a structured layout displaying modules, videos, PDFs, quizzes, and assessments with a progress tracker.
+    \item[$\cdot$ Assessment Interface:] Interactive assessment screens allowing multiple-choice (MC) questions with self-checking, short-answer autograded questions, and long-answer questions submitted for manual grading.
+    \item[$\cdot$ Progress Tracking:] A visual roadmap for students to track completed and pending modules and overall course progress.
+    \item[$\cdot$ Discussion Forum:] A interactive discussion forum with search, filter, and sort options.
+    \item[$\cdot$ Calendar:] An integrated calendar highlighting course schedules, assignment deadlines, and upcoming events.
+    \item[$\cdot$ Notifications:] A notification center alerting users about new content, deadlines, and updates.
+    \item[$\cdot$ Coding Environment] An embedded coding environment for practice exercises and coding competitions, similar to LeetCode.
+    \item[$\cdot$ Error Handling] Consistent error messages displayed in case of invalid input, failed login attempts, or system errors.
+    \item[$\cdot$ Keyboard Shortcuts] Common keyboard shortcuts for navigation and execution of commands, enhancing efficiency.
+    \item[$\cdot$ Mobile Compatibility:] A responsive design ensuring accessibility on desktops, tablets, and mobile devices.
+\end{description}
+
 \section{Hardware Interfaces}
 $<$Describe the logical and physical characteristics of each interface between 
 the software product and the hardware components of the system. This may include 
 the supported device types, the nature of the data and control interactions 
 between the software and the hardware, and communication protocols to be 
 used.$>$
+
+The platform is designed to support various hardware components. Key considerations include:
+\begin{description}
+    \item[$\cdot$ User Devices:] The platform will be compatible with desktops, laptops, tablets, and smartphones supporting modern web browsers.
+    \item[$\cdot$ Server Infrastructure:] Hosted on cloud-based servers (AWS, Google Cloud, or Azure) with auto-scaling to accommodate user load.
+    \item[$\cdot$ Peripheral Support:] Users can interact using keyboards, mice, touchscreens, and audio devices for accessibility.
+    \item[$\cdot$ Network Requirements:] Requires a stable internet connection with minimum bandwidth to support video streaming and coding environment interaction.
+\end{description}
+
+The platform is designed to support various hardware components. Key considerations include:
+\begin{description}
+    \item[$\cdot$ User Devices:] The platform will be compatible with desktops, laptops, tablets, and smartphones supporting modern web browsers.
+    \item[$\cdot$ Server Infrastructure:] Hosted on cloud-based servers (AWS, Google Cloud, or Azure) with auto-scaling to accommodate user load.
+    \item[$\cdot$ Peripheral Support:] Users can interact using keyboards, mice, touchscreens, and audio devices for accessibility.
+    \item[$\cdot$ Network Requirements:] Requires a stable internet connection with minimum bandwidth to support video streaming and coding environment interaction.
+\end{description}
 
 \section{Software Interfaces}
 $<$Describe the connections between this product and other specific software 
@@ -288,13 +344,76 @@ sharing mechanism must be implemented in a specific way (for example, use of a
 global data area in a multitasking operating system), specify this as an 
 implementation constraint.$>$
 
-\section{Communications Interfaces}
-$<$Describe the requirements associated with any communications functions 
-required by this product, including e-mail, web browser, network server 
-communications protocols, electronic forms, and so on. Define any pertinent 
-message formatting. Identify any communication standards that will be used, such 
-as FTP or HTTP. Specify any communication security or encryption issues, data 
-transfer rates, and synchronization mechanisms.$>$
+The system will integrate with various software components to ensure smooth operation and functionality. These include:
+\begin{description}
+    \item[$\cdot$ Operating Systems:] Compatible with Windows, macOS, Linux, Android, and iOS.
+    \item[$\cdot$ Web Browsers:] Supports the latest versions of Google Chrome, Mozilla Firefox, Safari, and Microsoft Edge.
+    \item[$\cdot$ Database Management System:] Uses PostgreSQL or MySQL to store user data, course materials, progress tracking, and assessment records.
+    \item[$\cdot$ Authentication Services:] Integration with OAuth2 for third-party authentication (Google, GitHub, etc.) and two-factor authentication (2FA).
+    \item[$\cdot$ APIs:] RESTful APIs to connect frontend and backend services, including: User authentication and management, Course content retrieval and management, Assessment grading and tracking, Notification and messaging services, Code execution API for online coding exercises
+    \item[$\cdot$ Content Delivery Networks (CDN):] Utilized for efficient media delivery and reduced latency.
+    \item[$\cdot$ Notification Services:] Integration with email and push notification services for alerts and reminders.
+    \item[$\cdot$ Logging and Monitoring:] Implementation of centralized logging and monitoring tools for system health tracking.
+\end{description}
+
+
+\section{Functional Requirements}
+$<$Functional requirements capture the intended behavior of the system. This 
+behavior may be expressed as services, tasks or functions the system is required 
+to perform. This section is the direct continuation of section 2.2 where you have 
+specified the general functional requirements. Here, you should list in detail the
+different product functions. $>$
+
+Functional requirements capture the intended behavior of the system. This behavior may be expressed as services, tasks, or functions the system is required to perform. Below is a detailed list of product functions:
+
+\begin{description}
+    \item[$\cdot$ User Management:]
+        \begin{enumerate}
+            \item Users can sign up, log in, and update their profiles.
+            \item Role-based access control (Student, Educator, Admin).
+            \item Password recovery and security settings.
+        \end{enumerate}
+    \item[$\cdot$ Course Management:]
+        \begin{enumerate}
+            \item Educators can create, update, and delete courses.
+            \item Upload and manage course materials (videos, PDFs, quizzes).
+            \item Students can enroll, drop, and track their progress.
+        \end{enumerate}
+    \item[$\cdot$ Quiz and Assessment:]
+        \begin{enumerate}
+            \item MC questions with self-checking and automatic grading.
+            \item Short-answer questions (some autograded, some educator-reviewed).
+            \item Long-answer questions assigned to educators for grading.
+            \item Popup MC questions during the course for engagement.
+        \end{enumerate}
+    \item[$\cdot$ Progress Tracking:]
+        \begin{enumerate}
+            \item Roadmap displaying completed and pending modules.
+            \item Percentage-based completion tracker.
+            \item Assessment performance tracking.
+        \end{enumerate}
+    \item[$\cdot$ Notifications:]
+        \begin{enumerate} 
+            \item Automated alerts for deadlines, new content, and assessments.
+            \item Customizable notification preferences.
+        \end{enumerate}
+    \item[$\cdot$ Search and Filter:] Users can search and filter courses, discussions, and assessments.
+    \item[$\cdot$ Calendar Integration:] Displays course schedules, assignment deadlines, and learning reminders.
+    \item[$\cdot$ Discussion Forum:] Users can ask questions, respond, and interact with educators.
+    \item[$\cdot$ Daily Assessment & Learning Reminders:] Personalized daily learning tasks and notifications.
+    \item[$\cdot$ Learning Path Review & Recommendations:] System-generated personalized course suggestions based on progress.
+    \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
+
+\section{Use Case Model}
+$<$This section is the direct continuation of section 2.3 where you have specified 
+the general use cases. Here, you should list in detail the different use cases. 
+$>$
+\subsection{Use Case \#1}
+$<$Describe the use case in detail.$>$
+
+\subsection{Use Case \#2}
+$<$Describe the use case in detail.$>$
+
 
 
 \chapter{System Features}
