@@ -1,4 +1,4 @@
-\def\myversion{0.6}
+\def\myversion{0.7}
 \def\projectname{Kaiju Academy}
 \date{}
 
@@ -13,10 +13,6 @@
     pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/hotfix/docs/srs
 \begin{document}
 
 \pagenumbering{roman}  % Start with roman numerals for front matter
@@ -40,7 +36,7 @@
                     YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
                     Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
                     Ankhbayar Enkhtaivan & 1155185142 & \href{mailto:1155185142@link.cuhk.edu.hk}{1155185142@link.cuhk.edu.hk}\\
-                    <name> & <student id> & <email>\\
+                    Leung Chung Wang & 1155194650 & \href{mailto:1155194650@link.cuhk.edu.hk}{1155194650@link.cuhk.edu.hk}\\
                     <name> & <student id> & <email>\\
                 \end{tabularx}
             }\\
@@ -84,8 +80,6 @@
             \item Specific requirements
         \end{revisionitem}\\
         \midrule
-<<<<<<< HEAD
-=======
         0.4.1 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item Specific requirements: fixed compilation error
             \item Titlepage formatting: fixed alignment issue
@@ -98,12 +92,19 @@
             \item User Classes and Characteristics
             \item Design and Implementation Constraints
             \item Assumptions and Dependencies
->>>>>>> origin/hotfix/docs/srs
         \end{revisionitem}\\
         \midrule
         0.6 & A. Enkhtaivan & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item System Features
             \item Specific requirements Use Case Model
+        \end{revisionitem}\\
+        \midrule
+        0.7 & C. W. Leung & 2025-02-10 & \begin{revisionitem}[Added:]
+            \item Document Purpose
+            \item Project Scope
+            \item Intended Audience and Document Overview
+            \item Document Conventions
+            \item References and Acknowledgments
         \end{revisionitem}\\
         \bottomrule
 
@@ -114,25 +115,29 @@
 \pagenumbering{arabic}  % Switch to arabic numbers for main content
 
 \chapter{Introduction}
+
 \section{Document Purpose}
-$<$Identify the product whose software requirements are specified in this document, 
-including the revision or release number. Describe the scope of the product that is 
-covered by this SRS, particularly if this SRS describes only part of the system or a 
-single subsystem.$>$
-TODO: Write 1-2 paragraphs describing the purpose of this document as explained above
+This document outlines the software requirements for Kaiju Academy, an online self-learning platform for cod-
+ing education, Version 0.7 and prepared by Group A2. The document encompasses all essential functionalities,
+including course delivery, user progress tracking, community interaction, and assessment tools, providing both
+high-level and specific requirements. This document shall form the basis for all stakeholders and developers to
+understand intended features and constraints of the platform.
 
 \section{Project Scope}
-$<$Provide a short description of the software being specified and its purpose, including relevant benefits, objectives, and goals. 
-TODO: 1-2 paragraphs describing the scope of the product. Make sure to describe the benefits associated with the product.
-$>$
+Kaiju Academy is an online self-learning platform aiming to innovate code education. The aspiration of
+Kaiju is to make users’ learning of programming easier and more interactive in course-and-assessment-driven
+environment with community support. It enhances accessibility as users can learn at their own pace, while
+interactive and game-like experiences drive engagement and completion. The platform will offer a diverse range of coding courses for various skill levels, robust progress tracking, and instant feedback through assessments to promote continuous improvement.\\\\
+Moreover, Kaiju Academy will foster a supportive community for collaboration and engagement among learners and educators, corresponding with corporate goals to expand digital education and enhance user engagement and contribute to the development of a skilled workforce prepared for the digital age by leveraging technology-driven solutions.
 
 \section{Intended Audience and Document Overview}
-$<$Describe the different types of reader that the document is intended for, such as developers, project managers, marketing staff, users, testers, and documentation writers (In your case it would probably be the "client" and the professor). Describe what the rest of this SRS contains and how it is organized. Suggest a sequence for reading the document, beginning with the overview sections and proceeding through the sections that are most pertinent to each reader type.$>$
+This document is intended for a diverse audience, including software developers, project managers, quality as-
+surance testers, and stakeholders involved in the Kaiju Academy project. It is organized into sections that detail
+the overall description of the product, specific requirements, system features, and non-functional requirements.
+Readers are encouraged to start with the overall description to understand the context and then proceed to the
+specific requirements relevant to their roles.
 
 \section{Definitions, Acronyms and Abbreviations}
-$<$Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may wish to build a separate glossary that spans multiple projects or the entire organization, and just include terms specific to a single project in each SRS.
-TODO: Please provide a list of all abbreviations and acronyms used in this document sorted in alphabetical order
-$>$
 \begin{center}
     \begin{tabularx}{\textwidth}{lX}
         \toprule
@@ -171,17 +176,11 @@ $>$
 
 
 \section{Document Conventions}
-$<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1" margins found in this template. For Section and Subsection titles please follow the template. 
-
-TODO: Describe any standards or typographical conventions that were followed when writing this SRS, such as fonts or highlighting that have special significance. Sometimes, it is useful to divide this section to several sections, e.g., Formatting Conventions, Naming Conventions, etc
-$>$
+This Project Requirements Specification adheres to the IEEE Std 830-1998 standard. The document utilizes Times New Roman font in size 11 for consistency and readability. Important terms are highlighted in bold, while supplementary notes are presented in italics. Each requirement is uniquely identified, with higher-level requirements inheriting their priority unless otherwise specified. Sections and requirements are sequentially numbered to facilitate easy navigation. Additionally, technical terms and acronyms are clearly defined in the Glossary to ensure clarity and understanding for all readers.
 
 \section{References and Acknowledgments}
-$<$List any other documents or Web addresses to which this SRS refers. These may 
-include user interface style guides, contracts, standards, system requirements 
-specifications, use case documents, or a vision and scope document. Provide 
-enough information so that the reader could access a copy of each reference, 
-including title, author, version number, date, and source or location.$>$
+IEEE. IEEE Std 830-1998 IEEE Recommended Practice for Software Requirements Specifications. IEEE
+Computer Society, 1998
 
 
 \chapter{Overall Description}
