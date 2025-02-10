@@ -491,6 +491,31 @@ The \textbf{Assessment and Grading} feature allows educators to create quizzes a
 \chapter{Other Nonfunctional Requirements}
 
 \section{Performance Requirements}
+\begin{itemize}
+    \item \textbf{Response Time:}
+    \begin{itemize}
+        \item The platform must load within \textbf{2 seconds} for 95\% of users under normal load conditions.
+        \item Code execution results must be returned within \textbf{5 seconds} for 99\% of submissions, even during peak usage.
+        \item Real-time collaboration features (if any) must have a latency of less than \textbf{200ms} for seamless interaction.
+    \end{itemize}
+
+    \item \textbf{Scalability:}
+    \begin{itemize}
+        \item The platform must support up to \textbf{10,000 concurrent users} without degradation in performance.
+    \end{itemize}
+
+    \item \textbf{Availability:}
+    \begin{itemize}
+        \item The platform must have an uptime of \textbf{99.9\%} (excluding scheduled maintenance).
+        \item Downtime for scheduled maintenance must not exceed \textbf{10 hours per month} and must be communicated to users at least \textbf{24 hours} in advance.
+    \end{itemize}
+
+    \item \textbf{Resource Usage:}
+    \begin{itemize}
+        \item Code execution environments must not exceed \textbf{10MB of memory} per user session.
+        \item The platform must handle \textbf{10,000 code submissions per minute} without performance degradation.
+    \end{itemize}
+\end{itemize}
 
 \section{Safety Requirements}
 \begin{itemize}
