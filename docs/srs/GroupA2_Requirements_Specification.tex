@@ -31,13 +31,15 @@
             \vspace{1.6cm}
             Prepared by\\
             Group A2\\
-            \begin{tabularx}{\textwidth}{l l >{\raggedleft\arraybackslash}X}
-            YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
-            Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            \end{tabularx}\\
+            \Large{
+                \begin{tabularx}{\textwidth}{l l >{\raggedleft\arraybackslash}X}
+                    YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+                    Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
+                    <name> & <student id> & <email>\\
+                    <name> & <student id> & <email>\\
+                    <name> & <student id> & <email>\\
+                \end{tabularx}
+            }\\
             \vspace{1.6cm}
             The Chinese University of Hong Kong\\
             Department of Computer Science and Engineering\\
@@ -84,6 +86,7 @@
         \end{revisionitem}\\
         \midrule
         0.5 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Added:]
+            \item Acronyms and Abbreviations table
             \item Product Overview
             \item Product Functionality
             \item User Classes and Characteristics
@@ -122,19 +125,33 @@ $>$
         \toprule
         \textbf{Abbreviation} & \textbf{Definition} \\
         \midrule
-        LMS & Learning Management System \\
+        AI & Artificial Intelligence \\
         API & Application Programming Interface \\
+        CCPA & California Consumer Privacy Act \\
+        CD & Continuous Deployment \\
+        CDN & Content Delivery Networks \\
+        CI & Continuous Integration \\
         CSS & Cascading Style Sheets \\
+        FAQ & Frequently Asked Questions \\
+        GDPR & General Data Protection Regulation \\
+        GUI & Graphical User Interface \\
         HTML & HyperText Markup Language \\
         HTTP & HyperText Transfer Protocol \\
         IDE & Integrated Development Environment \\
         JS & JavaScript \\
         LMS & Learning Management System \\
+        MC & Multiple Choice \\
+        OS & Operating System \\
+        REQ & Requirement \\
         REST & Representational State Transfer \\
         SRS & Software Requirements Specification \\
+        SSL & Secure Sockets Layer \\
+        TBD & To Be Determined \\
+        TLS & Transport Layer Security \\
         UI & User Interface \\
         URL & Uniform Resource Locator \\
         UX & User Experience \\
+        2FA & Two-factor Authentication \\
         \bottomrule
     \end{tabularx}
 \end{center}
@@ -194,61 +211,19 @@ Educators can utilize the platform to create courses, manage course materials an
 Kaiju Academy provides the following major functionalities:
 
 \begin{itemize}
-    \item User Management
-        \begin{itemize}
-            \item User registration and authentication
-            \item Role-based access control (Student, Educator, Admin)
-            \item Profile management and settings
-            \item Security features including password recovery
-        \end{itemize}
+    \item User Management: Account creation, authentication, role-based access, and profile settings
     
-    \item Course Management
-        \begin{itemize}
-            \item Course creation and organization
-            \item Content management (videos, PDFs, quizzes, assignments)
-            \item Course enrollment and progress tracking
-        \end{itemize}
+    \item Course Management: Creation and organization of courses, content management, and enrollment tracking
     
-    \item Learning Content Delivery
-        \begin{itemize}
-            \item Video streaming with playback controls
-            \item Document viewing and download
-            \item Interactive quizzes
-            \item Code examples and assignments
-            \item Progress tracking and roadmaps
-        \end{itemize}
+    \item Learning Content: Video lectures, documents, quizzes, coding assignments, and progress tracking
     
-    \item Interactive Coding Environment
-        \begin{itemize}
-            \item Integrated code editor
-            \item Secure code execution
-            \item Automated code testing
-            \item Real-time error feedback
-        \end{itemize}
+    \item Coding Environment: Browser-based code editor with testing and feedback
     
-    \item Discussion and Community
-        \begin{itemize}
-            \item Course-specific discussion forums
-            \item Post and comment functionality
-            \item Pinned announcements
-            \item User interaction tracking
-        \end{itemize}
+    \item Discussion Features: Course forums, announcements, and community interaction
     
-    \item Assessment and Progress
-        \begin{itemize}
-            \item Multiple assessment types
-            \item Automated grading
-            \item Progress visualization
-            \item Achievement tracking and badges
-        \end{itemize}
+    \item Assessment Tools: Automated grading, progress tracking, and achievement system
     
-    \item Administrative Tools
-        \begin{itemize}
-            \item User management dashboard
-            \item Content management interface
-            \item System monitoring tools
-            \item Resource analytics and reporting
-        \end{itemize}
+    \item Administration: User management, content moderation, and system monitoring
 \end{itemize}
 
 \section{User Classes and Characteristics}
@@ -307,9 +282,14 @@ Kaiju Academy serves several distinct user classes, each with specific character
 % customer's organization will be responsible for maintaining the delivered 
 % software).$>$
 
-The development and implementation of Kaiju Academy must adhere to the following constraints:
+The implementation and ongoing development of Kaiju Academy shall be governed by the following technical and operational constraints:
 
 \begin{description}
+    \item[Hardware Constraints]\mbox{}
+        \begin{itemize}
+            \item TODO: Add hardware constraints
+        \end{itemize}
+    
     \item[Security Constraints]\mbox{}
         \begin{itemize}
             \item Must implement OAuth2 for authentication
@@ -362,9 +342,9 @@ The development and implementation of Kaiju Academy must adhere to the following
 \begin{itemize}
     \item \textbf{Internet access:} Since the application relies on a web interface, users must have stable internet connectivity with minimum 5 Mbps bandwidth or access through institution's local network
     
-    \item \textbf{System Requirements:} All client devices must feature:
+    \item \textbf{Minimum System Requirements:} All client devices must feature:
         \begin{itemize}
-            \item Minimum 4GB RAM for smooth performance
+            \item Computer or mobile device with minimum 4GB RAM for smooth performance
             \item Web browser (Chrome, Firefox, Safari, Edge - latest 2 versions)
             \item HTML5 and JavaScript enabled
         \end{itemize}
