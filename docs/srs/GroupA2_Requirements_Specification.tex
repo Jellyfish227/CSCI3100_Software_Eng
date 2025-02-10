@@ -1,3 +1,7 @@
+\def\myversion{0.6}
+\def\projectname{Kaiju Academy}
+\date{}
+
 \documentclass[a4paper, 11pt]{scrreprt}
 \usepackage{srs}  % Load SRS document style
 
@@ -9,10 +13,10 @@
     pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
 }
 
-\def\myversion{0.5}
-\def\projectname{Kaiju Academy}
-\date{}
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/hotfix/docs/srs
 \begin{document}
 
 \pagenumbering{roman}  % Start with roman numerals for front matter
@@ -31,14 +35,15 @@
             \vspace{1.6cm}
             Prepared by\\
             Group A2\\
-            \begin{tabularx}{\textwidth}{X l X}
-            YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
-            Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
-            Ankhbayar Enkhtaivan & 1155185142 & \href{mailto:1155185142@link.cuhk.edu.hk}{1155185142@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            \end{tabularx}\\
+            \Large{
+                \begin{tabularx}{\textwidth}{l l >{\raggedleft\arraybackslash}X}
+                    YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+                    Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
+                    Ankhbayar Enkhtaivan & 1155185142 & \href{mailto:1155185142@link.cuhk.edu.hk}{1155185142@link.cuhk.edu.hk}\\
+                    <name> & <student id> & <email>\\
+                    <name> & <student id> & <email>\\
+                \end{tabularx}
+            }\\
             \vspace{1.6cm}
             The Chinese University of Hong Kong\\
             Department of Computer Science and Engineering\\
@@ -79,7 +84,24 @@
             \item Specific requirements
         \end{revisionitem}\\
         \midrule
-        0.5 & A. Enkhtaivan & 2025-02-10 & \begin{revisionitem}[Updated:]
+<<<<<<< HEAD
+=======
+        0.4.1 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Updated:]
+            \item Specific requirements: fixed compilation error
+            \item Titlepage formatting: fixed alignment issue
+        \end{revisionitem}\\
+        \midrule
+        0.5 & C. H. Yu & 2025-02-10 & \begin{revisionitem}[Added:]
+            \item Acronyms and Abbreviations table
+            \item Product Overview
+            \item Product Functionality
+            \item User Classes and Characteristics
+            \item Design and Implementation Constraints
+            \item Assumptions and Dependencies
+>>>>>>> origin/hotfix/docs/srs
+        \end{revisionitem}\\
+        \midrule
+        0.6 & A. Enkhtaivan & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item System Features
             \item Specific requirements Use Case Model
         \end{revisionitem}\\
@@ -92,7 +114,6 @@
 \pagenumbering{arabic}  % Switch to arabic numbers for main content
 
 \chapter{Introduction}
-
 \section{Document Purpose}
 $<$Identify the product whose software requirements are specified in this document, 
 including the revision or release number. Describe the scope of the product that is 
@@ -112,6 +133,42 @@ $<$Describe the different types of reader that the document is intended for, suc
 $<$Define all the terms necessary to properly interpret the SRS, including acronyms and abbreviations. You may wish to build a separate glossary that spans multiple projects or the entire organization, and just include terms specific to a single project in each SRS.
 TODO: Please provide a list of all abbreviations and acronyms used in this document sorted in alphabetical order
 $>$
+\begin{center}
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Abbreviation} & \textbf{Definition} \\
+        \midrule
+        AI & Artificial Intelligence \\
+        API & Application Programming Interface \\
+        CCPA & California Consumer Privacy Act \\
+        CD & Continuous Deployment \\
+        CDN & Content Delivery Networks \\
+        CI & Continuous Integration \\
+        CSS & Cascading Style Sheets \\
+        FAQ & Frequently Asked Questions \\
+        GDPR & General Data Protection Regulation \\
+        GUI & Graphical User Interface \\
+        HTML & HyperText Markup Language \\
+        HTTP & HyperText Transfer Protocol \\
+        IDE & Integrated Development Environment \\
+        JS & JavaScript \\
+        LMS & Learning Management System \\
+        MC & Multiple Choice \\
+        OS & Operating System \\
+        REQ & Requirement \\
+        REST & Representational State Transfer \\
+        SRS & Software Requirements Specification \\
+        SSL & Secure Sockets Layer \\
+        TBD & To Be Determined \\
+        TLS & Transport Layer Security \\
+        UI & User Interface \\
+        URL & Uniform Resource Locator \\
+        UX & User Experience \\
+        2FA & Two-factor Authentication \\
+        \bottomrule
+    \end{tabularx}
+\end{center}
+
 
 \section{Document Conventions}
 $<$In general this document follows the IEEE formatting requirements. Use Arial font size 11, or 12 throughout the document for text. Use italics for comments. Document text should be single spaced and maintain the 1" margins found in this template. For Section and Subsection titles please follow the template. 
@@ -126,64 +183,217 @@ specifications, use case documents, or a vision and scope document. Provide
 enough information so that the reader could access a copy of each reference, 
 including title, author, version number, date, and source or location.$>$
 
-\chapter{Overall Description}
 
-\section{Product Perspective}
-$<$Describe the context and origin of the product being specified in this SRS.  
-For example, state whether this product is a follow-on member of a product 
-family, a replacement for certain existing systems, or a new, self-contained 
-product. If the SRS defines a component of a larger system, relate the 
-requirements of the larger system to the functionality of this software and 
-identify interfaces between the two. A simple diagram that shows the major 
-components of the overall system, subsystem interconnections, and external 
-interfaces can be helpful.$>$
+\chapter{Overall Description}
+\section{Product Overview}
+% $<$Describe the context and origin of the product being specified in this SRS.  
+% For example, state whether this product is a follow-on member of a product 
+% family, a replacement for certain existing systems, or a new, self-contained 
+% product. If the SRS defines a component of a larger system, relate the 
+% requirements of the larger system to the functionality of this software and 
+% identify interfaces between the two. A simple diagram that shows the major 
+% components of the overall system, subsystem interconnections, and external 
+% interfaces can be helpful.$>$
+
+Kaiju Academy is a web-based e-learning platform that provides interactive programming education through modern LMS capabilities and specialized coding features, facilitating the learning of programming anytime and anywhere as long as you are connected to the internet.\\
+
+The platform serves as a comprehensive learning environment where students can engage with programming concepts through a structured curriculum. Users access the platform through web browsers, eliminating the need for software installation reducing the barrier to entry for users. \\
+
+The platform employs a module-based learning approach, where content is organized into discrete units that build upon each other. Each module typically contains:
+
+\begin{itemize}
+    \item Video lectures with synchronized transcripts
+    \item Interactive coding exercises
+    \item Supplementary reading materials
+    \item Practice problems and assignments
+    \item Progress assessments
+\end{itemize}
+
+Students can track their progress through a personalized dashboard, which displays completed modules, upcoming assignments, and achievement metrics. The integrated code editor allows students to practice coding directly within the browser, with immediate feedback and automated grading capabilities. \\
+
+Educators can utilize the platform to create courses, manage course materials and provide targeted assistance where needed. They could also answer questions from students in the discussion forum. The system's analytics tools help identify areas where students may be struggling, enabling educators to provide additional teaching resources. The platform features automated grading and feedback for assignments, allowing educators to have more flexible arrangement. 
 
 \section{Product Functionality}
-$<$Summarize the major functions the product must perform or must let the user 
-perform. Details will be provided in Section 3, so only a high level summary 
-(such as a bullet list) is needed here. Organize the functions to make them 
-understandable to any reader of the SRS. A picture of the major groups of 
-related requirements and how they relate, such as a top level data flow diagram 
-or object class diagram, is often effective.$>$
+% $<$Summarize the major functions the product must perform or must let the user 
+% perform. Details will be provided in Section 3, so only a high level summary 
+% (such as a bullet list) is needed here. Organize the functions to make them 
+% understandable to any reader of the SRS. A picture of the major groups of 
+% related requirements and how they relate, such as a top level data flow diagram 
+% or object class diagram, is often effective.$>$
+
+Kaiju Academy provides the following major functionalities:
+
+\begin{itemize}
+    \item User Management: Account creation, authentication, role-based access, and profile settings
+    
+    \item Course Management: Creation and organization of courses, content management, and enrollment tracking
+    
+    \item Learning Content: Video lectures, documents, quizzes, coding assignments, and progress tracking
+    
+    \item Coding Environment: Browser-based code editor with testing and feedback
+    
+    \item Discussion Features: Course forums, announcements, and community interaction
+    
+    \item Assessment Tools: Automated grading, progress tracking, and achievement system
+    
+    \item Administration: User management, content moderation, and system monitoring
+\end{itemize}
 
 \section{User Classes and Characteristics}
-$<$Identify the various user classes that you anticipate will use this product.  
-User classes may be differentiated based on frequency of use, subset of product 
-functions used, technical expertise, security or privilege levels, educational 
-level, or experience. Describe the pertinent characteristics of each user class.  
-Certain requirements may pertain only to certain user classes. Distinguish the 
-most important user classes for this product from those who are less important 
-to satisfy.$>$
+% $<$Identify the various user classes that you anticipate will use this product.  
+% User classes may be differentiated based on frequency of use, subset of product 
+% functions used, technical expertise, security or privilege levels, educational 
+% level, or experience. Describe the pertinent characteristics of each user class.  
+% Certain requirements may pertain only to certain user classes. Distinguish the 
+% most important user classes for this product from those who are less important 
+% to satisfy.$>$
 
-\section{Operating Environment}
-$<$Describe the environment in which the software will operate, including the 
-hardware platform, operating system and versions, and any other software 
-components or applications with which it must peacefully coexist.$>$
+Kaiju Academy serves several distinct user classes, each with specific characteristics and needs:
+
+\begin{description}
+    \item[Administrators:] Manage platform operations and user access
+        \begin{itemize}[leftmargin=*]
+            \item High technical expertise with system administration
+            \item High privilage access for maintenance and monitoring
+            \item Need complete system control and monitoring tools
+            \item Require access to all platform features and settings
+        \end{itemize}
+
+    \item[Students:] Primary users of the learning platform
+        \begin{itemize}[leftmargin=*]
+            \item From various technical expertise levels (beginner to advanced)
+            \item Regular access for course participation and completion
+            \item Need intuitive interface and clear learning paths
+            \item Need interactive learning environment
+            \item Require progress tracking and performance feedback
+        \end{itemize}
+    
+    \item[Educators:] Create and manage course content
+        \begin{itemize}[leftmargin=*]
+            \item Technical expertise in their teaching domains
+            \item Regular access for content updates and student monitoring
+            \item Need comprehensive content management tools
+            \item Require analytics and student progress tracking capabilities
+        \end{itemize}
+    
+    \item[Content Moderators:] Monitor and manage forum discussions
+        \begin{itemize}[leftmargin=*]
+            \item Moderate technical expertise required
+            \item Regular access for content moderation
+            \item Need moderation tools and user management features
+            \item Require access to communication and reporting tools
+        \end{itemize}
+\end{description}
 
 \section{Design and Implementation Constraints}
-$<$Describe any items or issues that will limit the options available to the 
-developers. These might include: corporate or regulatory policies; hardware 
-limitations (timing requirements, memory requirements); interfaces to other 
-applications; specific technologies, tools, and databases to be used; parallel 
-operations; language requirements; communications protocols; security 
-considerations; design conventions or programming standards (for example, if the 
-customer's organization will be responsible for maintaining the delivered 
-software).$>$
+% $<$Describe any items or issues that will limit the options available to the 
+% developers. These might include: corporate or regulatory policies; hardware 
+% limitations (timing requirements, memory requirements); interfaces to other 
+% applications; specific technologies, tools, and databases to be used; parallel 
+% operations; language requirements; communications protocols; security 
+% considerations; design conventions or programming standards (for example, if the 
+% customer's organization will be responsible for maintaining the delivered 
+% software).$>$
+
+The implementation and ongoing development of Kaiju Academy shall be governed by the following technical and operational constraints:
+
+\begin{description}
+    \item[Hardware Constraints]\mbox{}
+        \begin{itemize}
+            \item TODO: Add hardware constraints
+        \end{itemize}
+    
+    \item[Security Constraints]\mbox{}
+        \begin{itemize}
+            \item Must implement OAuth2 for authentication
+            \item All communications must be encrypted using SSL/TLS
+            \item User passwords must be hashed using industry-standard algorithms
+            \item Code execution must be isolated in secure containers
+            \item Regular security audits must be conducted
+            \item Must comply with data protection regulations
+        \end{itemize}
+    
+    \item[Performance Constraints]\mbox{}
+        \begin{itemize}
+            \item Page load time must not exceed 3 seconds
+            \item System must support at least 1000 concurrent users
+            \item Video streaming must adapt to user bandwidth
+            \item Code execution response time must be under 5 seconds
+            \item Database queries must complete within 1 second
+        \end{itemize}
+    
+    \item[Development Constraints]\mbox{}
+        \begin{itemize}
+            \item Must follow Git version control practices
+            \item Code must pass automated testing before deployment
+            \item Must implement CI/CD pipeline
+            \item Must follow RESTful API design principles
+            \item Must maintain comprehensive API documentation
+        \end{itemize}
+    
+    \item[Operational Constraints]\mbox{}
+        \begin{itemize}
+            \item System must achieve 99.9\% uptime
+            \item Must implement automated backup systems
+            \item Must support horizontal scaling
+            \item Must implement monitoring and logging
+            \item Must provide disaster recovery procedures
+        \end{itemize}
+\end{description}
 
 \section{Assumptions and Dependencies}
-$<$List any assumed factors (as opposed to known facts) that could affect the 
-requirements stated in the SRS. These could include third-party or commercial 
-components that you plan to use, issues around the development or operating 
-environment, or constraints. The project could be affected if these assumptions 
-are incorrect, are not shared, or change. Also identify any dependencies the 
-project has on external factors, such as software components that you intend to 
-reuse from another project, unless they are already documented elsewhere (for 
-example, in the vision and scope document or the project plan).$>$
+% $<$List any assumed factors (as opposed to known facts) that could affect the 
+% requirements stated in the SRS. These could include third-party or commercial 
+% components that you plan to use, issues around the development or operating 
+% environment, or constraints. The project could be affected if these assumptions 
+% are incorrect, are not shared, or change. Also identify any dependencies the 
+% project has on external factors, such as software components that you intend to 
+% reuse from another project, unless they are already documented elsewhere (for 
+% example, in the vision and scope document or the project plan).$>$
 
-\section{User Documentation}
-$<$List the user documentation components (such as user manuals, on-line help, 
-and tutorials) that will be delivered along with the software. Identify any 
-known user documentation delivery formats or standards.$>$
+\subsection{Assumptions}
+\begin{itemize}
+    \item \textbf{Internet access:} Since the application relies on a web interface, users must have stable internet connectivity with minimum 5 Mbps bandwidth or access through institution's local network
+    
+    \item \textbf{Minimum System Requirements:} All client devices must feature:
+        \begin{itemize}
+            \item Computer or mobile device with minimum 4GB RAM for smooth performance
+            \item Web browser (Chrome, Firefox, Safari, Edge - latest 2 versions)
+            \item HTML5 and JavaScript enabled
+        \end{itemize}
+\end{itemize}
+
+\subsection{Dependencies}
+\begin{itemize}
+    \item \textbf{Third-Party Libraries and Services:}
+        \begin{itemize}
+            \item Authentication protocols (OAuth2)
+            \item Database management systems (PostgreSQL, MongoDB, Redis)
+            \item Cloud infrastructure services (AWS/Google Cloud/DigitalOcean)
+            \item Content delivery networks (CDN)
+            \item Video hosting platforms
+            \item Code editor components (CodeMirror/Monaco)
+        \end{itemize}
+    
+    \item \textbf{Development Methodologies:}
+        \begin{itemize}
+            \item UML Modeling: System architecture documentation and design specifications
+            \item COMET Methodology: Concurrent object modeling for workflow integration
+            \item Container orchestration with Docker and Kubernetes
+            \item CI/CD pipeline implementation
+        \end{itemize}
+\end{itemize}
+
+\subsection{Critical Risks}
+\begin{itemize}
+    \item \textbf{External System Failures:}
+        \begin{itemize}
+            \item Third-party service disruptions (authentication, video hosting)
+            \item Cloud infrastructure outages
+            \item CDN performance issues
+            \item Database system failures
+        \end{itemize}
+\end{itemize}
 
 
 \chapter{Specific Requirements}
@@ -298,10 +508,14 @@ Functional requirements capture the intended behavior of the system. This behavi
     \item[$\cdot$ Search and Filter:] Users can search and filter courses, discussions, and assessments.
     \item[$\cdot$ Calendar Integration:] Displays course schedules, assignment deadlines, and learning reminders.
     \item[$\cdot$ Discussion Forum:] Users can ask questions, respond, and interact with educators.
-    \item[$\cdot$ Daily Assessment & Learning Reminders:] Personalized daily learning tasks and notifications.
-    \item[$\cdot$ Learning Path Review & Recommendations:] System-generated personalized course suggestions based on progress.
+    \item[$\cdot$ Daily Assessment \& Learning Reminders:] Personalized daily learning tasks and notifications.
+    \item[$\cdot$ Learning Path Review \& Recommendations:] System-generated personalized course suggestions based on progress.
     \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
 \end{description}
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/hotfix/docs/srs
 \section{Use Case Model}
 
 \subsection{Use Case 1: View Course Progress}
@@ -344,7 +558,6 @@ This use case describes the process of an educator modifies a course on the Kaij
     \item \textbf{Step 4a}: If the educator provides invalid details (e.g., missing title), the system displays an error and prompts corrections.
     \item \textbf{Step 5a}: If the educator cancels, the system discards the changes and returns to the "Course Management" section.
 \end{itemize}
-
 
 \chapter{System Features}
 This sections serves to describe the functional requirements of the product by its major features. The features are described in detail, including their development priority, user interactions, and specific functions.
