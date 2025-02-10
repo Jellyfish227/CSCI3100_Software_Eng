@@ -87,6 +87,10 @@
         0.5 & H. K. Yum & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item Nonfunctional Requirements
         \end{revisionitem}\\
+        \midrule
+        0.6 & H. T. Lei & 2025-02-10 & \begin{revisionitem}[Updated:]
+            \item Refine Nonfunctional Requirements
+        \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
 \end{center}
@@ -562,44 +566,75 @@ different product functions. $>$
 
 Functional requirements capture the intended behavior of the system. This behavior may be expressed as services, tasks, or functions the system is required to perform. Below is a detailed list of product functions:
 
-\begin{description}
-    \item[$\cdot$ User Management:]
-        \begin{enumerate}
-            \item Users can sign up, log in, and update their profiles.
-            \item Role-based access control (Student, Educator, Admin).
-            \item Password recovery and security settings.
-        \end{enumerate}
-    \item[$\cdot$ Course Management:]
-        \begin{enumerate}
-            \item Educators can create, update, and delete courses.
-            \item Upload and manage course materials (videos, PDFs, quizzes).
-            \item Students can enroll, drop, and track their progress.
-        \end{enumerate}
-    \item[$\cdot$ Quiz and Assessment:]
-        \begin{enumerate}
-            \item MC questions with self-checking and automatic grading.
-            \item Short-answer questions (some autograded, some educator-reviewed).
-            \item Long-answer questions assigned to educators for grading.
-            \item Popup MC questions during the course for engagement.
-        \end{enumerate}
-    \item[$\cdot$ Progress Tracking:]
-        \begin{enumerate}
-            \item Roadmap displaying completed and pending modules.
-            \item Percentage-based completion tracker.
-            \item Assessment performance tracking.
-        \end{enumerate}
-    \item[$\cdot$ Notifications:]
-        \begin{enumerate} 
-            \item Automated alerts for deadlines, new content, and assessments.
-            \item Customizable notification preferences.
-        \end{enumerate}
-    \item[$\cdot$ Search and Filter:] Users can search and filter courses, discussions, and assessments.
-    \item[$\cdot$ Calendar Integration:] Displays course schedules, assignment deadlines, and learning reminders.
-    \item[$\cdot$ Discussion Forum:] Users can ask questions, respond, and interact with educators.
-    \item[$\cdot$ Daily Assessment \& Learning Reminders:] Personalized daily learning tasks and notifications.
-    \item[$\cdot$ Learning Path Review \& Recommendations:] System-generated personalized course suggestions based on progress.
-    \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
-\end{description}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|l|p{10cm}|}
+    \hline
+    \textbf{Function ID} & \textbf{Function Name} & \textbf{Description} \
+    \hline
+    FR01 & User Registration & Users can create an account by providing necessary details. \
+    FR02 & User Login & Users can log in using credentials. \
+    FR03 & Profile Management & Users can update personal details and account settings. \
+    FR04 & Role Management & Assign roles (Student, Educator, Admin) with specific permissions. \
+    FR05 & Course Creation & Educators can create and manage courses. \
+    FR06 & Course Enrollment & Students can enroll or drop courses. \
+    FR07 & Course Content Management & Educators can upload and organize course materials. \
+    FR08 & Quiz Management & Educators can create and assign quizzes. \
+    FR09 & Automated Grading & System auto-grades multiple-choice and short-answer questions. \
+    FR10 & Manual Grading & Educators grade long-answer questions. \
+    FR11 & Progress Tracking & Users can track their learning progress. \
+    FR12 & Notifications & System alerts users of deadlines, updates, and activities. \
+    FR13 & Calendar Integration & Displays schedules, deadlines, and reminders. \
+    FR14 & Discussion Forum & Users can post, reply, and discuss course-related topics. \
+    FR15 & Online Coding Environment & Users can solve coding problems with real-time execution. \
+    FR16 & Code Competitions & Users can participate in coding challenges with leaderboards. \
+    FR17 & Search & Users can search and filter courses, quizzes, and discussions. \
+    FR18 & Learning Recommendations & AI-based suggestions for personalized learning paths. \
+    FR19 & Data Backup & System automatically backs up data periodically. \
+    FR20 & Security & Implements authentication, authorization, and encryption. \
+    \hline
+    \end{tabular}
+    \caption{Functional Requirements Table}
+    \end{table}
+
+% \begin{description}
+%     \item[$\cdot$ User Management:]
+%         \begin{enumerate}
+%             \item Users can sign up, log in, and update their profiles.
+%             \item Role-based access control (Student, Educator, Admin).
+%             \item Password recovery and security settings.
+%         \end{enumerate}
+%     \item[$\cdot$ Course Management:]
+%         \begin{enumerate}
+%             \item Educators can create, update, and delete courses.
+%             \item Upload and manage course materials (videos, PDFs, quizzes).
+%             \item Students can enroll, drop, and track their progress.
+%         \end{enumerate}
+%     \item[$\cdot$ Quiz and Assessment:]
+%         \begin{enumerate}
+%             \item MC questions with self-checking and automatic grading.
+%             \item Short-answer questions (some autograded, some educator-reviewed).
+%             \item Long-answer questions assigned to educators for grading.
+%             \item Popup MC questions during the course for engagement.
+%         \end{enumerate}
+%     \item[$\cdot$ Progress Tracking:]
+%         \begin{enumerate}
+%             \item Roadmap displaying completed and pending modules.
+%             \item Percentage-based completion tracker.
+%             \item Assessment performance tracking.
+%         \end{enumerate}
+%     \item[$\cdot$ Notifications:]
+%         \begin{enumerate} 
+%             \item Automated alerts for deadlines, new content, and assessments.
+%             \item Customizable notification preferences.
+%         \end{enumerate}
+%     \item[$\cdot$ Search and Filter:] Users can search and filter courses, discussions, and assessments.
+%     \item[$\cdot$ Calendar Integration:] Displays course schedules, assignment deadlines, and learning reminders.
+%     \item[$\cdot$ Discussion Forum:] Users can ask questions, respond, and interact with educators.
+%     \item[$\cdot$ Daily Assessment \& Learning Reminders:] Personalized daily learning tasks and notifications.
+%     \item[$\cdot$ Learning Path Review \& Recommendations:] System-generated personalized course suggestions based on progress.
+%     \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
+% \end{description}
 
 \section{Use Case Model}
 $<$This section is the direct continuation of section 2.3 where you have specified 
