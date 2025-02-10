@@ -9,7 +9,7 @@
     pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}
 }
 
-\def\myversion{0.4}
+\def\myversion{0.5}
 \def\projectname{Kaiju Academy}
 \date{}
 
@@ -297,15 +297,47 @@ Functional requirements capture the intended behavior of the system. This behavi
     \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
 \end{description}
 \section{Use Case Model}
-$<$This section is the direct continuation of section 2.3 where you have specified 
-the general use cases. Here, you should list in detail the different use cases. 
-$>$
-\subsection{Use Case \#1}
-$<$Describe the use case in detail.$>$
 
-\subsection{Use Case \#2}
-$<$Describe the use case in detail.$>$
+\subsection{Use Case 1: View Course Progress}
+\subsubsection{Description}
+This use case describes how a student can view their progress in any course
 
+\subsubsection{Actors and Preconditions}
+\begin{itemize}
+    \item \textbf{Actors}: Student
+    \item \textbf{Preconditions}: The student must be logged in and enrolled in the course.
+\end{itemize}
+
+\subsubsection{Steps}
+\begin{enumerate}
+    \item The student navigates to the "Courses" section.
+    \item The student selects a course.
+    \item The system displays the course progress.
+\end{enumerate}
+
+\subsection{Use Case 2: Course Modification}
+\subsubsection{Description}
+This use case describes the process of an educator modifies a course on the Kaiju Academy platform.
+
+\subsubsection{Actors and Preconditions}
+\begin{itemize}
+    \item \textbf{Actors}: Educator
+    \item \textbf{Preconditions}: The educator must be logged in and have the necessary permissions to modify courses.
+\end{itemize}
+
+\subsubsection{Steps}
+\begin{enumerate}
+    \item The educator navigates to the "Course Management" section.
+    \item The educator enters course details (e.g., title, description, modules, and materials).
+    \item The system validates the course details.
+    \item The system adds the course to the platform and notifies enrolled students (if applicable).
+\end{enumerate}
+
+\subsubsection{Alternative Flow}
+\begin{itemize}
+    \item \textbf{Step 4a}: If the educator provides invalid details (e.g., missing title), the system displays an error and prompts corrections.
+    \item \textbf{Step 5a}: If the educator cancels, the system discards the changes and returns to the "Course Management" section.
+\end{itemize}
 
 
 \chapter{System Features}
