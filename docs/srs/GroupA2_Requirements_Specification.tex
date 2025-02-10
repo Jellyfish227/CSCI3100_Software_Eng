@@ -34,7 +34,7 @@
             \begin{tabularx}{\textwidth}{X l X}
             YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
             Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
+            Ankhbayar Enkhtaivan & 1155185142 & \href{mailto:1155185142@link.cuhk.edu.hk}{1155185142@link.cuhk.edu.hk}\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
             <name> & <student id> & <email>\\
@@ -295,7 +295,7 @@ Functional requirements capture the intended behavior of the system. This behavi
     \item[$\cdot$ Daily Assessment & Learning Reminders:] Personalized daily learning tasks and notifications.
     \item[$\cdot$ Learning Path Review & Recommendations:] System-generated personalized course suggestions based on progress.
     \item[$\cdot$ Online Coding Judge:] Users can solve coding problems with real-time execution and have coding competitions with leaderboard tracking.
-
+\end{description}
 \section{Use Case Model}
 $<$This section is the direct continuation of section 2.3 where you have specified 
 the general use cases. Here, you should list in detail the different use cases. 
@@ -309,43 +309,73 @@ $<$Describe the use case in detail.$>$
 
 
 \chapter{System Features}
-$<$This template illustrates organizing the functional requirements for the 
-product by system features, the major services provided by the product. You may 
-prefer to organize this section by use case, mode of operation, user class, 
-object class, functional hierarchy, or combinations of these, whatever makes the 
-most logical sense for your product.$>$
+This sections serves to describe the functional requirements of the product by its major features. The features are described in detail, including their development priority, user interactions, and specific functions.
 
-\section{System Feature 1}
-$<$Don't really say "System Feature 1." State the feature name in just a few 
-words.$>$
+\section{User Dashboard}
+
 
 \subsection{Description and Priority}
-$<$Provide a short description of the feature and indicate whether it is of 
-High, Medium, or Low priority. You could also include specific priority 
-component ratings, such as benefit, penalty, cost, and risk (each rated on a 
-relative scale from a low of 1 to a high of 9).$>$
+The User Dashboard is the High Priority feature as the hub is where users can access their courses, track their progress, view upcoming deadlines, and receive notifications.
 
 \subsection{Stimulus/Response Sequences}
-$<$List the sequences of user actions and system responses that stimulate the 
-behavior defined for this feature. These will correspond to the dialog elements 
-associated with use cases.$>$
+\begin{itemize}
+    \item \textbf{User Action}: Logs into the system. \\
+          \textbf{System Response}: Displays the dashboard with course progress, deadlines, and notifications.
+    \item \textbf{User Action}: Clicks on a course. \\
+          \textbf{System Response}: Redirects to the course page, displaying modules, videos, and assessments.
+    \item \textbf{User Action}: Marks a module as completed. \\
+          \textbf{System Response}: Updates the progress tracker and highlights the next module.
+\end{itemize}
 
 \subsection{Functional Requirements}
-$<$Itemize the detailed functional requirements associated with this feature.  
-These are the software capabilities that must be present in order for the user 
-to carry out the services provided by the feature, or to execute the use case.  
-Include how the product should respond to anticipated error conditions or 
-invalid inputs. Requirements should be concise, complete, unambiguous, 
-verifiable, and necessary. Use "TBD" as a placeholder to indicate when necessary 
-information is not yet available.$>$
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item \textbf{REQ-1}: The dashboard must display enrolled courses, progress, and deadlines upon login.
+    \item \textbf{REQ-2}: Users should be able to navigate to course pages directly from the dashboard.
+    \item \textbf{REQ-3}: Progress tracking must update in real-time when a module is marked as completed.
+\end{itemize}
 
-$<$Each requirement should be uniquely identified with a sequence number or a 
-meaningful tag of some kind.$>$
+\subsection{Course Management}
+\subsubsection{Description and Priority}
+The \textbf{Course Management} feature is the High Priority feature as the feature enables educators to create, update, and delete courses, as well as manage course materials such as videos, PDFs, and quizzes. It ensures that educators can efficiently organize and maintain course content, providing a structured learning experience.
 
-REQ-1:	REQ-2:
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textbf{Educator Action}: Creates a new course. \\
+          \textbf{System Response}: Displays section to the educator to upload course materials and set deadlines.
+    \item \textbf{Educator Action}: Updates a course module. \\
+          \textbf{System Response}: Saves changes and notifies enrolled students of updates.
+    \item \textbf{Educator Action}: Deletes a course. \\
+          \textbf{System Response}: Removes the course and all associated materials from the system.
+\end{itemize}
 
-\section{System Feature 2 (and so on)}
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item \textbf{REQ-1}: Educators must be able to create, update, and delete courses.
+    \item \textbf{REQ-2}: Course materials (videos, PDFs, quizzes) must be uploaded and organized by modules.
+    \item \textbf{REQ-3}: Students should receive notifications when course materials are updated.
+\end{itemize}
 
+\subsection{Assessment and Grading}
+\subsubsection{Description and Priority}
+The \textbf{Assessment and Grading} feature allows educators to create quizzes and assessments, while students can complete them and receive grades. This feature is of \textbf{Medium Priority} as it supports the learning process but is secondary to content delivery. It provides a mechanism for evaluating student understanding and progress.
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textbf{Educator Action}: Creates a quiz with multiple-choice (MC) and short-answer questions. \\
+          \textbf{System Response}: Saves the quiz and makes it available to students.
+    \item \textbf{Student Action}: Completes a quiz. \\
+          \textbf{System Response}: Automatically grades MC questions and displays results.
+    \item \textbf{Educator Action}: Reviews and grades short-answer questions. \\
+          \textbf{System Response}: Updates the student’s grade and provides feedback.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item \textbf{REQ-1}: Educators must be able to create quizzes with MC and short-answer questions along with coding assessments with the test cases.
+    \item \textbf{REQ-2}: MC, and coding assessment questions must be automatically graded, and results displayed immediately.
+    \item \textbf{REQ-3}: Educators should be able to manually and use AI prompt grade short-answer questions and provide feedback.
+\end{itemize}
 
 \chapter{Other Nonfunctional Requirements}
 
