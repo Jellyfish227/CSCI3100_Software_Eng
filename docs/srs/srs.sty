@@ -1,0 +1,105 @@
+% SRS document style file
+\ProvidesPackage{srs}[2024/02/08 v1.0 SRS document style]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Required packages
+\RequirePackage{listings}
+\RequirePackage{underscore}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage{mathptmx}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[bookmarks=true]{hyperref}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage{scrlayer-scrpage}
+\RequirePackage{xcolor}
+\RequirePackage[left=2cm,right=2cm,top=2.5cm,bottom=1.5cm,footskip=1cm]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Setup headers and footers
+\automark[chapter]{chapter}
+
+% Configure page layout
+\KOMAoptions{
+    headheight=1cm,
+    footheight=1cm
+}
+
+% Header and footer content
+\ihead{Software Requirements Specification for Kaiju Academy}
+\chead{}
+\ohead{\headmark}
+\ifoot{}
+\cfoot{}
+\ofoot{Page \pagemark}
+\setkomafont{pagehead}{\normalfont}
+\setkomafont{headsepline}{\color{black}\rule{\textwidth}{1pt}}
+\setkomafont{footsepline}{\color{black}\rule{\textwidth}{1pt}}
+
+% Ensure consistent page style on chapter pages
+\renewcommand*{\chapterpagestyle}{scrheadings}
+
+% Set chapter spacing and style
+\RedeclareSectionCommand[
+    beforeskip=0pt,
+    afterskip=1cm,
+    innerskip=1cm,
+    font=\normalfont\huge\bfseries\centering
+]{chapter}
+
+% Style chapter titles with gray background
+\renewcommand{\chapterformat}{\thechapter.}
+\renewcommand*{\chapterlinesformat}[3]{%
+    \colorbox{gray!150}{%
+        \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+            \centering\color{white}#2 #3%
+        }%
+    }%
+}
+
+% Set section title fonts
+\setkomafont{chapter}{\normalfont\huge\bfseries}
+\setkomafont{section}{\normalfont\Large\bfseries}
+\setkomafont{subsection}{\normalfont\large\bfseries}
+\setkomafont{subsubsection}{\normalfont\normalsize\bfseries}
+\setkomafont{paragraph}{\normalfont\normalsize\bfseries}
+\setkomafont{subparagraph}{\normalfont\normalsize\bfseries}
+
+% Table of contents formatting
+\addtokomafont{disposition}{\rmfamily}
+\setkomafont{descriptionlabel}{\normalfont\bfseries}
+\setkomafont{dictum}{\normalfont\small}
+\setkomafont{captionlabel}{\normalfont\bfseries}
+\setkomafont{caption}{\normalfont\small}
+
+% Define revision history item environment
+\newenvironment{revisionitem}[1][]{%
+    \begin{minipage}[t]{\linewidth}%
+        #1
+        \begin{itemize}[
+            itemsep=0pt,
+            parsep=0pt,
+            topsep=0pt,
+            leftmargin=*,
+            labelsep=0em,
+            label=\textendash
+        ]%
+}{%
+        \end{itemize}%
+    \end{minipage}%
+}
+
+% Default hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=black,
+    urlcolor=black,
+    linktoc=all
+}
+
+% Remove paragraph indentation globally
+\setlength{\parindent}{0pt} 
