@@ -6,4 +6,8 @@
         <accepts>page.html</accepts>
     </rule>
     -->
+    <rule id="28f4b127">
+        <description>Created after removal of "About Design Implementation" from Design Implementation</description>
+        <accepts>design-implementation.html</accepts>
+    </rule>
 </rules>
