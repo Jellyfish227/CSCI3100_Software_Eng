@@ -1,0 +1,75 @@
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant APIGateway as API Gateway
+    participant AuthLambda as Authentication Lambda
+    participant Cognito
+    participant SurrealDB
+
+    %% Registration Flow
+    rect rgb(240, 240, 255)
+    Note over User,SurrealDB: Registration Process
+    User->>Frontend: Submit registration form
+    Frontend->>APIGateway: POST /auth/register
+    APIGateway->>AuthLambda: Route request
+    AuthLambda->>Cognito: Create user
+    Cognito-->>AuthLambda: User created successfully
+    AuthLambda->>SurrealDB: Store additional user metadata
+    SurrealDB-->>AuthLambda: User data stored
+    AuthLambda-->>APIGateway: Return success response
+    APIGateway-->>Frontend: 201 Created
+    Frontend-->>User: Show success message & prompt login
+    end
+
+    %% Login Flow
+    rect rgb(240, 255, 240)
+    Note over User,SurrealDB: Login Process
+    User->>Frontend: Submit login credentials
+    Frontend->>APIGateway: POST /auth/login
+    APIGateway->>AuthLambda: Route request
+    AuthLambda->>Cognito: Authenticate user
+    Cognito-->>AuthLambda: Authentication successful
+    AuthLambda->>SurrealDB: Retrieve user profile data
+    SurrealDB-->>AuthLambda: User profile data
+    AuthLambda-->>APIGateway: Return JWT token + user profile
+    APIGateway-->>Frontend: 200 OK with token
+    Frontend->>Frontend: Store JWT token
+    Frontend-->>User: Redirect to dashboard
+    end
+
+    %% MFA Flow (Optional)
+    rect rgb(255, 240, 240)
+    Note over User,SurrealDB: Multi-Factor Authentication (if enabled)
+    User->>Frontend: Submit MFA code
+    Frontend->>APIGateway: POST /auth/verify-mfa
+    APIGateway->>AuthLambda: Route request
+    AuthLambda->>Cognito: Verify MFA code
+    Cognito-->>AuthLambda: MFA verification successful
+    AuthLambda-->>APIGateway: Return upgraded JWT token
+    APIGateway-->>Frontend: 200 OK with new token
+    Frontend->>Frontend: Update JWT token
+    Frontend-->>User: Complete login process
+    end
+
+    %% Password Reset Flow
+    rect rgb(255, 255, 240)
+    Note over User,SurrealDB: Password Reset Process
+    User->>Frontend: Request password reset
+    Frontend->>APIGateway: POST /auth/forgot-password
+    APIGateway->>AuthLambda: Route request
+    AuthLambda->>Cognito: Initiate password reset
+    Cognito->>Cognito: Generate reset code
+    Cognito-->>AuthLambda: Reset initiated
+    AuthLambda-->>APIGateway: Return success response
+    APIGateway-->>Frontend: 200 OK
+    Frontend-->>User: Prompt for reset code
+    
+    User->>Frontend: Submit reset code & new password
+    Frontend->>APIGateway: POST /auth/reset-password
+    APIGateway->>AuthLambda: Route request
+    AuthLambda->>Cognito: Confirm password reset
+    Cognito-->>AuthLambda: Password reset successful
+    AuthLambda-->>APIGateway: Return success response
+    APIGateway-->>Frontend: 200 OK
+    Frontend-->>User: Show success & prompt login
+    end 
