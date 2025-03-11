@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant Educator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Course Creation Lambda
+    participant SurrealDB
+    
+    Educator->>Client: Create new course (fill form)
+    Client->>APIGateway: POST /courses
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Not Authenticated/Not Educator
+        APIGateway-->>Client: 401/403 Error
+        Client-->>Educator: Display error message
+    else Authenticated as Educator
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Create course record
+        SurrealDB-->>Lambda: Course creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display course creation success
+        
+        Educator->>Client: Add course details
+        Client->>APIGateway: PUT /courses/{courseId}
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Update course details
+        SurrealDB-->>Lambda: Update confirmation
+        Lambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Educator: Display details updated
+    end 

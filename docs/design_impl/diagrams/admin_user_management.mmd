@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant Admin
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AdminLambda as User Management Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    Admin->>Client: Select user to view details
+    Client->>APIGateway: GET /admin/users/{userId}
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Admin
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>SurrealDB: Get user details and activity
+        SurrealDB-->>AdminLambda: User data
+        AdminLambda-->>APIGateway: 200 OK (User details)
+        APIGateway-->>Client: 200 OK (User details)
+        Client-->>Admin: Display user profile and activity
+        
+        Admin->>Client: Change user role
+        Client->>APIGateway: PUT /admin/users/{userId}/role
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>Cognito: Update user role in authentication system
+        Cognito-->>AdminLambda: Role update confirmation
+        AdminLambda->>SurrealDB: Update user role in database
+        SurrealDB-->>AdminLambda: Update confirmation
+        AdminLambda->>NotificationService: Notify user of role change
+        NotificationService-->>AdminLambda: Notification confirmation
+        AdminLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Admin: Display role update confirmation
+        
+        Admin->>Client: Reset user password
+        Client->>APIGateway: POST /admin/users/{userId}/reset-password
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>Cognito: Generate password reset
+        Cognito-->>AdminLambda: Reset confirmation
+        AdminLambda->>NotificationService: Send reset instructions to user
+        NotificationService-->>AdminLambda: Notification confirmation
+        AdminLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Admin: Display password reset confirmation
+    end 

@@ -1,121 +1,26 @@
+\def\myversion{1.0}
+\def\projectname{Kaiju Academy}
+
 \documentclass[a4paper, 11pt]{scrreprt}
-\usepackage{listings}
-\usepackage{underscore}
-\usepackage{tabularx}  % Add tabularx package
-\usepackage{enumitem}  % Add enumitem package for list spacing control
-\usepackage{booktabs}  % Add booktabs package
-\usepackage{mathptmx}  % Times New Roman font for text and math
-\usepackage[T1]{fontenc}  % Better font encoding
-\usepackage[bookmarks=true]{hyperref}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{scrlayer-scrpage}
+\usepackage{impl}  % Load Design Implementation document style
+\usepackage{graphicx} % For including images
+\usepackage{tabularx} % For tables
+\usepackage{booktabs} % For professional tables
+\usepackage{hyperref} % For hyperlinks
+\usepackage{enumitem} % For list customization
+\usepackage{flafter}
+\setlist[itemize]{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+
+% Document-specific settings
 \hypersetup{
-    pdftitle={Software Requirement Specification},    % title
-    pdfauthor={C. H. Yu},                     % author
-    pdfsubject={Technical Documentation},                        % subject of the document
-    pdfkeywords={LaTeX, SRS, Software Requirements Specification, Software}, % list of keywords
-    colorlinks=true,        % false: boxed links; true: colored links
-    linkcolor=black,         % color of internal links
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,        % color of file links
-    urlcolor=black,        % color of external links
-    linktoc=all             % both page numbers and text in ToC are linked
-}%
-\def\myversion{0.2}
-\def\projectname{Kaiju Academy}  % Define project name variable
-\date{}
-%\title{%
-
-%}
-\usepackage{hyperref}
-
-% Setup headers and footers
-\automark[chapter]{chapter}  % Automatically mark chapters for header
-
-% Configure page layout
-\KOMAoptions{
-    headheight=1.5cm,      % Height of the header
-    footheight=1.2cm,      % Height of the footer
-    % headsepline=true,      % Enable header separator line
-    % footsepline=true,      % Enable footer separator line
-    % headwidth=\linewidth,  % Width of header
-    % footwidth=\linewidth   % Width of footer
+    pdftitle={Design and Implementation for Kaiju Academy},
+    pdfauthor={Group A2},
+    pdfsubject={Technical Documentation},
+    pdfkeywords={Design Implementation, Kaiju Academy, Software Engineering}
 }
 
-% Set separator line thickness
-
-% Set margins
-\usepackage[left=2cm,right=2cm,top=2.5cm,bottom=3cm]{geometry}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Header and footer content
-\ihead{Software Requirements Specification}  % Inner header (left on odd, right on even pages)
-\chead{}  % Center header (empty)
-\ohead{\headmark}  % Outer header (right on odd, left on even pages)
-% \lehead{}  % Left header on even pages
-% \cehead{}  % Center header on even pages (empty)
-% \rehead{}  % Right header on even pages
-% \lohead{}  % Left header on odd pages
-% \cohead{}  % Center header on odd pages (empty)
-% \rohead{}  % Right header on odd pages
-\ifoot{}  % Inner footer (empty)
-\cfoot{}  % Center footer (empty)
-\ofoot{Page \pagemark}  % Outer footer with page number
-\setkomafont{pagehead}{\normalfont}  % Set header font
-\setkomafont{headsepline}{\color{black}\rule{\textwidth}{1pt}}  % Header line thickness
-\setkomafont{footsepline}{\color{black}\rule{\textwidth}{1pt}}  % Footer line thickness
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Ensure consistent page style on chapter pages
-\renewcommand*{\chapterpagestyle}{scrheadings}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set chapter spacing
-\RedeclareSectionCommand[
-  beforeskip=0pt,     % Space before chapter title
-  afterskip=1cm,      % Space after chapter title
-  innerskip=1cm,      % Space between chapter number and title
-  font=\normalfont    % Use Times New Roman (inherited from mathptmx)
-]{chapter}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set section title fonts
-\setkomafont{chapter}{\normalfont\huge\bfseries}  % Chapter titles
-\setkomafont{section}{\normalfont\Large\bfseries}  % Section titles
-\setkomafont{subsection}{\normalfont\large\bfseries}  % Subsection titles
-\setkomafont{subsubsection}{\normalfont\normalsize\bfseries}  % Subsubsection titles
-\setkomafont{paragraph}{\normalfont\normalsize\bfseries}  % Paragraph titles
-\setkomafont{subparagraph}{\normalfont\normalsize\bfseries}  % Subparagraph titles
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Table of contents formatting
-\addtokomafont{disposition}{\rmfamily}  % Set Times New Roman for ToC
-\setkomafont{descriptionlabel}{\normalfont\bfseries}  % Description labels
-\setkomafont{dictum}{\normalfont\small}  % Dictum text
-\setkomafont{captionlabel}{\normalfont\bfseries}  % Caption labels
-\setkomafont{caption}{\normalfont\small}  % Caption text
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Define revision history item environment
-\newenvironment{revisionitem}[1][]{%
-    \begin{minipage}[t]{\linewidth}%
-        #1
-        \begin{itemize}[
-            itemsep=0pt,
-            parsep=0pt,
-            topsep=0pt,
-            leftmargin=*,
-            labelsep=0em,
-            label=\textendash
-        ]%
-}{%
-        \end{itemize}%
-    \end{minipage}%
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Path to the images
+\graphicspath{{./img/}}
 
 \begin{document}
 
@@ -125,9 +30,7 @@
     \begin{flushright}
         \rule{\textwidth}{5pt}\vskip1cm
         \begin{bfseries}
-            \Huge{SOFTWARE REQUIREMENTS\\ SPECIFICATION}\\
-            \vspace{1.6cm}
-            for\\
+            \Huge{DESIGN AND IMPLEMENTATION\\ FOR}\\
             \vspace{1.6cm}
             \projectname\\  % Use project name variable
             \vspace{1.6cm}
@@ -135,12 +38,15 @@
             \vspace{1.6cm}
             Prepared by\\
             Group A2\\
-            \begin{tabularx}{\textwidth}{X l X}
-            YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            <name> & <student id> & <email>\\
-            \end{tabularx}\\
+            \Large{
+                \begin{tabularx}{\textwidth}{l l >{\raggedleft\arraybackslash}X}
+                    YU Ching Hei & 1155193237 & \href{mailto:chyu@link.cuhk.edu.hk}{chyu@link.cuhk.edu.hk}\\
+                    Lei Hei Tung & 1155194969 & \href{mailto:1155194969@link.cuhk.edu.hk}{1155194969@link.cuhk.edu.hk}\\
+                    Ankhbayar Enkhtaivan & 1155185142 & \href{mailto:1155185142@link.cuhk.edu.hk}{1155185142@link.cuhk.edu.hk}\\
+                    Yum Ho Kan & 1155195234 & \href{mailto:1155195234@link.cuhk.edu.hk}{1155195234@link.cuhk.edu.hk}\\
+                    Leung Chung Wang & 1155194650 & \href{mailto:1155194650@link.cuhk.edu.hk}{1155194650@link.cuhk.edu.hk}\\
+                \end{tabularx}
+            }\\
             \vspace{1.6cm}
             The Chinese University of Hong Kong\\
             Department of Computer Science and Engineering\\
@@ -151,22 +57,29 @@
     \end{flushright}
 \end{titlepage}
 
+\setuptoc{toc}{totoc}  % Add ToC to itself using KOMA-Script
 \tableofcontents
 
-
-\chapter{Document Revision History}
+\addchap{Document Revision History}  % Unnumbered chapter that appears in ToC
 
 \begin{center}
     \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}X}
         \toprule
         Version & Revised By & Revision Date & Comments\\
         \midrule
-        0.1 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
+        0.1 & Group A2 & 2024-03-10 & \begin{revisionitem}[Added:]
             \item Initial document structure
-            \item Basic template setup
+            \item Basic content outline
         \end{revisionitem}\\
-        0.2 & C. H. Yu & 2025-02-08 & \begin{revisionitem}[Updated:]
-            \item Formatting
+        \midrule
+        1.0 & Group A2 & 2024-03-11 & \begin{revisionitem}[Updated:]
+            \item Completed all sections
+            \item Added diagrams and technical details
+        \end{revisionitem}\\
+        \midrule
+        1.1 & Group A2 & 2024-03-12 & \begin{revisionitem}[Updated:]
+            \item Reorganized content into 7 main sections
+            \item Enhanced section details and clarity
         \end{revisionitem}\\
         \bottomrule
     \end{tabularx}
@@ -177,241 +90,583 @@
 
 \chapter{Introduction}
 
-\section{Purpose}
-$<$Identify the product whose software requirements are specified in this 
-document, including the revision or release number. Describe the scope of the 
-product that is covered by this SRS, particularly if this SRS describes only 
-part of the system or a single subsystem.$>$
+Kaiju Academy is a \textbf{web-based e-learning platform} designed to make learning programming accessible and engaging. It combines modern Learning Management System (LMS) capabilities with interactive coding features, enabling users to learn at their own pace.
 
-\section{Document Conventions}
-$<$Describe any standards or typographical conventions that were followed when 
-writing this SRS, such as fonts or highlighting that have special significance.  
-For example, state whether priorities  for higher-level requirements are assumed 
-to be inherited by detailed requirements, or whether every requirement statement 
-is to have its own priority.$>$
+\section{Summary of Requirements}
+Based on the requirements specification, Kaiju Academy includes:
 
-\section{Intended Audience and Reading Suggestions}
-$<$Describe the different types of reader that the document is intended for, 
-such as developers, project managers, marketing staff, users, testers, and 
-documentation writers. Describe what the rest of this SRS contains and how it is 
-organized. Suggest a sequence for reading the document, beginning with the 
-overview sections and proceeding through the sections that are most pertinent to 
-each reader type.$>$
+\begin{itemize}
+    \item \textbf{User Management \& Authentication:} Role-based access control for students, educators, administrators, and moderators with secure authentication.
+    
+    \item \textbf{Course Creation \& Management:} Tools for creating, updating, and organizing courses with various content types (videos, PDFs, quizzes, coding exercises).
+    
+    \item \textbf{Interactive Learning:} Real-time code execution, automated grading, and personalized learning dashboards.
+    
+    \item \textbf{Community Features:} Discussion forums with moderation tools and notification systems.
+    
+    \item \textbf{Administrative Tools:} User analytics, system monitoring, and compliance management.
+\end{itemize}
 
-\section{Project Scope}
-$<$Provide a short description of the software being specified and its purpose, 
-including relevant benefits, objectives, and goals. Relate the software to 
-corporate goals or business strategies. If a separate vision and scope document 
-is available, refer to it rather than duplicating its contents here.$>$
+\section{Quality Goals}
+\begin{table}[htp]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Goal} & \textbf{Description} \\
+        \hline
+        \textbf{Performance} & - Response time <2 seconds for 95\% of users. \newline - Code execution results in <5 seconds for 99\% of submissions. \\
+        \hline
+        \textbf{Scalability} & - Support 10,000 concurrent users. \newline - Horizontal scaling via AWS Lambda and SurrealDB sharding. \\
+        \hline
+        \textbf{Reliability} & - 99.9\% uptime with automatic failover. \newline - Recovery from failures within 5 minutes. \\
+        \hline
+        \textbf{Security} & - AES-256 encryption for data at rest. \newline - TLS 1.2+ for data in transit. \newline - Role-based permissions and MFA. \\
+        \hline
+        \textbf{Usability} & - Intuitive UI with 90\% user satisfaction. \newline - Mobile-responsive design for screen sizes $\geq$ 320px. \\
+        \hline
+        \textbf{Maintainability} & - Modular codebase with 80\% test coverage. \newline - Infrastructure-as-Code (AWS CDK) for reproducible environments. \\
+        \hline
+        \textbf{Compliance} & - GDPR, COPPA, and accessibility law compliance. \newline - Daily encrypted backups stored for 30 days. \\
+        \hline
+    \end{tabularx}
+    \caption{Quality Goals for Kaiju Academy}
+\end{table}
 
-\section{References}
-$<$List any other documents or Web addresses to which this SRS refers. These may 
-include user interface style guides, contracts, standards, system requirements 
-specifications, use case documents, or a vision and scope document. Provide 
-enough information so that the reader could access a copy of each reference, 
-including title, author, version number, date, and source or location.$>$
+\section{Stakeholders}
+\begin{table}
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Stakeholder} & \textbf{Role \& Responsibilities} \\
+        \hline
+        \textbf{Administrators} & - Manage system health, user roles, and backups. \newline - Monitor performance and enforce security policies. \\
+        \hline
+        \textbf{Students} & - Enroll in courses, complete assessments, and track progress. \newline - Participate in forums and coding competitions. \\
+        \hline
+        \textbf{Educators} & - Create and update course content. \newline - Grade submissions and provide feedback. \\
+        \hline
+        \textbf{Content Moderators} & - Moderate discussion forums. \newline - Enforce community guidelines and resolve disputes. \\
+        \hline
+        \textbf{Developers} & - Implement and maintain backend services (Rust/AWS) and SurrealDB schema. \newline - Optimize performance and security. \\
+        \hline
+        \textbf{Legal \& Compliance} & - Ensure adherence to GDPR, COPPA, and other regulations. \newline - Manage data retention and privacy policies. \\
+        \hline
+    \end{tabularx}
+    \caption{Stakeholders and Their Roles}
+\end{table}
 
+\chapter{System Architecture}
 
-\chapter{Overall Description}
+\section{Overview}
+The Kaiju Academy platform follows a modern, cloud-native approach with a focus on scalability, reliability, and security. The system is designed as a serverless application deployed on AWS, using a microservices pattern for modularity and maintainability.
 
-\section{Product Perspective}
-$<$Describe the context and origin of the product being specified in this SRS.  
-For example, state whether this product is a follow-on member of a product 
-family, a replacement for certain existing systems, or a new, self-contained 
-product. If the SRS defines a component of a larger system, relate the 
-requirements of the larger system to the functionality of this software and 
-identify interfaces between the two. A simple diagram that shows the major 
-components of the overall system, subsystem interconnections, and external 
-interfaces can be helpful.$>$
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{serverless_deployment.png}
+    \caption{AWS Serverless Deployment Architecture}
+\end{figure}
 
-\section{Product Functions}
-$<$Summarize the major functions the product must perform or must let the user 
-perform. Details will be provided in Section 3, so only a high level summary 
-(such as a bullet list) is needed here. Organize the functions to make them 
-understandable to any reader of the SRS. A picture of the major groups of 
-related requirements and how they relate, such as a top level data flow diagram 
-or object class diagram, is often effective.$>$
+\section{Major Components}
 
-\section{User Classes and Characteristics}
-$<$Identify the various user classes that you anticipate will use this product.  
-User classes may be differentiated based on frequency of use, subset of product 
-functions used, technical expertise, security or privilege levels, educational 
-level, or experience. Describe the pertinent characteristics of each user class.  
-Certain requirements may pertain only to certain user classes. Distinguish the 
-most important user classes for this product from those who are less important 
-to satisfy.$>$
+\begin{description}
+    \item[Frontend Application:] Single-page React application providing the user interface across all devices.
+    
+    \item[API Gateway:] Manages all external requests, authentication, and routing to appropriate backends.
+    
+    \item[Lambda Functions:] Serverless computing units organized by domain (authentication, courses, assessments, forums, administration).
+    
+    \item[Cognito:] Handles user authentication, MFA, and role-based access control.
+    
+    \item[SurrealDB:] Primary database managing all persistent data with multi-model support.
+    
+    \item[S3 Storage:] Houses course materials, user uploads, and media content.
+    
+    \item[CloudFront CDN:] Optimizes content delivery globally for static assets and course materials.
+    
+    \item[Code Execution Service:] Sandboxed environment for running user-submitted code securely.
+    
+    \item[Notification System:] Manages email, in-app, and push notifications.
+\end{description}
 
-\section{Operating Environment}
-$<$Describe the environment in which the software will operate, including the 
-hardware platform, operating system and versions, and any other software 
-components or applications with which it must peacefully coexist.$>$
+\section{Component Relationships}
+The following diagram illustrates the relationships between the different components of the system:
 
-\section{Design and Implementation Constraints}
-$<$Describe any items or issues that will limit the options available to the 
-developers. These might include: corporate or regulatory policies; hardware 
-limitations (timing requirements, memory requirements); interfaces to other 
-applications; specific technologies, tools, and databases to be used; parallel 
-operations; language requirements; communications protocols; security 
-considerations; design conventions or programming standards (for example, if the 
-customer's organization will be responsible for maintaining the delivered 
-software).$>$
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{component_relationships.png}
+    \caption{Component Relationships}
+\end{figure}
 
-\section{User Documentation}
-$<$List the user documentation components (such as user manuals, on-line help, 
-and tutorials) that will be delivered along with the software. Identify any 
-known user documentation delivery formats or standards.$>$
-\section{Assumptions and Dependencies}
+Key interactions between components include:
+\begin{itemize}
+    \item Frontend communicates exclusively through the API Gateway
+    \item Lambda functions interact with databases and other AWS services
+    \item Cognito handles all authentication before business logic executes
+    \item Event-driven architecture connects components asynchronously where appropriate
+\end{itemize}
 
-$<$List any assumed factors (as opposed to known facts) that could affect the 
-requirements stated in the SRS. These could include third-party or commercial 
-components that you plan to use, issues around the development or operating 
-environment, or constraints. The project could be affected if these assumptions 
-are incorrect, are not shared, or change. Also identify any dependencies the 
-project has on external factors, such as software components that you intend to 
-reuse from another project, unless they are already documented elsewhere (for 
-example, in the vision and scope document or the project plan).$>$
+\chapter{Data Models}
 
+\section{Database Schema}
+The database design incorporates relational, document, and graph capabilities through SurrealDB's multi-model approach.
 
-\chapter{External Interface Requirements}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{database_schema.png}
+    \caption{Database Schema}
+\end{figure}
 
-\section{User Interfaces}
-$<$Describe the logical characteristics of each interface between the software 
-product and the users. This may include sample screen images, any GUI standards 
-or product family style guides that are to be followed, screen layout 
-constraints, standard buttons and functions (e.g., help) that will appear on 
-every screen, keyboard shortcuts, error message display standards, and so on.  
-Define the software components for which a user interface is needed. Details of 
-the user interface design should be documented in a separate user interface 
-specification.$>$
+\section{Core Entities}
+\begin{description}
+    \item[User:] Contains user information, roles, and authentication details.
+    \item[Course:] Represents a learning unit with metadata and organizational structure.
+    \item[Section:] Organizational unit within courses containing materials.
+    \item[Material:] Content items (videos, PDFs, code exercises) within sections.
+    \item[Enrollment:] Maps relationships between users and courses.
+    \item[Progress:] Tracks user advancement through materials.
+    \item[Quiz/Assessment:] Contains questions and evaluation criteria.
+    \item[Submission:] Stores user responses to assessments.
+    \item[ForumPost:] User discussions and questions within the community.
+\end{description}
 
-\section{Hardware Interfaces}
-$<$Describe the logical and physical characteristics of each interface between 
-the software product and the hardware components of the system. This may include 
-the supported device types, the nature of the data and control interactions 
-between the software and the hardware, and communication protocols to be 
-used.$>$
+\section{Data Flow}
+The following diagram illustrates the flow of data through the system:
 
-\section{Software Interfaces}
-$<$Describe the connections between this product and other specific software 
-components (name and version), including databases, operating systems, tools, 
-libraries, and integrated commercial components. Identify the data items or 
-messages coming into the system and going out and describe the purpose of each.  
-Describe the services needed and the nature of communications. Refer to 
-documents that describe detailed application programming interface protocols.  
-Identify data that will be shared across software components. If the data 
-sharing mechanism must be implemented in a specific way (for example, use of a 
-global data area in a multitasking operating system), specify this as an 
-implementation constraint.$>$
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{data_flow.png}
+    \caption{Data Flow Diagram}
+\end{figure}
 
-\section{Communications Interfaces}
-$<$Describe the requirements associated with any communications functions 
-required by this product, including e-mail, web browser, network server 
-communications protocols, electronic forms, and so on. Define any pertinent 
-message formatting. Identify any communication standards that will be used, such 
-as FTP or HTTP. Specify any communication security or encryption issues, data 
-transfer rates, and synchronization mechanisms.$>$
+\section{Key Data Flows}
 
+\subsection{User Registration and Authentication}
+\begin{enumerate}
+    \item User submits registration data through frontend
+    \item API Gateway routes to Authentication Lambda
+    \item Lambda creates user in Cognito and SurrealDB
+    \item JWT token returned for authenticated session
+\end{enumerate}
 
-\chapter{System Features}
-$<$This template illustrates organizing the functional requirements for the 
-product by system features, the major services provided by the product. You may 
-prefer to organize this section by use case, mode of operation, user class, 
-object class, functional hierarchy, or combinations of these, whatever makes the 
-most logical sense for your product.$>$
+\subsection{Course Creation and Publishing}
+\begin{enumerate}
+    \item Educator creates course structure through UI
+    \item Course metadata and structure stored in SurrealDB
+    \item Materials uploaded to S3 with references stored in database
+    \item Publishing workflow updates visibility and notifies subscribers
+\end{enumerate}
 
-\section{System Feature 1}
-$<$Don't really say "System Feature 1." State the feature name in just a few 
-words.$>$
+\subsection{Code Assessment and Grading}
+\begin{enumerate}
+    \item Student submits code solution
+    \item Code executed in isolated sandbox
+    \item Results compared against test cases
+    \item Grading results stored in database and displayed to student
+    \item Progress records updated automatically
+\end{enumerate}
 
-\subsection{Description and Priority}
-$<$Provide a short description of the feature and indicate whether it is of 
-High, Medium, or Low priority. You could also include specific priority 
-component ratings, such as benefit, penalty, cost, and risk (each rated on a 
-relative scale from a low of 1 to a high of 9).$>$
+\subsection{Forum Moderation}
+\begin{enumerate}
+    \item User creates or flags post
+    \item Post stored in database with metadata
+    \item Moderators review flagged content
+    \item Moderation actions update content status and notify relevant users
+\end{enumerate}
 
-\subsection{Stimulus/Response Sequences}
-$<$List the sequences of user actions and system responses that stimulate the 
-behavior defined for this feature. These will correspond to the dialog elements 
-associated with use cases.$>$
+\chapter{Interface Design}
 
-\subsection{Functional Requirements}
-$<$Itemize the detailed functional requirements associated with this feature.  
-These are the software capabilities that must be present in order for the user 
-to carry out the services provided by the feature, or to execute the use case.  
-Include how the product should respond to anticipated error conditions or 
-invalid inputs. Requirements should be concise, complete, unambiguous, 
-verifiable, and necessary. Use "TBD" as a placeholder to indicate when necessary 
-information is not yet available.$>$
+\section{API Structure}
+The API follows RESTful principles organized into domain-specific endpoints. All external communication occurs through a standardized API Gateway.
 
-$<$Each requirement should be uniquely identified with a sequence number or a 
-meaningful tag of some kind.$>$
+\begin{figure}[ht]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{api_domains.png}
+    \caption{API Domains and Organization}
+\end{figure}
 
-REQ-1:	REQ-2:
+\section{Authentication Protocol}
+\begin{itemize}
+    \item OAuth2 for third-party authentication (Google, GitHub)
+    \item JWT tokens for session management and API authentication
+    \item MFA via TOTP (Time-based One-Time Password) for sensitive operations
+\end{itemize}
 
-\section{System Feature 2 (and so on)}
+\section{Service Communication}
 
+\subsection{External Interfaces}
+\begin{itemize}
+    \item RESTful APIs with JSON payloads
+    \item Rate limiting (10 requests/second per user)
+    \item Batch operations for efficiency
+    \item Pagination for large result sets
+\end{itemize}
 
-\chapter{Other Nonfunctional Requirements}
+\subsection{Internal Communication}
+\begin{itemize}
+    \item AWS SNS/SQS for asynchronous event processing
+    \item AWS Step Functions for complex workflows
+    \item Direct Lambda invocations for synchronous operations
+\end{itemize}
 
-\section{Performance Requirements}
-$<$If there are performance requirements for the product under various 
-circumstances, state them here and explain their rationale, to help the 
-developers understand the intent and make suitable design choices. Specify the 
-timing relationships for real time systems. Make such requirements as specific 
-as possible. You may need to state performance requirements for individual 
-functional requirements or features.$>$
+\section{Error Handling}
+\begin{itemize}
+    \item Standardized error responses with HTTP status codes and descriptive messages
+    \item Comprehensive logging with correlation IDs
+    \item Global and resource-specific rate limiting
+    \item Circuit breakers for downstream service failures
+\end{itemize}
 
-\section{Safety Requirements}
-$<$Specify those requirements that are concerned with possible loss, damage, or 
-harm that could result from the use of the product. Define any safeguards or 
-actions that must be taken, as well as actions that must be prevented. Refer to 
-any external policies or regulations that state safety issues that affect the 
-product's design or use. Define any safety certifications that must be 
-satisfied.$>$
+\section{Security Implementation}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{security_implementation.png}
+    \caption{Security Implementation Diagram}
+\end{figure}
 
-\section{Security Requirements}
-$<$Specify any requirements regarding security or privacy issues surrounding use 
-of the product or protection of the data used or created by the product. Define 
-any user identity authentication requirements. Refer to any external policies or 
-regulations containing security issues that affect the product. Define any 
-security or privacy certifications that must be satisfied.$>$
+\subsection{Authentication and Authorization}
+\begin{itemize}
+    \item Multi-factor Authentication (MFA): Optional for all users, required for administrators
+    \item OAuth2 Integration: Support for Google, GitHub, and Microsoft accounts
+    \item Role-based Access Control (RBAC): Granular permissions based on user roles
+    \item JWT for API Authentication: Secure, stateless authentication for API requests
+\end{itemize}
 
-\section{Software Quality Attributes}
-$<$Specify any additional quality characteristics for the product that will be 
-important to either the customers or the developers. Some to consider are: 
-adaptability, availability, correctness, flexibility, interoperability, 
-maintainability, portability, reliability, reusability, robustness, testability, 
-and usability. Write these to be specific, quantitative, and verifiable when 
-possible. At the least, clarify the relative preferences for various attributes, 
-such as ease of use over ease of learning.$>$
+\subsection{Data Protection}
+\begin{itemize}
+    \item Encryption at Rest: AES-256 encryption for all sensitive data
+    \item Encryption in Transit: TLS 1.2+ for all network communications
+    \item PII Protection: Minimized collection of personally identifiable information
+    \item Data Retention Policies: Automated purging of unnecessary data
+\end{itemize}
 
-\section{Business Rules}
-$<$List any operating principles about the product, such as which individuals or 
-roles can perform which functions under specific circumstances. These are not 
-functional requirements in themselves, but they may imply certain functional 
-requirements to enforce the rules.$>$
+\chapter{Component Design}
 
+\section{Frontend Components}
 
-\chapter{Other Requirements}
-$<$Define any other requirements not covered elsewhere in the SRS. This might 
-include database requirements, internationalization requirements, legal 
-requirements, reuse objectives for the project, and so on. Add any new sections 
-that are pertinent to the project.$>$
+\subsection{Layout Components}
+\begin{description}
+    \item[Navbar] Top navigation component with:
+    \begin{itemize}
+        \item Logo and site navigation
+        \item Search functionality
+        \item Notification center
+        \item User profile dropdown
+    \end{itemize}
+    
+    \item[Sidebar] Navigation component with:
+    \begin{itemize}
+        \item Course navigation
+        \item Quick links to user dashboard
+        \item Role-specific menus
+        \item Collapsible sections
+    \end{itemize}
+    
+    \item[Footer] Bottom component with:
+    \begin{itemize}
+        \item Terms and privacy links
+        \item Contact information
+        \item Copyright notices
+    \end{itemize}
+\end{description}
 
-\section{Appendix A: Glossary}
-%see https://en.wikibooks.org/wiki/LaTeX/Glossary
-$<$Define all the terms necessary to properly interpret the SRS, including 
-acronyms and abbreviations. You may wish to build a separate glossary that spans 
-multiple projects or the entire organization, and just include terms specific to 
-a single project in each SRS.$>$
+\subsection{Page Components}
+\begin{description}
+    \item[Dashboard] Main user interface with:
+    \begin{itemize}
+        \item Welcome section with personalized greeting
+        \item Statistics cards showing progress and achievements
+        \item Visualization charts for activity and progress
+        \item Upcoming deadlines and calendar
+    \end{itemize}
+    
+    \item[Course Browser] Course discovery component with:
+    \begin{itemize}
+        \item Filterable/sortable course grid
+        \item Category navigation
+        \item Featured course carousel
+        \item Course preview cards
+    \end{itemize}
+    
+    \item[Code Editor] Interactive coding environment with:
+    \begin{itemize}
+        \item Syntax highlighting for multiple languages
+        \item Resizable panels for instructions/tests
+        \item Run/Submit controls
+        \item Result visualization
+    \end{itemize}
+\end{description}
 
-\section{Appendix B: Analysis Models}
-$<$Optionally, include any pertinent analysis models, such as data flow 
-diagrams, class diagrams, state-transition diagrams, or entity-relationship 
-diagrams.$>$
+\section{Backend Components}
 
-\section{Appendix C: To Be Determined List}
-$<$Collect a numbered list of the TBD (to be determined) references that remain 
-in the SRS so they can be tracked to closure.$>$
+\subsection{Authentication Service}
+\begin{description}
+    \item[Responsibilities:]
+    \begin{itemize}
+        \item User registration and authentication
+        \item Token generation and validation
+        \item Role management and authorization
+        \item MFA enrollment and verification
+    \end{itemize}
+    
+    \item[Input/Output:]
+    \begin{itemize}
+        \item Input: User credentials, registration data
+        \item Output: JWT tokens, user profile information
+    \end{itemize}
+    
+    \item[Key Functions:]
+    \begin{itemize}
+        \item \texttt{register\_user(user\_data) -> Result<UserProfile, AuthError>}
+        \item \texttt{authenticate\_user(credentials) -> Result<AuthToken, AuthError>}
+        \item \texttt{validate\_token(token) -> Result<TokenClaims, AuthError>}
+        \item \texttt{change\_user\_role(user\_id, role) -> Result<(), AuthError>}
+    \end{itemize}
+\end{description}
 
-\end{document}
+\subsection{Course Management Service}
+\begin{description}
+    \item[Responsibilities:]
+    \begin{itemize}
+        \item Course CRUD operations
+        \item Content organization and delivery
+        \item Enrollment management
+        \item Progress tracking
+    \end{itemize}
+    
+    \item[Input/Output:]
+    \begin{itemize}
+        \item Input: Course data, enrollment requests, content updates
+        \item Output: Course structures, material access, progress reports
+    \end{itemize}
+    
+    \item[Key Functions:]
+    \begin{itemize}
+        \item \texttt{create\_course(course\_data) -> Result<CourseId, CourseError>}
+        \item \texttt{update\_course(course\_id, updates) -> Result<(), CourseError>}
+        \item \texttt{enroll\_user(course\_id, user\_id) -> Result<Enrollment, EnrollmentError>}
+        \item \texttt{update\_progress(user\_id, material\_id, progress) -> Result<Progress, ProgressError>}
+    \end{itemize}
+\end{description}
+
+\subsection{Assessment Service}
+\begin{description}
+    \item[Responsibilities:]
+    \begin{itemize}
+        \item Quiz and assessment creation
+        \item Code execution in sandboxed environment
+        \item Automated grading
+        \item Submission management
+    \end{itemize}
+    
+    \item[Input/Output:]
+    \begin{itemize}
+        \item Input: Assessment definitions, code submissions, quiz responses
+        \item Output: Execution results, grades, feedback
+    \end{itemize}
+    
+    \item[Key Functions:]
+    \begin{itemize}
+        \item \texttt{create\_assessment(assessment\_data) -> Result<AssessmentId, AssessmentError>}
+        \item \texttt{execute\_code(code, language, inputs) -> Result<ExecutionResult, ExecutionError>}
+        \item \texttt{grade\_submission(submission) -> Result<Grade, GradingError>}
+        \item \texttt{get\_submission\_history(user\_id, assessment\_id) -> Result<Vec<Submission>, SubmissionError>}
+    \end{itemize}
+\end{description}
+
+\subsection{Forum Service}
+\begin{description}
+    \item[Responsibilities:]
+    \begin{itemize}
+        \item Discussion thread management
+        \item Post moderation
+        \item Content filtering
+        \item Notification dispatching
+    \end{itemize}
+    
+    \item[Input/Output:]
+    \begin{itemize}
+        \item Input: Forum posts, moderation actions, thread creation
+        \item Output: Thread listings, post content, moderation results
+    \end{itemize}
+    
+    \item[Key Functions:]
+    \begin{itemize}
+        \item \texttt{create\_post(post\_data) -> Result<PostId, ForumError>}
+        \item \texttt{moderate\_post(post\_id, action) -> Result<(), ModerationError>}
+        \item \texttt{get\_thread(thread\_id) -> Result<Thread, ForumError>}
+        \item \texttt{get\_flagged\_posts() -> Result<Vec<FlaggedPost>, ForumError>}
+    \end{itemize}
+\end{description}
+
+\subsection{Class Structure}
+The following class diagram represents the core domain model:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{class_diagram.png}
+    \caption{Class Diagram}
+\end{figure}
+
+\chapter{User Interface Design}
+
+\section{Design Principles}
+The UI design follows these core principles:
+\begin{itemize}
+    \item \textbf{Consistency:} Unified design language across all pages
+    \item \textbf{Accessibility:} WCAG 2.1 AA compliance for all users
+    \item \textbf{Responsiveness:} Optimal experience across devices (320px and up)
+    \item \textbf{Progressive Enhancement:} Core functionality works without JavaScript
+    \item \textbf{Feedback:} Clear indication of system status and actions
+\end{itemize}
+
+\section{Site Map and Navigation Flow}
+
+\begin{figure}[ht]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{sitemap.png}
+    \caption{Site Map and Navigation Flow}
+\end{figure}
+
+\section{Interface Storyboards}
+
+\subsection{Authentication Flow}
+\begin{figure}[ht]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{auth_flow.png}
+    \caption{User Authentication Storyboard}
+\end{figure}
+
+\subsection{Course Enrollment and Participation}
+\begin{figure}[ht]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{course_flow.png}
+    \caption{Course Enrollment and Learning Storyboard}
+\end{figure}
+
+\subsection{Assessment Completion}
+\begin{figure}[ht]
+    \centering
+    % \includegraphics[width=0.9\textwidth]{assessment_flow.png}
+    \caption{Assessment Completion Storyboard}
+\end{figure}
+
+\section{Accessibility Considerations}
+\begin{itemize}
+    \item \textbf{Keyboard Navigation:} Full functionality available without mouse
+    \item \textbf{Screen Reader Support:} Proper ARIA labels and semantic HTML
+    \item \textbf{Color Contrast:} WCAG AA (4.5:1) minimum contrast ratios
+    \item \textbf{Text Resize:} Interface remains functional when text is enlarged 200\%
+    \item \textbf{Motion Control:} Animations can be disabled via prefers-reduced-motion
+    \item \textbf{Assistive Technology:} Regular testing with NVDA, JAWS, and VoiceOver
+    \item \textbf{Alternative Text:} All images include descriptive alt text
+\end{itemize}
+
+\section{Responsive Design}
+\begin{itemize}
+    \item \textbf{Mobile First:} Designed primarily for mobile, then enhanced for larger screens
+    \item \textbf{Breakpoints:} Key breakpoints at 480px, 768px, 1024px, and 1440px
+    \item \textbf{Layout Adaptations:} 
+    \begin{itemize}
+        \item Single column layout on mobile
+        \item Sidebar appears as overlay on small screens
+        \item Multi-column layout on tablets and larger
+        \item Expanded dashboard visualizations on desktop
+    \end{itemize}
+    \item \textbf{Touch Targets:} Minimum 44×44px for all interactive elements
+\end{itemize}
+
+\chapter{Assumptions}
+
+\section{Technical Constraints}
+
+\subsection{Hardware Constraints}
+\begin{itemize}
+    \item \textbf{Minimum Device Specifications:} Users require devices with:
+    \begin{itemize}
+        \item At least 4GB RAM for smooth performance
+        \item Screen resolution of 320px width minimum
+        \item Internet connection with 5 Mbps minimum bandwidth
+    \end{itemize}
+    
+    \item \textbf{Server Environment:} Development and deployment assumes:
+    \begin{itemize}
+        \item AWS cloud infrastructure
+        \item Serverless architecture with AWS Lambda
+        \item No dedicated hardware requirements
+        \item Horizontal scaling capabilities
+    \end{itemize}
+\end{itemize}
+
+\subsection{Software Constraints}
+\begin{itemize}
+    \item \textbf{Browser Support:} Application designed for:
+    \begin{itemize}
+        \item Modern browsers (Chrome, Firefox, Safari, Edge - latest 2 versions)
+        \item HTML5 and JavaScript required
+        \item No Internet Explorer support
+    \end{itemize}
+    
+    \item \textbf{Development Environment:}
+    \begin{itemize}
+        \item Standardized Docker containers for development
+        \item Rust 1.58+ for backend development
+        \item Node.js 16+ for frontend development
+        \item AWS CDK for infrastructure definition
+    \end{itemize}
+    
+    \item \textbf{Mobile Support:}
+    \begin{itemize}
+        \item Responsive web design (no native app initially)
+        \item Mobile browser focused (iOS Safari, Android Chrome)
+    \end{itemize}
+\end{itemize}
+
+\section{Operational Assumptions}
+
+\subsection{Load and Performance}
+\begin{itemize}
+    \item Maximum concurrent users: 10,000
+    \item Peak submission rate: 10,000 code submissions per minute
+    \item Average session duration: 30 minutes
+    \item 80/20 read/write ratio for database operations
+    \item Code execution takes maximum 5 seconds per submission
+\end{itemize}
+
+\subsection{Development Process}
+\begin{itemize}
+    \item Agile methodology with 2-week sprints
+    \item CI/CD pipeline with automated testing
+    \item Feature branching development workflow
+    \item Containerized development environments
+    \item Terraform for infrastructure provisioning
+\end{itemize}
+
+\subsection{Maintenance and Support}
+\begin{itemize}
+    \item 99.9\% uptime requirement excluding planned maintenance
+    \item Scheduled maintenance windows during off-peak hours
+    \item Automated backups performed daily and retained for 30 days
+    \item Customer support available during business hours
+    \item Issue response time within 24 hours
+\end{itemize}
+
+\section{Dependencies}
+
+\subsection{Third-Party Services}
+\begin{itemize}
+    \item Authentication via OAuth providers (Google, GitHub, Microsoft)
+    \item Payment processing through Stripe
+    \item Email delivery through Amazon SES
+    \item CDN services through AWS CloudFront
+    \item Media transcoding through AWS MediaConvert
+\end{itemize}
+
+\subsection{External Systems}
+\begin{itemize}
+    \item LMS integration via LTI standard
+    \item External code repositories (GitHub, GitLab)
+    \item Social media sharing APIs
+    \item Analytics integrations (Google Analytics, Mixpanel)
+\end{itemize}
+
+\end{document} 

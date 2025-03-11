@@ -1,0 +1,77 @@
+classDiagram
+    class User {
+        +id: Thing
+        +email: String
+        +role: UserRole
+        +created_at: DateTime
+    }
+    
+    class Course {
+        +id: Thing
+        +title: String
+        +description: String
+        +difficulty: String
+        +creator_id: Thing
+        +is_published: bool
+        +created_at: DateTime
+    }
+    
+    class Section {
+        +id: Thing
+        +course_id: Thing
+        +title: String
+        +description: String
+        +order_index: int
+    }
+    
+    class Material {
+        +id: Thing
+        +section_id: Thing
+        +title: String
+        +type: MaterialType
+        +content_url: String
+    }
+    
+    class Enrollment {
+        +id: Thing
+        +user_id: Thing
+        +course_id: Thing
+        +enrolled_at: DateTime
+        +completed: bool
+    }
+    
+    class Progress {
+        +id: Thing
+        +user_id: Thing
+        +material_id: Thing
+        +percentage: float
+        +completed: bool
+        +updated_at: DateTime
+    }
+    
+    class Quiz {
+        +id: Thing
+        +section_id: Thing
+        +title: String
+        +description: String
+        +pass_threshold: float
+    }
+    
+    class Question {
+        +id: Thing
+        +quiz_id: Thing
+        +question: String
+        +type: QuestionType
+        +options: Vec<String>
+        +correct_answer: String
+        +points: int
+    }
+    
+    User "1" -- "many" Enrollment
+    User "1" -- "many" Progress
+    Course "1" -- "many" Section
+    Course "1" -- "many" Enrollment
+    Section "1" -- "many" Material
+    Section "1" -- "many" Quiz
+    Material "1" -- "many" Progress
+    Quiz "1" -- "many" Question 

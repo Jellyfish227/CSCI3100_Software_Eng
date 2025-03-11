@@ -1,0 +1,55 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Course Purchase Lambda
+    participant PaymentService
+    participant SurrealDB
+    participant NotificationService
+    
+    Student->>Client: Select course to purchase
+    Client->>APIGateway: POST /courses/{courseId}/enroll
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Not Authenticated
+        APIGateway-->>Client: 401 Unauthorized
+        Client-->>Student: Display login required message
+    else Authenticated
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Check course availability
+        SurrealDB-->>Lambda: Course details
+        
+        alt Course not available
+            Lambda-->>APIGateway: 404 Not Found
+            APIGateway-->>Client: 404 Not Found
+            Client-->>Student: Display course not available message
+        else Course available
+            Lambda->>SurrealDB: Check if already enrolled
+            SurrealDB-->>Lambda: Enrollment status
+            
+            alt Already enrolled
+                Lambda-->>APIGateway: 409 Conflict
+                APIGateway-->>Client: 409 Conflict
+                Client-->>Student: Display already enrolled message
+            else Not enrolled
+                Lambda->>PaymentService: Process payment
+                PaymentService-->>Lambda: Payment result
+                
+                alt Payment failed
+                    Lambda-->>APIGateway: 400 Payment Failed
+                    APIGateway-->>Client: 400 Payment Failed
+                    Client-->>Student: Display payment failure message
+                else Payment successful
+                    Lambda->>SurrealDB: Create enrollment record
+                    SurrealDB-->>Lambda: Enrollment confirmation
+                    Lambda->>NotificationService: Send enrollment confirmation
+                    NotificationService-->>Student: Email confirmation
+                    Lambda-->>APIGateway: 201 Created
+                    APIGateway-->>Client: 201 Created
+                    Client-->>Student: Display enrollment success & course access
+                end
+            end
+        end
+    end 

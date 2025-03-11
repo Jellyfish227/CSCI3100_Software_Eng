@@ -1,0 +1,27 @@
+flowchart TD
+    Client[Client] --> |HTTPS/TLS 1.2+| APIGateway[API Gateway]
+    
+    subgraph Authentication
+        APIGateway --> |JWT Validation| APILambda[API Lambda]
+        APIGateway --> |OAuth2| Cognito[AWS Cognito]
+        Cognito --> |JWT Token| APIGateway
+    end
+    
+    subgraph Authorization
+        APILambda --> |Role Check| RoleCheck{Role-Based Access Control}
+        RoleCheck --> |Permitted| BusinessLogic[Business Logic]
+        RoleCheck --> |Denied| ForbiddenResponse[403 Forbidden]
+    end
+    
+    subgraph "Data Protection"
+        BusinessLogic --> |Encrypted| SurrealDB[SurrealDB]
+        BusinessLogic --> |Encrypted| S3[S3 Storage]
+        SurrealDB --> |AES-256| KMS[AWS KMS]
+        S3 --> |AES-256| KMS
+    end
+    
+    subgraph "Input Validation"
+        APIGateway --> |Schema Validation| RequestValidation[Request Validation]
+        RequestValidation --> |Valid| APILambda
+        RequestValidation --> |Invalid| BadRequestResponse[400 Bad Request]
+    end 

@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant Moderator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ForumLambda as Forum Management Lambda
+    participant SurrealDB
+    
+    Moderator->>Client: Open forum management dashboard
+    Client->>APIGateway: GET /forum/management/dashboard
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Moderator
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get forum statistics and flagged content
+        SurrealDB-->>ForumLambda: Forum data
+        ForumLambda-->>APIGateway: 200 OK (Dashboard data)
+        APIGateway-->>Client: 200 OK (Dashboard data)
+        Client-->>Moderator: Display moderation dashboard
+        
+        Moderator->>Client: View moderation queue
+        Client->>APIGateway: GET /forum/management/queue
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get flagged posts queue
+        SurrealDB-->>ForumLambda: Flagged posts
+        ForumLambda-->>APIGateway: 200 OK (Queue data)
+        APIGateway-->>Client: 200 OK (Queue data)
+        Client-->>Moderator: Display moderation queue
+        
+        Moderator->>Client: View moderation activity log
+        Client->>APIGateway: GET /forum/management/activity
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get recent moderation activities
+        SurrealDB-->>ForumLambda: Activity history
+        ForumLambda-->>APIGateway: 200 OK (Activity data)
+        APIGateway-->>Client: 200 OK (Activity data)
+        Client-->>Moderator: Display moderation history
+    end 

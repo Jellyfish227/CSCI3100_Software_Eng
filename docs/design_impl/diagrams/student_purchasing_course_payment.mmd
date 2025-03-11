@@ -1,0 +1,50 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Payment Processing Lambda
+    participant PaymentService
+    participant SurrealDB
+    participant NotificationService
+    
+    Student->>Client: Select payment method
+    Client->>APIGateway: POST /payments/initiate
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>Lambda: Forward Request
+        Lambda->>PaymentService: Initialize payment
+        PaymentService-->>Lambda: Payment session token
+        Lambda-->>APIGateway: 200 OK (Payment token)
+        APIGateway-->>Client: 200 OK (Payment token)
+        Client-->>Student: Display payment form
+        
+        Student->>Client: Submit payment details
+        Client->>PaymentService: Process payment (direct)
+        PaymentService->>PaymentService: Validate and process
+        PaymentService-->>Client: Payment result
+        
+        alt Payment successful
+            Client->>APIGateway: POST /payments/confirm
+            APIGateway->>Lambda: Forward Request
+            Lambda->>PaymentService: Verify payment
+            PaymentService-->>Lambda: Payment verification
+            Lambda->>SurrealDB: Record payment
+            SurrealDB-->>Lambda: Confirmation
+            Lambda->>NotificationService: Send receipt
+            NotificationService-->>Student: Email receipt
+            Lambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Student: Display payment success
+        else Payment failed
+            Client->>APIGateway: POST /payments/failure
+            APIGateway->>Lambda: Forward Request
+            Lambda->>SurrealDB: Record failed attempt
+            SurrealDB-->>Lambda: Confirmation
+            Lambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Student: Display payment failure
+        end
+    end 

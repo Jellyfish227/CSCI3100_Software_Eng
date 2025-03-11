@@ -1,0 +1,48 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ProgressLambda as Progress Tracking Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    Student->>Client: Mark section as completed
+    Client->>APIGateway: PUT /progress/{materialId}/complete
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>ProgressLambda: Forward Request
+        ProgressLambda->>SurrealDB: Update material completion status
+        SurrealDB-->>ProgressLambda: Update confirmation
+        ProgressLambda->>SurrealDB: Check if course completed
+        SurrealDB-->>ProgressLambda: Course completion status
+        
+        alt Course Completed
+            ProgressLambda->>SurrealDB: Update course completion
+            SurrealDB-->>ProgressLambda: Update confirmation
+            ProgressLambda->>NotificationService: Generate completion certificate
+            NotificationService->>NotificationService: Create certificate PDF
+            NotificationService-->>ProgressLambda: Certificate URL
+            ProgressLambda-->>APIGateway: 200 OK (with completion badge)
+            APIGateway-->>Client: 200 OK (with completion badge)
+            Client-->>Student: Display course completion certificate
+            
+            ProgressLambda->>NotificationService: Send completion email
+            NotificationService-->>Student: Email with certificate
+        else Course In Progress
+            ProgressLambda-->>APIGateway: 200 OK (section completed)
+            APIGateway-->>Client: 200 OK (section completed)
+            Client-->>Student: Display section completion and next section
+            
+            Student->>Client: View updated progress
+            Client->>APIGateway: GET /courses/{courseId}/progress
+            APIGateway->>ProgressLambda: Forward Request
+            ProgressLambda->>SurrealDB: Get updated progress
+            SurrealDB-->>ProgressLambda: Progress data
+            ProgressLambda-->>APIGateway: 200 OK (Progress data)
+            APIGateway-->>Client: 200 OK (Progress data)
+            Client-->>Student: Display updated progress chart
+        end
+    end 

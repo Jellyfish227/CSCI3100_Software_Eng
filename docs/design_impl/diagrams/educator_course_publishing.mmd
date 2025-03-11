@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant Educator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Course Publishing Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    Educator->>Client: Publish course
+    Client->>APIGateway: PUT /courses/{courseId}/publish
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Course Owner
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Check course completeness
+        SurrealDB-->>Lambda: Course structure
+        
+        alt Course Incomplete
+            Lambda-->>APIGateway: 400 Bad Request
+            APIGateway-->>Client: 400 Bad Request
+            Client-->>Educator: Display missing content warning
+        else Course Complete
+            Lambda->>SurrealDB: Update course status to published
+            SurrealDB-->>Lambda: Update confirmation
+            Lambda->>NotificationService: Notify subscribers of new course
+            NotificationService-->>Lambda: Notification sent
+            Lambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Educator: Display course published successfully
+            
+            Educator->>Client: View published course analytics
+            Client->>APIGateway: GET /courses/{courseId}/analytics
+            APIGateway->>Lambda: Forward Request
+            Lambda->>SurrealDB: Get course analytics
+            SurrealDB-->>Lambda: Analytics data
+            Lambda-->>APIGateway: 200 OK (Analytics data)
+            APIGateway-->>Client: 200 OK (Analytics data)
+            Client-->>Educator: Display course analytics dashboard
+        end
+    end 

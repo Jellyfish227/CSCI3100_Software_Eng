@@ -1,0 +1,180 @@
+erDiagram
+    %% Core user and course entities
+    USER {
+        string id PK
+        string email
+        string password
+        string name
+        string role
+        datetime created_at
+        datetime last_login
+        string profile_image
+        string bio
+    }
+    %% Notification entity
+    NOTIFICATION {
+        string id PK
+        record user FK
+        string type
+        string content
+        record related_record
+        datetime created_at
+        boolean read
+        datetime read_at
+    }
+    COURSE {
+        string id PK
+        string title
+        string description
+        string difficulty
+        array tags
+        record educator FK
+        datetime created_at
+        datetime updated_at
+        boolean is_published
+        string thumbnail
+        float duration_hours
+    }
+    %% Course structure entities grouped together
+    SECTION {
+        string id PK
+        string title
+        string description
+        int order_index
+        record course FK
+        datetime created_at
+        datetime updated_at
+    }
+    MATERIAL {
+        string id PK
+        string title
+        string description
+        string type
+        string content_url
+        int duration_minutes
+        record section FK
+        int order_index
+        datetime created_at
+        datetime updated_at
+    }
+    QUIZ {
+        string id PK
+        string title
+        string description
+        record section FK
+        int order_index
+        int passing_score
+        int time_limit_minutes
+        datetime created_at
+        datetime updated_at
+    }
+    %% Student activity entities grouped together
+    ENROLLMENT {
+        string id PK
+        record student FK
+        record course FK
+        datetime enrolled_at
+        boolean completed
+        datetime completed_at
+        datetime last_accessed_at
+    }
+    PROGRESS {
+        string id PK
+        record student FK
+        record material FK
+        datetime started_at
+        boolean completed
+        datetime completed_at
+        float progress_percentage
+    }
+    QUIZ_QUESTION {
+        string id PK
+        record quiz FK
+        string question
+        string type
+        array options
+        string correct_answer
+        int points
+        int order_index
+    } 
+    CODE_SUBMISSION {
+        string id PK
+        record student FK
+        record material FK
+        string code
+        string language
+        datetime submitted_at
+        string status
+        string feedback
+        record reviewed_by FK
+        datetime reviewed_at
+    }
+    QUIZ_ATTEMPT {
+        string id PK
+        record student FK
+        record quiz FK
+        datetime started_at
+        datetime submitted_at
+        int score
+        boolean passed
+        array answers
+    }
+    %% Forum entities grouped together
+    FORUM_CATEGORY {
+        string id PK
+        string name
+        string description
+        record course FK
+        datetime created_at
+        record created_by FK
+    }
+    FORUM_THREAD {
+        string id PK
+        string title
+        string content
+        record category FK
+        datetime created_at
+        record created_by FK
+        boolean is_pinned
+        boolean is_locked
+        int views
+    }
+    FORUM_POST {
+        string id PK
+        record thread FK
+        string content
+        datetime created_at
+        record created_by FK
+        datetime updated_at
+        boolean is_solution
+    }
+
+    %% Core relationships - USER to other entities
+    USER ||--o{ NOTIFICATION : "receives"
+    MATERIAL ||--o{ PROGRESS : "has progress"
+    USER ||--o{ PROGRESS : "tracks as student"
+    COURSE ||--o{ ENROLLMENT : "has"
+    USER ||--o{ ENROLLMENT : "enrolls as student"
+    USER ||--o{ COURSE : "teaches as educator"
+    USER ||--o{ CODE_SUBMISSION : "submits as student"
+    USER ||--o{ QUIZ_ATTEMPT : "attempts as student"
+    USER ||--o{ FORUM_CATEGORY : "creates"
+    USER ||--o{ FORUM_THREAD : "creates"
+    USER ||--o{ FORUM_POST : "creates"
+    USER ||--o{ CODE_SUBMISSION : "reviews"
+    
+    %% Course structure relationships
+    COURSE ||--o{ SECTION : "contains"
+    SECTION ||--o{ MATERIAL : "contains"
+    SECTION ||--o{ QUIZ : "has"
+    MATERIAL ||--o{ CODE_SUBMISSION : "has submissions"
+    
+    %% Enrollment and progress relationships
+    QUIZ ||--o{ QUIZ_QUESTION : "contains"
+    QUIZ ||--o{ QUIZ_ATTEMPT : "has attempts"
+    
+    %% Forum relationships
+    COURSE ||--o{ FORUM_CATEGORY : "has"
+    FORUM_CATEGORY ||--o{ FORUM_THREAD : "contains"
+    FORUM_THREAD ||--o{ FORUM_POST : "contains"
+} 
