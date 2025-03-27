@@ -1,0 +1,81 @@
+graph TD
+    %% Client and API Gateway
+    Client[Client Applications] --> APIGateway[Amazon API Gateway]
+    
+    %% Authentication
+    APIGateway --> Cognito[AWS Cognito]
+    Cognito --> |Authentication|APIGateway
+    
+    %% Lambda Functions by Domain
+    APIGateway --> AuthLambda[Auth Lambda Functions]
+    APIGateway --> UserLambda[User Management Lambda]
+    APIGateway --> CourseLambda[Course Management Lambda]
+    APIGateway --> LearningLambda[Learning Experience Lambda]
+    APIGateway --> AssessmentLambda[Assessment System Lambda]
+    APIGateway --> CodeExecLambda[Code Execution Lambda]
+    APIGateway --> DiscussionLambda[Discussion Forum Lambda]
+    
+    %% Lambda Layers
+    LambdaLayers[Lambda Layers<br/>Shared Code & Dependencies] --> AuthLambda
+    LambdaLayers --> UserLambda
+    LambdaLayers --> CourseLambda
+    LambdaLayers --> LearningLambda
+    LambdaLayers --> AssessmentLambda
+    LambdaLayers --> CodeExecLambda
+    LambdaLayers --> DiscussionLambda
+    
+    %% Database
+    AuthLambda --> SurrealDB[SurrealDB on EC2/ECS]
+    UserLambda --> SurrealDB
+    CourseLambda --> SurrealDB
+    LearningLambda --> SurrealDB
+    AssessmentLambda --> SurrealDB
+    CodeExecLambda --> SurrealDB
+    DiscussionLambda --> SurrealDB
+    
+    %% Storage
+    CourseLambda --> S3[Amazon S3<br/>Course Materials]
+    LearningLambda --> S3
+    
+    %% CDN
+    S3 --> CloudFront[Amazon CloudFront]
+    CloudFront --> Client
+    
+    %% Step Functions
+    LearningLambda --> StepFunctions[AWS Step Functions<br/>Complex Workflows]
+    AssessmentLambda --> StepFunctions
+    
+    %% Monitoring
+    AuthLambda --> CloudWatch[Amazon CloudWatch<br/>Monitoring & Alerts]
+    UserLambda --> CloudWatch
+    CourseLambda --> CloudWatch
+    LearningLambda --> CloudWatch
+    AssessmentLambda --> CloudWatch
+    CodeExecLambda --> CloudWatch
+    DiscussionLambda --> CloudWatch
+    
+    %% Event-Driven Architecture
+    SNS[Amazon SNS/SQS<br/>Event Messaging] <--> AuthLambda
+    SNS <--> UserLambda
+    SNS <--> CourseLambda
+    SNS <--> LearningLambda
+    SNS <--> AssessmentLambda
+    
+    %% Caching
+    ElastiCache[Amazon ElastiCache] --- CourseLambda
+    ElastiCache --- LearningLambda
+    
+    %% Code Execution Sandbox
+    CodeExecLambda --> Sandbox[Code Execution Sandbox]
+    
+    style Client fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style APIGateway fill:#FF9900,stroke:#333,stroke-width:2px
+    style Cognito fill:#FF4F8B,stroke:#333,stroke-width:2px
+    style SurrealDB fill:#3B48DF,stroke:#333,stroke-width:2px
+    style S3 fill:#569A31,stroke:#333,stroke-width:2px
+    style CloudFront fill:#8C4FFF,stroke:#333,stroke-width:2px
+    style CloudWatch fill:#FF9900,stroke:#333,stroke-width:2px
+    style StepFunctions fill:#FF9900,stroke:#333,stroke-width:2px
+    style SNS fill:#FF9900,stroke:#333,stroke-width:2px
+    style Sandbox fill:#232F3E,stroke:#333,stroke-width:2px,color:#FFFFFF
+    style LambdaLayers fill:#FF9900,stroke:#333,stroke-width:2px 

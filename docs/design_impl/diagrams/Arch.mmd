@@ -1,0 +1,47 @@
+graph TD
+    subgraph AWS_Cloud
+        subgraph Frontend
+            S3[Amazon S3 - Static Content]
+            CDN[CloudFront CDN]
+        end
+        subgraph Backend
+            APIGW[API Gateway]
+            Lambda[AWS Lambda - Rust Functions]
+            Cognito[AWS Cognito - Authentication]
+            SNS[Amazon SNS - Notifications]
+        end
+        subgraph Database
+            SurrealDB[SurrealDB on EC2/ECS]
+        end
+        subgraph Storage
+            SSStorage[Amazon S3 - Course Materials]
+        end
+        subgraph Monitoring
+            CloudWatch[Amazon CloudWatch]
+        end
+        subgraph Security
+            KMS[AWS KMS - Encryption]
+            IAM[IAM - Access Control]
+        end
+        subgraph CI_CD
+            CodePipeline[AMS CodePipeline]
+            CodeBuild[AMS CodeBuild]
+        end
+    end
+    User[User Devices] -->|HTTP/HTTPS| CDN
+    CDN -->|Static Content| S3
+    CDN -->|API Requests| APIGW
+    APIGW -->|Route Requests| Lambda
+    Lambda -->|Store/Retrieve Data| SurrealDB
+    Lambda -->|Store/Retrieve Files| S3Storage
+    Lambda -->|Authentication| Cognito
+    Lambda -->|Send Notifications| SNS
+    SNS -->|Push Notifications| User
+    SNS -->|Email Notifications| User
+    Lambda -->|Logging & Monitoring| CloudWatch
+    Lambda -->|Encryption| KMS
+    Lambda -->|Access Control| IAM
+
+    CodePipeline -->|Build & Deploy| Lambda
+    CodePipeline -->|Build & Deploy| S3
+    CodePipeline -->|Build & Deploy| SurrealDB

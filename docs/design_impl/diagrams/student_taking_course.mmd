@@ -1,0 +1,88 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant CourseLambda as Course Content Lambda
+    participant ProgressLambda as Progress Tracking Lambda
+    participant CDN as Content Delivery Network
+    participant SurrealDB
+    
+    note over Student, SurrealDB: Accessing Enrolled Course
+    
+    Student->>Client: Open dashboard
+    Client->>APIGateway: GET /enrollments
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>CourseLambda: Forward Request
+        CourseLambda->>SurrealDB: Get enrolled courses
+        SurrealDB-->>CourseLambda: Enrollment data
+        CourseLambda-->>APIGateway: 200 OK (Courses list)
+        APIGateway-->>Client: 200 OK (Courses list)
+        Client-->>Student: Display enrolled courses
+        
+        Student->>Client: Select course to view
+        Client->>APIGateway: GET /courses/{courseId}
+        APIGateway->>CourseLambda: Forward Request
+        CourseLambda->>SurrealDB: Get course details and sections
+        SurrealDB-->>CourseLambda: Course data with sections
+        CourseLambda-->>APIGateway: 200 OK (Course details)
+        APIGateway-->>Client: 200 OK (Course details)
+        Client-->>Student: Display course structure
+    end
+    
+    note over Student, SurrealDB: Loading Course Materials
+    
+    Student->>Client: Select section material (PDF/Video)
+    Client->>APIGateway: GET /materials/{materialId}
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated & Enrolled
+        APIGateway->>CourseLambda: Forward Request
+        CourseLambda->>SurrealDB: Get material details
+        SurrealDB-->>CourseLambda: Material data with content URL
+        CourseLambda-->>APIGateway: 200 OK (Material details)
+        APIGateway-->>Client: 200 OK (Material details)
+        
+        alt Material Type = PDF
+            Client->>CDN: Request PDF content
+            CDN-->>Client: PDF content stream
+            Client-->>Student: Display PDF viewer
+        else Material Type = Video
+            Client->>CDN: Request video content
+            CDN-->>Client: Video content stream (adaptive bitrate)
+            Client-->>Student: Display video player
+        end
+        
+        Client->>APIGateway: POST /progress (update)
+        APIGateway->>ProgressLambda: Forward Request
+        ProgressLambda->>SurrealDB: Update progress record
+        SurrealDB-->>ProgressLambda: Progress update confirmation
+        ProgressLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+    end
+    
+    note over Student, SurrealDB: Completing Section/Course
+    
+    Student->>Client: Mark section as completed
+    Client->>APIGateway: PUT /progress/{materialId}/complete
+    APIGateway->>ProgressLambda: Forward Request
+    ProgressLambda->>SurrealDB: Update material completion status
+    SurrealDB-->>ProgressLambda: Update confirmation
+    ProgressLambda->>SurrealDB: Check if course completed
+    SurrealDB-->>ProgressLambda: Course completion status
+    
+    alt Course Completed
+        ProgressLambda->>SurrealDB: Update course completion
+        SurrealDB-->>ProgressLambda: Update confirmation
+        ProgressLambda-->>APIGateway: 200 OK (with completion badge)
+        APIGateway-->>Client: 200 OK (with completion badge)
+        Client-->>Student: Display course completion certificate
+    else Course In Progress
+        ProgressLambda-->>APIGateway: 200 OK (section completed)
+        APIGateway-->>Client: 200 OK (section completed)
+        Client-->>Student: Display section completion and next section
+    end 

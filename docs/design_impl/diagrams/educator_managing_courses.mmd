@@ -1,0 +1,72 @@
+sequenceDiagram
+    participant Educator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Course Management Lambda
+    participant SurrealDB
+    participant S3 as S3 Storage
+    participant NotificationService
+    
+    note over Educator, NotificationService: Course Creation
+    
+    Educator->>Client: Create new course (fill form)
+    Client->>APIGateway: POST /courses
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Not Authenticated/Not Educator
+        APIGateway-->>Client: 401/403 Error
+        Client-->>Educator: Display error message
+    else Authenticated as Educator
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Create course record
+        SurrealDB-->>Lambda: Course creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display course creation success
+    end
+    
+    note over Educator, NotificationService: Adding Course Content
+    
+    Educator->>Client: Add section to course
+    Client->>APIGateway: POST /courses/{courseId}/sections
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Course Owner
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Create section record
+        SurrealDB-->>Lambda: Section creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display section added successfully
+        
+        Educator->>Client: Upload content (PDF/Video)
+        Client->>APIGateway: POST /sections/{sectionId}/materials
+        APIGateway->>Lambda: Forward Request
+        Lambda->>S3: Upload content file
+        S3-->>Lambda: Upload confirmation & URL
+        Lambda->>SurrealDB: Create material record with content URL
+        SurrealDB-->>Lambda: Material creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display content uploaded successfully
+    end
+    
+    note over Educator, NotificationService: Publishing Course
+    
+    Educator->>Client: Publish course
+    Client->>APIGateway: PUT /courses/{courseId}/publish
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Course Owner
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Update course status to published
+        SurrealDB-->>Lambda: Update confirmation
+        Lambda->>NotificationService: Notify subscribers of new course
+        Lambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Educator: Display course published successfully
+    end 
