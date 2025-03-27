@@ -1,0 +1,48 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant CourseLambda as Course Content Lambda
+    participant ProgressLambda as Progress Tracking Lambda
+    participant CDN as Content Delivery Network
+    participant SurrealDB
+    
+    Student->>Client: Select section material (PDF/Video)
+    Client->>APIGateway: GET /materials/{materialId}
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated & Enrolled
+        APIGateway->>CourseLambda: Forward Request
+        CourseLambda->>SurrealDB: Get material details
+        SurrealDB-->>CourseLambda: Material data with content URL
+        CourseLambda->>SurrealDB: Log material access
+        SurrealDB-->>CourseLambda: Access log confirmation
+        CourseLambda-->>APIGateway: 200 OK (Material details)
+        APIGateway-->>Client: 200 OK (Material details)
+        
+        alt Material Type = PDF
+            Client->>CDN: Request PDF content
+            CDN-->>Client: PDF content stream
+            Client-->>Student: Display PDF viewer
+            Student->>Client: Scroll through PDF
+            Client->>APIGateway: POST /progress (update page)
+            APIGateway->>ProgressLambda: Forward Request
+            ProgressLambda->>SurrealDB: Update progress record
+            SurrealDB-->>ProgressLambda: Progress update confirmation
+            ProgressLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+        else Material Type = Video
+            Client->>CDN: Request video content
+            CDN-->>Client: Video content stream (adaptive bitrate)
+            Client-->>Student: Display video player
+            Student->>Client: Watch video
+            Client->>APIGateway: POST /progress (update timestamp)
+            APIGateway->>ProgressLambda: Forward Request
+            ProgressLambda->>SurrealDB: Update progress record
+            SurrealDB-->>ProgressLambda: Progress update confirmation
+            ProgressLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+        end
+    end 

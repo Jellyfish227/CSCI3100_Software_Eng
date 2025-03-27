@@ -1,0 +1,72 @@
+sequenceDiagram
+    participant Moderator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ForumLambda as Forum Management Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    alt Approve Content
+        Moderator->>Client: Approve content (remove flags)
+        Client->>APIGateway: PUT /forum/posts/{postId}/approve
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Moderator
+            APIGateway->>ForumLambda: Forward Request
+            ForumLambda->>SurrealDB: Update post status (remove flags)
+            SurrealDB-->>ForumLambda: Update confirmation
+            ForumLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Moderator: Display approval confirmation
+        end
+    else Edit Content
+        Moderator->>Client: Edit inappropriate content
+        Client->>APIGateway: PUT /forum/posts/{postId}
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Moderator
+            APIGateway->>ForumLambda: Forward Request
+            ForumLambda->>SurrealDB: Update post content
+            SurrealDB-->>ForumLambda: Update confirmation
+            ForumLambda->>NotificationService: Notify post author
+            NotificationService-->>ForumLambda: Notification confirmation
+            ForumLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Moderator: Display edit confirmation
+        end
+    else Delete Content
+        Moderator->>Client: Delete post
+        Client->>APIGateway: DELETE /forum/posts/{postId}
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Moderator
+            APIGateway->>ForumLambda: Forward Request
+            ForumLambda->>SurrealDB: Mark post as deleted
+            SurrealDB-->>ForumLambda: Update confirmation
+            ForumLambda->>NotificationService: Notify post author
+            NotificationService-->>ForumLambda: Notification confirmation
+            ForumLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Moderator: Display deletion confirmation
+        end
+    else Issue Warning
+        Moderator->>Client: Issue warning to user
+        Client->>APIGateway: POST /users/{userId}/warnings
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Moderator
+            APIGateway->>ForumLambda: Forward Request
+            ForumLambda->>SurrealDB: Record warning
+            SurrealDB-->>ForumLambda: Storage confirmation
+            ForumLambda->>NotificationService: Send warning to user
+            NotificationService-->>ForumLambda: Notification confirmation
+            ForumLambda-->>APIGateway: 201 Created
+            APIGateway-->>Client: 201 Created
+            Client-->>Moderator: Display warning confirmation
+        end
+    end 

@@ -1,0 +1,78 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AssessmentLambda as Assessment Lambda
+    participant CodeExecLambda as Code Execution Lambda
+    participant SurrealDB
+    
+    note over Student, SurrealDB: Starting Code Assessment
+    
+    Student->>Client: Open assessment
+    Client->>APIGateway: GET /assessments/{assessmentId}
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated & Enrolled
+        APIGateway->>AssessmentLambda: Forward Request
+        AssessmentLambda->>SurrealDB: Get assessment details
+        SurrealDB-->>AssessmentLambda: Assessment data with questions
+        AssessmentLambda-->>APIGateway: 200 OK (Assessment details)
+        APIGateway-->>Client: 200 OK (Assessment details)
+        Client-->>Student: Display code assessment interface
+    end
+    
+    note over Student, SurrealDB: Working on Code Solution
+    
+    Student->>Client: Write code solution
+    Client-->>Student: Local syntax highlighting and validation
+    
+    Student->>Client: Run code with sample input
+    Client->>APIGateway: POST /code/execute
+    APIGateway->>CodeExecLambda: Forward Request
+    CodeExecLambda->>CodeExecLambda: Execute code in sandbox
+    CodeExecLambda-->>APIGateway: 200 OK (Execution results)
+    APIGateway-->>Client: 200 OK (Execution results)
+    Client-->>Student: Display execution results
+    
+    note over Student, SurrealDB: Submit for Grading
+    
+    Student->>Client: Submit solution for grading
+    Client->>APIGateway: POST /assessments/{assessmentId}/submissions
+    APIGateway->>AssessmentLambda: Forward Request
+    AssessmentLambda->>SurrealDB: Get test cases
+    SurrealDB-->>AssessmentLambda: Test cases
+    
+    AssessmentLambda->>CodeExecLambda: Execute code against test cases
+    CodeExecLambda->>CodeExecLambda: Run all test cases in sandbox
+    CodeExecLambda-->>AssessmentLambda: Test results (pass/fail)
+    
+    AssessmentLambda->>AssessmentLambda: Calculate score
+    AssessmentLambda->>SurrealDB: Store submission and results
+    SurrealDB-->>AssessmentLambda: Storage confirmation
+    
+    alt All Tests Passed
+        AssessmentLambda-->>APIGateway: 200 OK (Perfect score)
+        APIGateway-->>Client: 200 OK (Perfect score)
+        Client-->>Student: Display success and full score
+    else Some Tests Failed
+        AssessmentLambda-->>APIGateway: 200 OK (Partial score)
+        APIGateway-->>Client: 200 OK (Partial score)
+        Client-->>Student: Display partial success with feedback
+    else All Tests Failed
+        AssessmentLambda-->>APIGateway: 200 OK (Zero score)
+        APIGateway-->>Client: 200 OK (Zero score)
+        Client-->>Student: Display failure with hints
+    end
+    
+    note over Student, SurrealDB: Viewing Assessment History
+    
+    Student->>Client: View submission history
+    Client->>APIGateway: GET /assessments/{assessmentId}/submissions
+    APIGateway->>AssessmentLambda: Forward Request
+    AssessmentLambda->>SurrealDB: Get submission history
+    SurrealDB-->>AssessmentLambda: Submission records
+    AssessmentLambda-->>APIGateway: 200 OK (Submission history)
+    APIGateway-->>Client: 200 OK (Submission history)
+    Client-->>Student: Display submission history and progress 

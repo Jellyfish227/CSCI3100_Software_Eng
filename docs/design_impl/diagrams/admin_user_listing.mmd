@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant Admin
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AdminLambda as User Management Lambda
+    participant SurrealDB
+    
+    Admin->>Client: View user list
+    Client->>APIGateway: GET /admin/users?filter=...
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Admin
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>SurrealDB: Query users with filters
+        SurrealDB-->>AdminLambda: Filtered user list
+        AdminLambda-->>APIGateway: 200 OK (User list)
+        APIGateway-->>Client: 200 OK (User list)
+        Client-->>Admin: Display user list with pagination
+        
+        Admin->>Client: Apply user filters
+        Client->>APIGateway: GET /admin/users?filter=role:student,status:active
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>SurrealDB: Query users with advanced filters
+        SurrealDB-->>AdminLambda: Filtered user list
+        AdminLambda-->>APIGateway: 200 OK (Filtered list)
+        APIGateway-->>Client: 200 OK (Filtered list)
+        Client-->>Admin: Display filtered user list
+        
+        Admin->>Client: Search for specific user
+        Client->>APIGateway: GET /admin/users/search?q=username
+        APIGateway->>AdminLambda: Forward Request
+        AdminLambda->>SurrealDB: Search users by query
+        SurrealDB-->>AdminLambda: Search results
+        AdminLambda-->>APIGateway: 200 OK (Search results)
+        APIGateway-->>Client: 200 OK (Search results)
+        Client-->>Admin: Display search results
+    end 

@@ -1,0 +1,48 @@
+sequenceDiagram
+    participant Moderator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ForumLambda as Forum Management Lambda
+    participant SurrealDB
+    
+    Moderator->>Client: Access forum settings
+    Client->>APIGateway: GET /forum/settings
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Moderator
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get forum configuration
+        SurrealDB-->>ForumLambda: Forum settings
+        ForumLambda-->>APIGateway: 200 OK (Settings)
+        APIGateway-->>Client: 200 OK (Settings)
+        Client-->>Moderator: Display forum settings
+        
+        Moderator->>Client: Update forum settings
+        Client->>APIGateway: PUT /forum/settings
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Update forum configuration
+        SurrealDB-->>ForumLambda: Update confirmation
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display settings updated confirmation
+        
+        Moderator->>Client: Configure auto-moderation rules
+        Client->>APIGateway: PUT /forum/auto-moderation
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Update auto-moderation rules
+        SurrealDB-->>ForumLambda: Rules update confirmation
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display rules updated message
+        
+        Moderator->>Client: Configure banned keywords
+        Client->>APIGateway: PUT /forum/banned-keywords
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Update banned keywords list
+        SurrealDB-->>ForumLambda: Update confirmation
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display keywords updated message
+    end 

@@ -1,0 +1,35 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AssessmentLambda as Assessment Lambda
+    participant SurrealDB
+    
+    Student->>Client: Browse available assessments
+    Client->>APIGateway: GET /courses/{courseId}/assessments
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated & Enrolled
+        APIGateway->>AssessmentLambda: Forward Request
+        AssessmentLambda->>SurrealDB: Get course assessments
+        SurrealDB-->>AssessmentLambda: Assessment list
+        AssessmentLambda-->>APIGateway: 200 OK (Assessment list)
+        APIGateway-->>Client: 200 OK (Assessment list)
+        Client-->>Student: Display assessment list
+        
+        Student->>Client: Open assessment
+        Client->>APIGateway: GET /assessments/{assessmentId}
+        APIGateway->>AssessmentLambda: Forward Request
+        AssessmentLambda->>SurrealDB: Get assessment details
+        SurrealDB-->>AssessmentLambda: Assessment data with questions
+        AssessmentLambda->>SurrealDB: Record assessment start
+        SurrealDB-->>AssessmentLambda: Record confirmation
+        AssessmentLambda-->>APIGateway: 200 OK (Assessment details)
+        APIGateway-->>Client: 200 OK (Assessment details)
+        Client-->>Student: Display code assessment interface
+        
+        Student->>Client: Read instructions
+        Client-->>Student: Display instructions, time limits, scoring
+    end 

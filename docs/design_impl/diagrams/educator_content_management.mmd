@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant Educator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Content Management Lambda
+    participant SurrealDB
+    participant S3 as S3 Storage
+    
+    Educator->>Client: Add section to course
+    Client->>APIGateway: POST /courses/{courseId}/sections
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Course Owner
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Create section record
+        SurrealDB-->>Lambda: Section creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display section added successfully
+        
+        Educator->>Client: Upload content (PDF/Video)
+        Client->>APIGateway: POST /sections/{sectionId}/materials
+        APIGateway->>Lambda: Forward Request
+        Lambda->>S3: Upload content file
+        S3-->>Lambda: Upload confirmation & URL
+        Lambda->>SurrealDB: Create material record with content URL
+        SurrealDB-->>Lambda: Material creation confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Educator: Display content uploaded successfully
+        
+        Educator->>Client: Edit section/material
+        Client->>APIGateway: PUT /materials/{materialId}
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Update material record
+        SurrealDB-->>Lambda: Update confirmation
+        Lambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Educator: Display edit confirmation
+    end 

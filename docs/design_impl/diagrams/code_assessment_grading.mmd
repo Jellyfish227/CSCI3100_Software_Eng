@@ -1,0 +1,44 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AssessmentLambda as Assessment Lambda
+    participant CodeExecLambda as Code Execution Lambda
+    participant SurrealDB
+    
+    Student->>Client: Submit solution for grading
+    Client->>APIGateway: POST /assessments/{assessmentId}/submissions
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>AssessmentLambda: Forward Request
+        AssessmentLambda->>SurrealDB: Get test cases
+        SurrealDB-->>AssessmentLambda: Test cases
+        
+        AssessmentLambda->>CodeExecLambda: Execute code against test cases
+        CodeExecLambda->>CodeExecLambda: Run all test cases in sandbox
+        CodeExecLambda-->>AssessmentLambda: Test results (pass/fail)
+        
+        AssessmentLambda->>AssessmentLambda: Calculate score based on passing tests
+        AssessmentLambda->>SurrealDB: Store submission and results
+        SurrealDB-->>AssessmentLambda: Storage confirmation
+        
+        AssessmentLambda->>SurrealDB: Update student progress
+        SurrealDB-->>AssessmentLambda: Progress update confirmation
+        
+        alt All Tests Passed
+            AssessmentLambda-->>APIGateway: 200 OK (Perfect score)
+            APIGateway-->>Client: 200 OK (Perfect score)
+            Client-->>Student: Display success and full score
+        else Some Tests Failed
+            AssessmentLambda-->>APIGateway: 200 OK (Partial score)
+            APIGateway-->>Client: 200 OK (Partial score)
+            Client-->>Student: Display partial success with feedback
+        else All Tests Failed
+            AssessmentLambda-->>APIGateway: 200 OK (Zero score)
+            APIGateway-->>Client: 200 OK (Zero score)
+            Client-->>Student: Display failure with hints
+        end
+    end 
