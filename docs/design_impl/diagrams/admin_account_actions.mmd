@@ -1,0 +1,63 @@
+sequenceDiagram
+    participant Admin
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant AdminLambda as User Management Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    alt Disable Account
+        Admin->>Client: Disable user account
+        Client->>APIGateway: PUT /admin/users/{userId}/disable
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Admin
+            APIGateway->>AdminLambda: Forward Request
+            AdminLambda->>Cognito: Disable user in authentication system
+            Cognito-->>AdminLambda: Disable confirmation
+            AdminLambda->>SurrealDB: Update user status in database
+            SurrealDB-->>AdminLambda: Update confirmation
+            AdminLambda->>NotificationService: Notify user of account disabling
+            NotificationService-->>AdminLambda: Notification confirmation
+            AdminLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Admin: Display account disable confirmation
+        end
+    else Delete Account
+        Admin->>Client: Delete user account
+        Client->>APIGateway: DELETE /admin/users/{userId}
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Admin
+            APIGateway->>AdminLambda: Forward Request
+            AdminLambda->>Cognito: Remove user from authentication system
+            Cognito-->>AdminLambda: Removal confirmation
+            AdminLambda->>SurrealDB: Mark user as deleted in database
+            SurrealDB-->>AdminLambda: Update confirmation
+            AdminLambda->>NotificationService: Notify user of account deletion
+            NotificationService-->>AdminLambda: Notification confirmation
+            AdminLambda-->>APIGateway: 200 OK
+            APIGateway-->>Client: 200 OK
+            Client-->>Admin: Display account deletion confirmation
+        end
+    else Bulk Actions
+        Admin->>Client: Perform bulk user action
+        Client->>APIGateway: POST /admin/users/bulk-action
+        APIGateway->>Cognito: Authenticate Request
+        Cognito-->>APIGateway: Authentication Result
+        
+        alt Authenticated as Admin
+            APIGateway->>AdminLambda: Forward Request
+            AdminLambda->>AdminLambda: Process bulk operation
+            AdminLambda->>SurrealDB: Apply changes to multiple users
+            SurrealDB-->>AdminLambda: Bulk update confirmation
+            AdminLambda->>NotificationService: Send notifications to affected users
+            NotificationService-->>AdminLambda: Notification confirmation
+            AdminLambda-->>APIGateway: 200 OK (Operation summary)
+            APIGateway-->>Client: 200 OK (Operation summary)
+            Client-->>Admin: Display bulk operation results
+        end
+    end 

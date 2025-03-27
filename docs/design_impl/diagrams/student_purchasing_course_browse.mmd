@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Course Browse Lambda
+    participant SurrealDB
+    
+    Student->>Client: Browse course catalog
+    Client->>APIGateway: GET /courses?filter=...
+    APIGateway->>Lambda: Forward Request
+    Lambda->>SurrealDB: Query available courses
+    SurrealDB-->>Lambda: Course listings
+    Lambda-->>APIGateway: 200 OK (Course listings)
+    APIGateway-->>Client: 200 OK (Course listings)
+    Client-->>Student: Display course catalog
+    
+    Student->>Client: View course details
+    Client->>APIGateway: GET /courses/{courseId}
+    APIGateway->>Lambda: Forward Request
+    Lambda->>SurrealDB: Get course details
+    SurrealDB-->>Lambda: Course details
+    Lambda-->>APIGateway: 200 OK (Course details)
+    APIGateway-->>Client: 200 OK (Course details)
+    Client-->>Student: Display course details 

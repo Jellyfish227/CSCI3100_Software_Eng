@@ -1,0 +1,35 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Enrollment Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    Student->>Client: Confirm enrollment after payment
+    Client->>APIGateway: POST /courses/{courseId}/enroll
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Create enrollment record
+        SurrealDB-->>Lambda: Enrollment confirmation
+        Lambda->>SurrealDB: Update user course access
+        SurrealDB-->>Lambda: Access update confirmation
+        Lambda->>NotificationService: Send enrollment confirmation
+        NotificationService-->>Student: Email confirmation
+        Lambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Student: Display enrollment success
+        
+        Student->>Client: Access new course
+        Client->>APIGateway: GET /courses/{courseId}/materials
+        APIGateway->>Lambda: Forward Request
+        Lambda->>SurrealDB: Get course materials
+        SurrealDB-->>Lambda: Course materials data
+        Lambda-->>APIGateway: 200 OK (Course materials)
+        APIGateway-->>Client: 200 OK (Course materials)
+        Client-->>Student: Display course content
+    end 

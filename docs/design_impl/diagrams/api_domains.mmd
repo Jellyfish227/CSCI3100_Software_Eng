@@ -1,0 +1,46 @@
+graph TD
+    API[API Gateway] --> Auth[Authentication & User Management]
+    API --> Course[Course Management]
+    API --> Learning[Learning Experience]
+    API --> Assessment[Assessment System]
+    API --> CodeExec[Code Execution Environment]
+    API --> Discussion[Discussion & Community]
+    
+    %% Authentication Domain
+    Auth --> Register
+    Auth --> Login
+    Auth --> Refresh
+    Auth --> ResetPwd
+    Auth --> Users
+    
+    %% Course Management Domain
+    Course --> CoursesCRUD
+    Course --> SectionsCRUD
+    Course --> MaterialsCRUD
+    
+    %% Learning Experience Domain
+    Learning --> Enrollments
+    Learning --> Progress
+    Learning --> Recommendations
+    
+    %% Assessment System Domain
+    Assessment --> Quizzes
+    Assessment --> Questions
+    Assessment --> Attempts
+    
+    %% Code Execution Domain
+    CodeExec --> Execute
+    CodeExec --> Submissions
+    
+    %% Discussion Forum Domain
+    Discussion --> Categories
+    Discussion --> Threads
+    Discussion --> Posts
+    
+    style API fill:#FF9900,stroke:#333,stroke-width:2px
+    style Auth fill:#00B7FF,stroke:#333,stroke-width:2px
+    style Course fill:#00B7FF,stroke:#333,stroke-width:2px
+    style Learning fill:#00B7FF,stroke:#333,stroke-width:2px
+    style Assessment fill:#00B7FF,stroke:#333,stroke-width:2px
+    style CodeExec fill:#00B7FF,stroke:#333,stroke-width:2px
+    style Discussion fill:#00B7FF,stroke:#333,stroke-width:2px 

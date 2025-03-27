@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant Student
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant CodeExecLambda as Code Execution Lambda
+    participant SurrealDB
+    
+    Student->>Client: Write code solution
+    Client-->>Student: Local syntax highlighting and validation
+    
+    Student->>Client: Run code with sample input
+    Client->>APIGateway: POST /code/execute
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated
+        APIGateway->>CodeExecLambda: Forward Request
+        CodeExecLambda->>CodeExecLambda: Prepare sandbox environment
+        CodeExecLambda->>CodeExecLambda: Execute code in sandbox
+        CodeExecLambda->>CodeExecLambda: Capture output & errors
+        CodeExecLambda-->>APIGateway: 200 OK (Execution results)
+        APIGateway-->>Client: 200 OK (Execution results)
+        Client-->>Student: Display execution results
+        
+        alt Code Error
+            Student->>Client: Debug code
+            Client-->>Student: Show error line and message
+            Student->>Client: Edit code to fix errors
+            Client-->>Student: Update syntax highlighting
+        else Code Success
+            Student->>Client: Verify output against expected result
+            Client-->>Student: Display comparison
+            
+            alt Output Not Matching
+                Student->>Client: Refine solution
+                Client-->>Student: Update syntax highlighting
+            else Output Matches
+                Student->>Client: Continue to next step
+            end
+        end
+    end 

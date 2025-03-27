@@ -1,0 +1,89 @@
+sequenceDiagram
+    participant Moderator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ForumLambda as Forum Management Lambda
+    participant SurrealDB
+    participant NotificationService
+    
+    note over Moderator, NotificationService: Monitoring Forum Activities
+    
+    Moderator->>Client: Open forum management dashboard
+    Client->>APIGateway: GET /forum/management/dashboard
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Moderator
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get forum statistics and flagged content
+        SurrealDB-->>ForumLambda: Forum data
+        ForumLambda-->>APIGateway: 200 OK (Dashboard data)
+        APIGateway-->>Client: 200 OK (Dashboard data)
+        Client-->>Moderator: Display moderation dashboard
+    end
+    
+    note over Moderator, NotificationService: Reviewing Flagged Content
+    
+    Moderator->>Client: View flagged post
+    Client->>APIGateway: GET /forum/posts/{postId}
+    APIGateway->>ForumLambda: Forward Request
+    ForumLambda->>SurrealDB: Get post details and flags
+    SurrealDB-->>ForumLambda: Post data with flags
+    ForumLambda-->>APIGateway: 200 OK (Post details)
+    APIGateway-->>Client: 200 OK (Post details)
+    Client-->>Moderator: Display flagged post and reasons
+    
+    note over Moderator, NotificationService: Taking Moderation Action
+    
+    alt Approve Content
+        Moderator->>Client: Approve content (remove flags)
+        Client->>APIGateway: PUT /forum/posts/{postId}/approve
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Update post status (remove flags)
+        SurrealDB-->>ForumLambda: Update confirmation
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display approval confirmation
+    else Edit Content
+        Moderator->>Client: Edit inappropriate content
+        Client->>APIGateway: PUT /forum/posts/{postId}
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Update post content
+        SurrealDB-->>ForumLambda: Update confirmation
+        ForumLambda->>NotificationService: Notify post author
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display edit confirmation
+    else Delete Content
+        Moderator->>Client: Delete post
+        Client->>APIGateway: DELETE /forum/posts/{postId}
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Mark post as deleted
+        SurrealDB-->>ForumLambda: Update confirmation
+        ForumLambda->>NotificationService: Notify post author
+        ForumLambda-->>APIGateway: 200 OK
+        APIGateway-->>Client: 200 OK
+        Client-->>Moderator: Display deletion confirmation
+    else Issue Warning
+        Moderator->>Client: Issue warning to user
+        Client->>APIGateway: POST /users/{userId}/warnings
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Record warning
+        SurrealDB-->>ForumLambda: Storage confirmation
+        ForumLambda->>NotificationService: Send warning to user
+        ForumLambda-->>APIGateway: 201 Created
+        APIGateway-->>Client: 201 Created
+        Client-->>Moderator: Display warning confirmation
+    end
+    
+    note over Moderator, NotificationService: Forum Configuration
+    
+    Moderator->>Client: Update forum settings
+    Client->>APIGateway: PUT /forum/settings
+    APIGateway->>ForumLambda: Forward Request
+    ForumLambda->>SurrealDB: Update forum configuration
+    SurrealDB-->>ForumLambda: Update confirmation
+    ForumLambda-->>APIGateway: 200 OK
+    APIGateway-->>Client: 200 OK
+    Client-->>Moderator: Display settings updated confirmation 

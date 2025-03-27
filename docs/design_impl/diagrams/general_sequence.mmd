@@ -1,0 +1,34 @@
+sequenceDiagram
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant Lambda as Lambda Functions
+    participant SurrealDB
+    participant S3
+    
+    Client->>APIGateway: HTTP Request
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Not Authenticated
+        APIGateway-->>Client: 401 Unauthorized
+    else Authenticated
+        APIGateway->>Lambda: Forward Request
+        Lambda->>Lambda: Authorize Request (Role Check)
+        
+        alt Not Authorized
+            Lambda-->>APIGateway: 403 Forbidden
+            APIGateway-->>Client: 403 Forbidden
+        else Authorized
+            Lambda->>SurrealDB: Database Operations
+            SurrealDB-->>Lambda: Query Results
+            
+            opt Content Operations
+                Lambda->>S3: Store/Retrieve Content
+                S3-->>Lambda: Content Results
+            end
+            
+            Lambda-->>APIGateway: HTTP Response
+            APIGateway-->>Client: HTTP Response
+        end
+    end 

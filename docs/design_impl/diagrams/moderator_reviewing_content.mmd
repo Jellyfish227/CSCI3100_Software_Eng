@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant Moderator
+    participant Client
+    participant APIGateway as API Gateway
+    participant Cognito
+    participant ForumLambda as Forum Management Lambda
+    participant SurrealDB
+    
+    Moderator->>Client: View flagged post
+    Client->>APIGateway: GET /forum/posts/{postId}
+    APIGateway->>Cognito: Authenticate Request
+    Cognito-->>APIGateway: Authentication Result
+    
+    alt Authenticated as Moderator
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get post details and flags
+        SurrealDB-->>ForumLambda: Post data with flags
+        ForumLambda-->>APIGateway: 200 OK (Post details)
+        APIGateway-->>Client: 200 OK (Post details)
+        Client-->>Moderator: Display flagged post and reasons
+        
+        Moderator->>Client: View post context
+        Client->>APIGateway: GET /forum/posts/{postId}/context
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get surrounding posts/thread
+        SurrealDB-->>ForumLambda: Thread context
+        ForumLambda-->>APIGateway: 200 OK (Thread context)
+        APIGateway-->>Client: 200 OK (Thread context)
+        Client-->>Moderator: Display post in context
+        
+        Moderator->>Client: View reporter information
+        Client->>APIGateway: GET /forum/posts/{postId}/reports
+        APIGateway->>ForumLambda: Forward Request
+        ForumLambda->>SurrealDB: Get user reports
+        SurrealDB-->>ForumLambda: Report data
+        ForumLambda-->>APIGateway: 200 OK (Report data)
+        APIGateway-->>Client: 200 OK (Report data)
+        Client-->>Moderator: Display report details
+    end 
