@@ -1,9 +1,0 @@
-.DS_Store
-.vscode
-.env
-.env.local
-.env.development
-.env.production
-
-.idea
-.vscode
