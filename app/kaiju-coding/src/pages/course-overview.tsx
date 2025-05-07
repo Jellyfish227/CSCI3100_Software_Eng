@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { MainNav } from "@/components/main-nav"
 import { UserNav } from "@/components/user-nav"
 import { Footer } from "@/components/footer"
@@ -17,8 +18,10 @@ import {
   getTrendingCourses,
   type CourseData,
 } from "@/data/course-data"
+import { Button } from "@/components/ui/button"
 
 export default function CourseOverviewPage() {
+  const navigate = useNavigate()
   const [searchResults, setSearchResults] = useState<CourseData[]>(coursesData)
   const [isSearching, setIsSearching] = useState(false)
   const [activeView, setActiveView] = useState<"grid" | "list">("grid")
@@ -32,6 +35,10 @@ export default function CourseOverviewPage() {
   const clearSearch = () => {
     setIsSearching(false)
     setSearchResults(coursesData)
+  }
+
+  const handleViewFeaturedCourse = () => {
+    navigate(`/course/${getFeaturedCourse().id}`)
   }
 
   return (
@@ -241,12 +248,12 @@ export default function CourseOverviewPage() {
                             </div>
                           </div>
                           <div className="mt-auto">
-                            <a
-                              href={`/courses/${getFeaturedCourse().id}`}
-                              className="inline-block bg-[#4aafbf] hover:bg-[#3d9aa9] text-white px-6 py-2 rounded-md"
+                            <Button
+                              onClick={handleViewFeaturedCourse}
+                              className="bg-[#4aafbf] hover:bg-[#3d9aa9] text-white"
                             >
                               View Course
-                            </a>
+                            </Button>
                           </div>
                         </div>
                       </div>

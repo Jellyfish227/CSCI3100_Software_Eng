@@ -1,23 +1,38 @@
 import type React from "react"
 import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useAuth } from "@/lib/auth"
 
 export function SignUp() {
+  const navigate = useNavigate()
+  const { signup } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [agreeTerms, setAgreeTerms] = useState(false)
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ name, email, password, agreeTerms })
-    // Handle registration logic here
+    setError("")
+    setIsLoading(true)
+
+    try {
+      await signup(email, password, name)
+      navigate("/")
+    } catch (err) {
+      setError("Failed to create account. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -29,6 +44,11 @@ export function SignUp() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {error && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-500">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -41,6 +61,7 @@ export function SignUp() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -56,6 +77,7 @@ export function SignUp() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -70,6 +92,7 @@ export function SignUp() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
                 <Button
                   type="button"
@@ -77,6 +100,7 @@ export function SignUp() {
                   size="icon"
                   className="absolute right-0 top-0 h-10 w-10 text-muted-foreground"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
@@ -92,6 +116,7 @@ export function SignUp() {
                 checked={agreeTerms}
                 onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
                 className="mt-1"
+                disabled={isLoading}
               />
               <Label htmlFor="terms" className="text-sm font-normal">
                 I agree to the{" "}
@@ -104,8 +129,12 @@ export function SignUp() {
                 </a>
               </Label>
             </div>
-            <Button type="submit" className="w-full bg-[#4aafbf] hover:bg-[#3d9aa9]" disabled={!agreeTerms}>
-              Create account
+            <Button 
+              type="submit" 
+              className="w-full bg-[#4aafbf] hover:bg-[#3d9aa9]" 
+              disabled={!agreeTerms || isLoading}
+            >
+              {isLoading ? "Creating account..." : "Create account"}
             </Button>
             <div className="relative flex items-center justify-center">
               <div className="absolute inset-0 flex items-center">
@@ -114,7 +143,7 @@ export function SignUp() {
               <span className="relative bg-card px-2 text-sm text-muted-foreground">Or continue with</span>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" type="button" className="w-full">
+              <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -136,7 +165,7 @@ export function SignUp() {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" type="button" className="w-full">
+              <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
                 <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                 </svg>
@@ -148,9 +177,9 @@ export function SignUp() {
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
             Already have an account?{" "}
-            <a href="#sign-in" className="text-[#4aafbf] hover:underline">
+            <Link to="/signin" className="text-[#4aafbf] hover:underline">
               Sign in
-            </a>
+            </Link>
           </div>
         </CardFooter>
       </Card>

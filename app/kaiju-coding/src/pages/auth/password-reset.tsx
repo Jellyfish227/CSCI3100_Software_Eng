@@ -68,7 +68,7 @@ export function PasswordReset() {
         )}
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
-            <a href="#sign-in" className="text-[#4aafbf] hover:underline inline-flex items-center">
+            <a href="/sign-in" className="text-[#4aafbf] hover:underline inline-flex items-center">
               <ArrowLeft className="mr-1 h-4 w-4" />
               Back to sign in
             </a>
