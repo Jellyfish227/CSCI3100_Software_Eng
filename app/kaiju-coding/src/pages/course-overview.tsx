@@ -1,6 +1,5 @@
-"use client"
-
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { MainNav } from "@/components/main-nav"
 import { UserNav } from "@/components/user-nav"
 import { Footer } from "@/components/footer"
@@ -17,8 +16,10 @@ import {
   getTrendingCourses,
   type CourseData,
 } from "@/data/course-data"
+import { Button } from "@/components/ui/button"
 
 export default function CourseOverviewPage() {
+  const navigate = useNavigate()
   const [searchResults, setSearchResults] = useState<CourseData[]>(coursesData)
   const [isSearching, setIsSearching] = useState(false)
   const [activeView, setActiveView] = useState<"grid" | "list">("grid")
@@ -32,6 +33,10 @@ export default function CourseOverviewPage() {
   const clearSearch = () => {
     setIsSearching(false)
     setSearchResults(coursesData)
+  }
+
+  const handleViewFeaturedCourse = () => {
+    navigate(`/course/${getFeaturedCourse().id}`)
   }
 
   return (
@@ -177,12 +182,6 @@ export default function CourseOverviewPage() {
                 </div>
               ) : (
                 <div className="space-y-12">
-                  {/* Popular Topics Carousel */}
-                  <section>
-                    {/* <PopularTopics topics={topicsData} /> */}
-                  </section>
-
-                  {/* Featured Course */}
                   <section>
                     <h2 className="text-2xl font-bold mb-6">Featured Course</h2>
                     <div className="bg-[#f5f5f7] rounded-lg overflow-hidden">
@@ -241,26 +240,20 @@ export default function CourseOverviewPage() {
                             </div>
                           </div>
                           <div className="mt-auto">
-                            <a
-                              href={`/courses/${getFeaturedCourse().id}`}
-                              className="inline-block bg-[#4aafbf] hover:bg-[#3d9aa9] text-white px-6 py-2 rounded-md"
+                            <Button
+                              onClick={handleViewFeaturedCourse}
+                              className="bg-[#4aafbf] hover:bg-[#3d9aa9] text-white"
                             >
                               View Course
-                            </a>
+                            </Button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </section>
 
-                  {/* Course Tabs by Category */}
                   <section>
                     <CourseTabs courses={coursesData} categories={getCategories()} />
-                  </section>
-
-                  {/* Trending Courses */}
-                  <section>
-                    {/* <TrendingCourses courses={getTrendingCourses(4)} featuredCourse={getFeaturedCourse()} /> */}
                   </section>
                 </div>
               )}

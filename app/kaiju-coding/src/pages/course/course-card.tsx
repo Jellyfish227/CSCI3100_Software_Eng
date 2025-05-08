@@ -1,6 +1,7 @@
 import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { useNavigate } from "react-router-dom"
 import type { CourseData } from "@/data/course-data"
 
 interface CourseCardProps {
@@ -8,7 +9,12 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
+  const navigate = useNavigate()
   const { id, title, image, rating, reviews, duration, students, price, instructor } = course
+
+  const handleJoinCourse = () => {
+    navigate(`/course/${id}`)
+  }
 
   return (
     <Card className="overflow-hidden">
@@ -74,7 +80,12 @@ export function CourseCard({ course }: CourseCardProps) {
         <div className="font-bold">
           ${price} <span className="text-xs text-muted-foreground font-normal">/year</span>
         </div>
-        <Button className="bg-[#1e2a4a] hover:bg-[#141d33]">Join</Button>
+        <Button 
+          className="bg-[#1e2a4a] hover:bg-[#141d33]"
+          onClick={handleJoinCourse}
+        >
+          Join
+        </Button>
       </CardFooter>
     </Card>
   )

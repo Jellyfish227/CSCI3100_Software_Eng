@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-
 export function Footer() {
   return (
     <footer className="bg-[#1e2a4a] text-white">
@@ -30,21 +29,11 @@ export function Footer() {
                   Terms & Conditions
                 </a>
               </li>
-              <li>
-                <a href="/faq" className="hover:underline">
-                  FAQ
-                </a>
-              </li>
             </ul>
           </div>
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Quick Link</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/dashboard" className="hover:underline">
-                  Dashboard
-                </a>
-              </li>
               <li>
                 <a href="/courses" className="hover:underline">
                   Courses
@@ -53,16 +42,6 @@ export function Footer() {
               <li>
                 <a href="/assessment" className="hover:underline">
                   Assessment
-                </a>
-              </li>
-              <li>
-                <a href="/forum" className="hover:underline">
-                  Forum
-                </a>
-              </li>
-              <li>
-                <a href="/blog" className="hover:underline">
-                  Blog
                 </a>
               </li>
             </ul>
