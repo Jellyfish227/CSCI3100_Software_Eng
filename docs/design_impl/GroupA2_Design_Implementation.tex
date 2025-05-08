@@ -440,69 +440,94 @@ Licence keys must not be predictable and should be stored securely.
 \subsection{Student}
 \begin{figure}[!htb]
     \centering
-    \includegraphics[height=0.63\textheight]{UI/stuFlow.jpg}
+    \includegraphics[height=0.6\textheight]{UI/stuFlow.jpg}
     \caption{Student Navigation Flow}
 \end{figure}
 
 \subsection{Educator}
-\begin{figure}[!htb]
+\vspace{1em}
+\begin{figure}[H] % <-- [H] comes from the float package
     \centering
     \includegraphics[height=0.3\textheight]{UI/eduFlow.jpg}
     \caption{Educator Navigation Flow}
 \end{figure}
 
-% Moderator and forum-related navigation removed
+% ---- SWAP ORDER: Educator before Learning/Assessment ----
 
-\section{Interface Storyboards}
-\subsection{Authentication Flow}
+\subsection{Educator Dashboard and Course Management}
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.38\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{UI/TeacherProfile.jpg}
+        \caption{Teacher Profile}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.38\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{UI/TeacherManageCourse.jpg}
+        \caption{Manage Course}
+    \end{subfigure}
+    \caption{Educator Profile and Course Management}
+\end{figure}
+
+\subsection{Learning and Assessment}
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.38\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{UI/StudentAssessment.jpg}
+        \caption{Student Assessment}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.38\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{UI/CourseDetail.jpg}
+        \caption{Course Detail}
+    \end{subfigure}
+    \caption{Student Assessment and Course Detail}
+\end{figure}
+
+\subsection{Educator Dashboard and Course Management}
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{UI/SignIn.jpg}
-        \caption{Sign In Screen}
+        \includegraphics[width=\textwidth]{UI/TeacherProfile.jpg}
+        \caption{Teacher Profile}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{UI/SignUp.jpg}
-        \caption{Sign Up Screen}
+        \includegraphics[width=\textwidth]{UI/TeacherManageCourse.jpg}
+        \caption{Manage Course}
     \end{subfigure}
-    \caption{Authentication Screens}
+    \caption{Educator Profile and Course Management}
 \end{figure}
 
-\subsection{Student Learning Journey}
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[height=0.4\textheight]{UI/Dashboard.jpg}
-        \caption{Student Dashboard}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[height=0.4\textheight]{UI/All Courses.jpg}
-        \caption{Course Catalog}
-    \end{subfigure}
-    \caption{Student courses view}
-\end{figure}
-
-\subsection{Learning Environment}
+\subsection{Assessment Creation and Grading}
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.47\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{UI/Assessment.jpg}
-        \caption{Assessment Interface}
+        \includegraphics[width=\textwidth]{UI/TeacherCreateAssessment.jpg}
+        \caption{Create Assessment}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.47\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{UI/During Course.jpg}
-        \caption{During Course Interface}
+        \includegraphics[width=\textwidth]{UI/TeacherAssessment.jpg}
+        \caption{Assessment Grading}
     \end{subfigure}
-    \caption{Learning and Assessment Interface}
+    \caption{Assessment Creation and Grading}
+\end{figure}
+
+\section{Overall UI Flow}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{UI/UI_flow.png}
+    \caption{Overall User Interface Flow}
 \end{figure}
 
 \section{Accessibility Considerations}
