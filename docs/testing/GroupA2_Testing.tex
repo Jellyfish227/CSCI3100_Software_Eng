@@ -64,8 +64,9 @@
 \toprule
 Version & Revised By & Revision Date & Comments \\
 \midrule
-0.1 & C. W. Leung & 2025-05-07 & Initial draft for Kaiju Academy Test Plan \\
+0.1 & C. W. Leung & 2025-05-06 & Initial draft for Kaiju Academy Test Plan \\
 \bottomrule
+
 \end{tabularx}
 \end{center}
 
@@ -79,11 +80,11 @@ Version & Revised By & Revision Date & Comments \\
 \subsection{Purpose}
 This document defines the test plan for the Kaiju Academy online learning platform. It describes the scope, objectives, test cases, resources, approach, schedule, risks, and reporting methods for the project.
 
-\subsection{References}
+\subsection{References & Acknowledgments}
 \begin{itemize}[leftmargin=*]
     \item Kaiju Academy Software Requirements Specification v1.1
     \item Kaiju Academy Design and Implementation v1.1
-    \item CSCI3100 Test Plan Template (April 2025)
+    \item This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
 \end{itemize}
 
 \section{Scope and Objectives}
@@ -98,6 +99,7 @@ Testing will cover the following key areas of Kaiju Academy:
     \item Educator course and material management
     \item Error handling, security, and data integrity
     \item Responsive UI/UX across devices (desktop, tablet, mobile)
+    \item Licence management: entering and validating a licence key before accessing course content.
 \end{itemize}
 
 \subsection{Out of Scope}
@@ -149,6 +151,12 @@ Testing will cover the following key areas of Kaiju Academy:
             \item Steps: Complete modules, view progress page
             \item Expected Result: Progress updates in real time
             \item Pass/Fail: Progress bar/percentage accurate, completed modules listed
+        \end{itemize}
+        \item \textbf{Licence Management}
+        \begin{itemize}
+            \item Steps: Attempt to access system features without a licence key; enter invalid key; enter valid key.
+            \item Expected Result: Access denied until a valid key is provided; valid key grants access.
+            \item Pass/Fail: System restricts access appropriately; error messages are clear.
         \end{itemize}
 \end{enumerate}
 

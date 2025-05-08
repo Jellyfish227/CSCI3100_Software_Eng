@@ -114,8 +114,6 @@ Kaiju Academy includes:
     \item \textbf{Monetization:} Course credit system for payment and buying credits to unlock courses.
 \end{itemize}
 
-\textbf{Removed:} Forum, dashboard, code competition, notification, calendar, data backup, keyboard shortcut, screen reader, color blindness features, and forum admin role.
-
 \section{Quality Goals}
 \begin{table}[htp]
     \centering
@@ -151,6 +149,9 @@ Kaiju Academy includes:
     \end{tabularx}
     \caption{Stakeholders and Their Roles}
 \end{table}
+
+\subsection{Acknowledgments}
+This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
 
 \chapter{System Architecture}
 
@@ -359,6 +360,24 @@ Kaiju Academy uses a credit-based payment system. Users buy credits through an i
     \includegraphics[width=0.4\textwidth]{img/credit_purchase_flow.png}
     \caption{Credit Purchase and Course Enrollment Flow}
 \end{figure}
+
+\section{Licence Key Verification}
+
+\textbf{Overview:} \\
+Upon first login or before accessing any main features, users must enter a valid licence key. The backend validates the key against a list (hardcoded or stored in the database). If the key is valid, access is granted; otherwise, the user is denied access and prompted again.
+
+\begin{enumerate}
+    \item After successful login, the user is prompted for a licence key.
+    \item The entered key is sent to the backend for validation.
+    \item If valid, the session is marked as “licenced” and the user proceeds.
+    \item If invalid, an error message is displayed and access is denied.
+\end{enumerate}
+
+\textbf{Minimal Implementation Note:} \\
+If time is limited, licence management may be implemented as a stub or described as future work, but the design must be documented.
+
+\textbf{Security Note:} \\
+Licence keys must not be predictable and should be stored securely.
 
 
 \chapter{Component Design}

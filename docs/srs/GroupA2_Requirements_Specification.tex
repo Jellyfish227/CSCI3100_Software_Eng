@@ -168,6 +168,8 @@ This Project Requirements Specification adheres to the IEEE Std 830-1998 standar
 
 \section{References and Acknowledgments}
 IEEE. IEEE Std 830-1998 IEEE Recommended Practice for Software Requirements Specifications. IEEE Computer Society, 1998.
+This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
+
 
 \chapter{Overall Description}
 \section{Product Overview}
@@ -284,6 +286,7 @@ The implementation of Kaiju Academy is governed by the following key constraints
         \end{itemize}
 \end{itemize}
 
+
 \chapter{Specific Requirements}
 
 \section{External Interface Requirements}
@@ -353,6 +356,7 @@ The following table lists all functional requirements kept in scope (removed: da
     FR13 & Learning Recommendations & System recommends courses for registration. \\
     FR14 & Security & Implements authentication, authorization, and encryption. \\
     FR15 & Error Handling & Consistent user-facing error messages for invalid input, failed login, and system errors. \\
+    FR16 & Licence Management & Users must enter a valid licence key (e.g., AAAA-BBBB-CCCC-DDDD) to access the system. The system validates the key and restricts access if invalid or absent. \\
     \hline
     \end{tabular}
     \caption{Functional Requirements Table}
@@ -520,6 +524,31 @@ The code assessment editor is a high-priority feature, providing an online text 
     \item \textbf{Maintainability:} The codebase must follow modular design principles.
     \item \textbf{Portability:} The platform must be compatible with major browsers and OSs.
     \item \textbf{Performance:} The platform must support \textbf{10,000 concurrent users} with a response time of less than \textbf{2 seconds}.
+\end{itemize}
+
+
+
+% In System Features, add a subsection at the end:
+\section{Licence Management}
+
+\subsection{Description and Priority}
+Licence management is a high-priority security and access control feature. Users must enter a valid licence key before accessing any features beyond the login screen.
+
+\subsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textbf{User Action}: Attempts to access the system without a licence key.\\
+          \textbf{System Response}: Prompts the user for a licence key.
+    \item \textbf{User Action}: Enters an invalid licence key.\\
+          \textbf{System Response}: Displays an error message and denies access.
+    \item \textbf{User Action}: Enters a valid licence key.\\
+          \textbf{System Response}: Grants access to the system.
+\end{itemize}
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item The system must prompt for a licence key after login and before accessing course content.
+    \item Licence keys must be validated against a server-side list or algorithm.
+    \item Invalid or missing keys must result in denied access.
 \end{itemize}
 
 \section{Additional Requirements}

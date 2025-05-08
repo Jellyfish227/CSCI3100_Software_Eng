@@ -1,0 +1,88 @@
+\documentclass[a4paper,11pt]{scrartcl}
+\usepackage{releasenotes} % Your custom style
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\title{Release Notes\\Kaiju Academy}
+\author{Group A2}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Release Notes}
+\addcontentsline{toc}{section}{Release Notes}
+
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+Version & Release Date & Author(s) & Summary \\
+\midrule
+1.1 & 2025-05-07 & Group A2 & Major release: stable public version, payment/credit system integrated, improved code assessment, and educator dashboards. \\
+1.0 & 2025-04-12 & Group A2 & Initial complete implementation: user registration, courses, code runner, basic educator/student features. \\
+0.5 & 2025-03-12 & Group A2 & Beta milestone: core backend and frontend features, code execution, user roles. \\
+0.2 & 2025-03-05 & Group A2 & Alpha: database schema, initial authentication, minimal course browsing. \\
+0.1 & 2024-02-20 & Group A2 & Project setup: repository, pipeline, initial UI prototyping. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{1.5em}
+
+\section{What's New in Version 1.1}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Credit and Payment System:} Users can purchase credits and enroll in paid courses. All payment handled securely via third-party gateway.
+    \item \textbf{Improved Code Assessment:} Enhanced code editor with auto-grading, feedback, and support for multiple languages.
+    \item \textbf{Educator Dashboard:} Educators can manage courses, track student progress, and upload materials efficiently.
+    \item \textbf{UI/UX Enhancements:} More responsive design, improved accessibility, and modernized navigation.
+    \item \textbf{Security Improvements:} MFA support, better error handling, and encrypted user data.
+    \item \textbf{Performance Optimizations:} Faster page load, scalable backend, and robust deployment on AWS.
+\end{itemize}
+
+\section{Fixed Issues}
+
+\begin{itemize}[leftmargin=*]
+    \item Fixed bugs in JWT authentication and session expiry.
+    \item Resolved UI glitches in course browsing and profile pages.
+    \item Improved error messages for failed logins and invalid course actions.
+    \item Addressed concurrency issues in code execution and grading.
+\end{itemize}
+
+\section{Known Issues}
+
+\begin{itemize}[leftmargin=*]
+    \item Limited browser support for some interactive editor features; recommend Chrome or Firefox for best experience.
+    \item Mobile UI in beta; minor layout issues may occur on certain devices.
+    \item Community/forum features are not included in this release.
+    \item Licence management requirement is documented in SRS and Design, but not implemented in this release.
+\end{itemize}
+
+
+
+\section{Upgrade Instructions}
+
+\begin{enumerate}[leftmargin=*]
+    \item Backup your database and user data before upgrading.
+    \item Deploy the new backend Lambda functions and synchronize the SurrealDB schema.
+    \item Update the frontend application and environment configurations.
+    \item For production, ensure all environment variables (e.g., \texttt{JWT\_SECRET}, AWS keys) are set.
+    \item Test core flows: registration, login, course enrollment, code submission, and educator dashboard access.
+\end{enumerate}
+
+\section{Credits}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{YU Ching Hei:} Backend, authentication, API design
+    \item \textbf{Lei Hei Tung:} Frontend, UI/UX, educator dashboard
+    \item \textbf{Ankhbayar Enkhtaivan:} Error handling, code assessment, documentation
+    \item \textbf{Yum Ho Kan:} Frontend, user profile, testing
+    \item \textbf{Leung Chung Wang:} Documentation, deployment, configuration
+\end{itemize}
+
+\section{Acknowledgments}
+This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
+
+
+\end{document}
