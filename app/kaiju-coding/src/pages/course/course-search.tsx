@@ -3,16 +3,17 @@ import { useState } from "react"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { CourseData } from "@/data/course-data"
-
+import { Course } from "@/types/course"
+import { useNavigate } from "react-router-dom"
 interface CourseSearchProps {
-  onSearch: (results: CourseData[]) => void
-  allCourses: CourseData[]
+  onSearch: (results: Course[]) => void
+  allCourses: Course[]
 }
 
 export function CourseSearch({ onSearch, allCourses }: CourseSearchProps) {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
-  const [suggestions] = useState(["user interface", "python", "web design", "java", "sql"])
+  const [suggestions] = useState(["react", "python", "web", "java", "sql"])
 
   // Search logic
   const handleSearch = () => {
@@ -83,7 +84,7 @@ export function CourseSearch({ onSearch, allCourses }: CourseSearchProps) {
           ))}
         </div>
       </div>
-      <Button variant="link" className="w-full text-white h-12 hover:no-underline hover:bg-[#3d9aa9] mt-4 bg-[#4aafbf]">
+      <Button onClick={() => navigate("/course-overview")} variant="link" className="w-full text-white h-12 hover:no-underline hover:bg-[#3d9aa9] mt-4 bg-[#4aafbf]">
         View All Courses
       </Button>
     </div>

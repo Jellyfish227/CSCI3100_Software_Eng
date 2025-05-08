@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { MainNav } from "@/components/main-nav"
 import { UserNav } from "@/components/user-nav"
@@ -8,24 +8,40 @@ import { CourseSearch } from "@/pages/course/course-search"
 import { CourseTabs } from "@/pages/course/course-tabs"
 // import { TrendingCourses } from "@/components/course/trending-courses"
 import { CourseCard } from "@/pages/course/course-card"
-import {
-  coursesData,
-  topicsData,
-  getCategories,
-  getFeaturedCourse,
-  getTrendingCourses,
-  type CourseData,
-} from "@/data/course-data"
 import { Button } from "@/components/ui/button"
+import { apiService } from "@/services/apiService"
+import { Course } from "@/types/course"
 
 export default function CourseOverviewPage() {
   const navigate = useNavigate()
-  const [searchResults, setSearchResults] = useState<CourseData[]>(coursesData)
+
+  const [coursesData, setCoursesData] = useState<Course[]>([])
+  const [searchResults, setSearchResults] = useState<Course[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [activeView, setActiveView] = useState<"grid" | "list">("grid")
   const [activeTab, setActiveTab] = useState("all")
+  const [categories, setCategories] = useState<string[]>([])
+  const [featuredCourse, setFeaturedCourse] = useState<Course | null>(null)
 
-  const handleSearch = (results: CourseData[]) => {
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const courses = await apiService.getCourses()
+      setCoursesData(courses)
+      setSearchResults(courses)
+      
+      // Extract unique categories using a Set
+      const uniqueCategories = [...new Set(courses.map(course => course.category))]
+      setCategories(uniqueCategories)
+      
+      const featuredCourse = await apiService.getFeaturedCourse()
+      console.log(featuredCourse)
+      setFeaturedCourse(featuredCourse)
+    }
+    fetchCourses()
+  }, [])  
+
+
+  const handleSearch = (results: Course[]) => {
     setSearchResults(results)
     setIsSearching(true)
   }
@@ -35,9 +51,6 @@ export default function CourseOverviewPage() {
     setSearchResults(coursesData)
   }
 
-  const handleViewFeaturedCourse = () => {
-    navigate(`/course/${getFeaturedCourse().id}`)
-  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -59,7 +72,7 @@ export default function CourseOverviewPage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Course Overview</h1>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Course Dashboard</h1>
                 <p className="text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   Explore our wide range of courses and find the perfect one for your learning journey
                 </p>
@@ -88,7 +101,7 @@ export default function CourseOverviewPage() {
                   <div className="mt-8">
                     <h3 className="font-medium text-lg mb-4">Categories</h3>
                     <ul className="space-y-2">
-                      {getCategories().map((category) => (
+                      {categories.map((category) => (
                         <li key={category}>
                           <button
                             onClick={() => setActiveTab(category)}
@@ -182,23 +195,24 @@ export default function CourseOverviewPage() {
                 </div>
               ) : (
                 <div className="space-y-12">
-                  <section>
+                  {featuredCourse && (
+                    <section>
                     <h2 className="text-2xl font-bold mb-6">Featured Course</h2>
                     <div className="bg-[#f5f5f7] rounded-lg overflow-hidden">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="aspect-video relative">
                           <img
-                            src={getFeaturedCourse().image || "/placeholder.svg"}
-                            alt={getFeaturedCourse().title}
+                            src={featuredCourse.thumbnail}
+                            alt={featuredCourse.title}
                             className="object-cover w-full h-full"
                           />
                         </div>
                         <div className="p-6 flex flex-col justify-center">
                           <div className="text-sm text-[#4aafbf] mb-2">
-                            {getFeaturedCourse().category.replace(/-/g, " ").toUpperCase()}
+                            {featuredCourse.category.replace(/-/g, " ").toUpperCase()}
                           </div>
-                          <h3 className="text-2xl font-bold mb-2">{getFeaturedCourse().title}</h3>
-                          <p className="mb-4">{getFeaturedCourse().description}</p>
+                          <h3 className="text-2xl font-bold mb-2">{featuredCourse.title}</h3>
+                          <p className="mb-4">{featuredCourse.description}</p>
                           <div className="flex items-center gap-4 mb-4">
                             <div className="flex items-center">
                               <svg
@@ -216,7 +230,7 @@ export default function CourseOverviewPage() {
                                 <circle cx="12" cy="12" r="10" />
                                 <polyline points="12 6 12 12 16 14" />
                               </svg>
-                              <span className="text-sm">{getFeaturedCourse().duration}</span>
+                              <span className="text-sm">{featuredCourse.duration_hours} hours</span>
                             </div>
                             <div className="flex items-center">
                               <svg
@@ -236,12 +250,12 @@ export default function CourseOverviewPage() {
                                 <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                               </svg>
-                              <span className="text-sm">{getFeaturedCourse().students}</span>
+                              <span className="text-sm">{featuredCourse.students}</span>
                             </div>
                           </div>
                           <div className="mt-auto">
                             <Button
-                              onClick={handleViewFeaturedCourse}
+                              onClick={() => navigate(`/course/${featuredCourse.id}`)}
                               className="bg-[#4aafbf] hover:bg-[#3d9aa9] text-white"
                             >
                               View Course
@@ -251,12 +265,16 @@ export default function CourseOverviewPage() {
                       </div>
                     </div>
                   </section>
+                  )}
 
                   <section>
-                    <CourseTabs courses={coursesData} categories={getCategories()} />
+                    {coursesData.length > 0 && (
+                      <CourseTabs courses={coursesData} categories={categories} />
+                    )}
                   </section>
                 </div>
-              )}
+              )
+              }
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 [package]
-name = "backend"
+name = "kaiju-academy-backend"
 version = "0.1.0"
 edition = "2024"
 authors = ["Kaiju Academy Team"]

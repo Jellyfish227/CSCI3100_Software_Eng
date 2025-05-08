@@ -2,10 +2,10 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CourseCard } from "@/pages/course/course-card"
-import type { CourseData } from "@/data/course-data"
+import { Course } from "@/types/course"
 
 interface CourseTabsProps {
-  courses: CourseData[]
+  courses: Course[]
   categories: string[]
 }
 
