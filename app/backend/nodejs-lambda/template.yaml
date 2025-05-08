@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Kaiju Academy Backend API
+  SAM Template for deploying Node.js Lambda functions
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        LOG_LEVEL: info
+        # MongoDB Connection Parameters
+        MONGODB_USER: mefbayar
+        MONGODB_PASSWORD: ZlTTw0S77HEU829H
+        MONGODB_CLUSTER: kaiju.nwdjnfi.mongodb.net
+        MONGODB_DATABASE: ''
+        MONGODB_OPTIONS: retryWrites=true&w=majority&appName=Kaiju
+        # JWT Configuration
+        JWT_SECRET: kaiju-academy-secret-key
+
+Resources:
+  # API Gateway
+  KaijuAcademyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+  # Main Lambda Function with all routes
+  MainFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: src/index.handler
+      Events:
+        # Auth routes
+        Login:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/login
+            Method: post
+        Register:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/register
+            Method: post
+        ValidateToken:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/validate
+            Method: get
+        
+        # Course routes
+        ListCourses:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses
+            Method: get
+        GetCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: get
+        GetFeaturedCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/featured
+            Method: get
+        CreateCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses
+            Method: post
+        UpdateCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: put
+        DeleteCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: delete
+        
+        # Code execution routes
+        ExecuteCode:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /code/execute
+            Method: post
+        EvaluateCode:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /code/evaluate
+            Method: post
+
+Outputs:
+  MainFunction:
+    Description: "Main Lambda Function ARN"
+    Value: !GetAtt MainFunction.Arn
+  ApiURL:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${KaijuAcademyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/" 
