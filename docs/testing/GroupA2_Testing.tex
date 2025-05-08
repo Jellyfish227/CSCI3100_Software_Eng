@@ -80,7 +80,7 @@ Version & Revised By & Revision Date & Comments \\
 \subsection{Purpose}
 This document defines the test plan for the Kaiju Academy online learning platform. It describes the scope, objectives, test cases, resources, approach, schedule, risks, and reporting methods for the project.
 
-\subsection{References & Acknowledgments}
+\subsection{References and Acknowledgments}
 \begin{itemize}[leftmargin=*]
     \item Kaiju Academy Software Requirements Specification v1.1
     \item Kaiju Academy Design and Implementation v1.1
@@ -121,6 +121,7 @@ Testing will cover the following key areas of Kaiju Academy:
 \section{Test Cases and Scenarios}
 
 \subsection{Functional Test Cases}
+To ensure each feature works as expected based on system requirements. These tests validate that the platform behaves correctly under normal and edge-case scenarios.
 \begin{enumerate}[leftmargin=*]
     \item \textbf{User Registration and Login}
         \begin{itemize}
@@ -163,12 +164,14 @@ Testing will cover the following key areas of Kaiju Academy:
 \subsection{Non-Functional Test Cases}
 
 \subsubsection{Performance Testing}
+To check if the platform can handle high user loads, fast page loads, and real-time responses during tasks. This ensures the system remains responsive and efficient even under stress.
 \begin{itemize}[leftmargin=*]
     \item Home page, login, and course page load within 2 seconds for 95\% of users
     \item Code execution returns result within 5 seconds for 99\% of cases
 \end{itemize}
 
 \subsubsection{Security Testing}
+To ensure the platform protects sensitive data and enforces access controls.
 \begin{itemize}[leftmargin=*]
     \item Only authenticated users can access protected endpoints
     \item Role-based access control enforced (e.g., only educators can create courses)
@@ -176,18 +179,21 @@ Testing will cover the following key areas of Kaiju Academy:
 \end{itemize}
 
 \subsubsection{Usability Testing}
+To ensure the platform is user-friendly and supports a smooth learning experience.
 \begin{itemize}[leftmargin=*]
     \item Navigation is clear and intuitive for both students and educators
     \item UI is responsive on mobile and desktop devices
 \end{itemize}
 
 \subsubsection{Reliability Testing}
+To ensure the platform can recover from failures and provide meaningful error messages. This builds trust that user progress and course content remain stable and accessible.
 \begin{itemize}[leftmargin=*]
     \item System recovers from AWS or DB failure without data loss
     \item Error messages are meaningful for invalid operations
 \end{itemize}
 
 \subsubsection{Compatibility Testing}
+To verify that the platform works correctly across different devices, operating systems, and browsers. This ensures that all users have a consistent experience regardless of their setup.
 \begin{itemize}[leftmargin=*]
     \item Supported browsers (Chrome, Firefox, Safari, Edge) render all pages correctly
     \item All main functions work on Windows, macOS, Android, iOS
@@ -202,7 +208,7 @@ Role & Name & Responsibilities \\
 \midrule
 Backend Developer & C. H. Yu & Assist with unit/integration test, bug fixing \\
 Cloud Engineer & Ankhbayar & Deploy project to AWS, configure hosting and cloud resources \\
-UI/UX Designer & H. T. Lee & Validate user interface and accessibility \\
+UI/UX Designer & H. T. Lei & Validate user interface and accessibility \\
 Frontend Developer & H. K. Yum & Develop and maintain user interface; assist with unit/integration testing and bug fixing \\
 Documentation Specialist & C. W. Leung & Maintain documentation, reports \\
 Product Owner & Group A2 & Validate requirements and acceptance criteria \\
