@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -85,6 +85,7 @@ const mockCourseData = {
 
 export default function CourseContent() {
   const { courseId } = useParams()
+  const navigate = useNavigate()
 
   // In a real application, you would fetch the course data based on courseId
   const courseData = mockCourseData
@@ -165,22 +166,6 @@ export default function CourseContent() {
                 </CardContent>
               </Card>
             </TabsContent>
-
-            <TabsContent value="discussion">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Discussion Forum</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center h-40 border rounded-lg">
-                    <div className="text-center space-y-2">
-                      <MessageSquare className="h-8 w-8 mx-auto text-muted-foreground" />
-                      <p className="text-muted-foreground">Discussion forum coming soon</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </Tabs>
         </div>
 
@@ -196,13 +181,9 @@ export default function CourseContent() {
                   <BookOpen className="mr-2 h-4 w-4" />
                   Course Materials
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/assessment')}  >
                   <FileText className="mr-2 h-4 w-4" />
                   Assignments
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Ask Questions
                 </Button>
               </div>
             </CardContent>

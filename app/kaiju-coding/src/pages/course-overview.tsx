@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { MainNav } from "@/components/main-nav"
@@ -184,12 +182,6 @@ export default function CourseOverviewPage() {
                 </div>
               ) : (
                 <div className="space-y-12">
-                  {/* Popular Topics Carousel */}
-                  <section>
-                    {/* <PopularTopics topics={topicsData} /> */}
-                  </section>
-
-                  {/* Featured Course */}
                   <section>
                     <h2 className="text-2xl font-bold mb-6">Featured Course</h2>
                     <div className="bg-[#f5f5f7] rounded-lg overflow-hidden">
@@ -260,14 +252,8 @@ export default function CourseOverviewPage() {
                     </div>
                   </section>
 
-                  {/* Course Tabs by Category */}
                   <section>
                     <CourseTabs courses={coursesData} categories={getCategories()} />
-                  </section>
-
-                  {/* Trending Courses */}
-                  <section>
-                    {/* <TrendingCourses courses={getTrendingCourses(4)} featuredCourse={getFeaturedCourse()} /> */}
                   </section>
                 </div>
               )}

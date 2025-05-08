@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useAuth } from "@/lib/auth"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export function SignUp() {
   const navigate = useNavigate()
-  const { signup } = useAuth()
+  const { signup, user } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -19,6 +20,7 @@ export function SignUp() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [role, setRole] = useState<"student" | "educator">("student")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,7 +28,7 @@ export function SignUp() {
     setIsLoading(true)
 
     try {
-      await signup(email, password, name)
+      await signup(email, password, name, role)
       navigate("/")
     } catch (err) {
       setError("Failed to create account. Please try again.")
@@ -109,6 +111,23 @@ export function SignUp() {
               <p className="text-xs text-muted-foreground">
                 Password must be at least 8 characters long and include a number and a special character.
               </p>
+            </div>
+            <div className="space-y-2">
+              <Label>I want to join as a</Label>
+              <RadioGroup
+                value={role}
+                onValueChange={(value) => setRole(value as "student" | "educator")}
+                className="flex space-x-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="student" id="student" />
+                  <Label htmlFor="student">Student</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="educator" id="educator" />
+                  <Label htmlFor="educator">Educator</Label>
+                </div>
+              </RadioGroup>
             </div>
             <div className="flex items-start space-x-2">
               <Checkbox

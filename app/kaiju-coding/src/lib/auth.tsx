@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-
 interface User {
   id: string;
   email: string;
   name: string;
+  role: "student" | "educator" ;
 }
 
 interface AuthContextType {
@@ -11,13 +11,20 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, role: "student" | "educator") => Promise<void>;
+  updateRole: (role: "student" | "educator") => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>({
+  //   id: "2",
+  //   email: "test@example.com",
+  //   name: "Test User",
+  //   role: "educator"  // or "educator" to test educator profile
+  // });
 
   const login = async (email: string, password: string) => {
     try {
@@ -37,7 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const userData = await response.json();
       setUser(userData);
-      // Store token in localStorage or secure cookie
       localStorage.setItem('authToken', userData.token);
     } catch (error) {
       console.error('Login error:', error);
@@ -50,16 +56,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('authToken');
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (email: string, password: string, name: string, role: "student" | "educator") => {
     try {
-      // TODO: Replace with your actual API call
-      // This is a mock implementation
       const response = await fetch('/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, role }),
       });
 
       if (!response.ok) {
@@ -75,12 +79,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateRole = (role: "student" | "educator") => {
+    if (user) {
+      setUser({ ...user, role });
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
     signup,
+    updateRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
