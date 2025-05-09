@@ -65,6 +65,7 @@
 Version & Revised By & Revision Date & Comments \\
 \midrule
 0.1 & C. W. Leung & 2025-05-06 & Initial draft for Kaiju Academy Test Plan \\
+0.2 & C. W. Leung & 2025-05-07 & Added typical, edge and exceptional test cases and scenarios \\
 \bottomrule
 
 \end{tabularx}
@@ -122,41 +123,84 @@ Testing will cover the following key areas of Kaiju Academy:
 
 \subsection{Functional Test Cases}
 To ensure each feature works as expected based on system requirements. These tests validate that the platform behaves correctly under normal and edge-case scenarios.
+
 \begin{enumerate}[leftmargin=*]
     \item \textbf{User Registration and Login}
         \begin{itemize}
-            \item Steps: Register with email, verify email, login with password (with/without MFA)
-            \item Expected Result: Account created, verification email sent, login succeeds or fails as appropriate
-            \item Pass/Fail: Account appears in database, valid JWT issued, protected endpoints accessible after login
+            \item \emph{Typical:} Register with valid email, verify, and login with correct password.
+            \item \emph{Edge:} Register with an email already in use; login with password at minimum/maximum length; attempt login immediately after registration but before email verification.
+            \item \emph{Exceptional:} Register with invalid email format; login with SQL injection in username field; brute-force login attempts.
+            \item Expected Result: 
+                \begin{itemize}
+                  \item Typical: Account created, verification email sent, successful login.
+                  \item Edge: Duplicate email rejected, password constraints enforced, pre-verification login prevented.
+                  \item Exceptional: Invalid format rejected, security input sanitized, rate limits triggered.
+                \end{itemize}
+            \item Pass/Fail: Account appears in database, valid JWT issued, protected endpoints accessible after login.
         \end{itemize}
     \item \textbf{Course Browsing and Enrollment}
         \begin{itemize}
-            \item Steps: Browse course catalog, enroll in available courses
-            \item Expected Result: Enrollment successful, course appears in user’s profile
-            \item Pass/Fail: Enrolled courses listed, correct access to course content
+            \item \emph{Typical:} Browse catalog, enroll in available courses.
+            \item \emph{Edge:} Attempt to enroll in a course at enrollment capacity; unenroll and re-enroll quickly.
+            \item \emph{Exceptional:} Enroll in a non-existent course via forged request; enroll without being logged in.
+            \item Expected Result:
+                \begin{itemize}
+                  \item Typical: Enrollment successful, course appears in profile.
+                  \item Edge: Enrollment denied if at capacity, rapid actions handled gracefully.
+                  \item Exceptional: Forged/non-authenticated requests rejected.
+                \end{itemize}
+            \item Pass/Fail: Enrolled courses listed, correct access to course content.
         \end{itemize}
     \item \textbf{Interactive Code Assessment}
         \begin{itemize}
-            \item Steps: Access code editor, submit code, receive auto-grading and result
-            \item Expected Result: Code executes, output and feedback displayed, grade recorded
-            \item Pass/Fail: Output matches expected, grade visible in profile
+            \item \emph{Typical:} Submit valid code, receive grade and feedback.
+            \item \emph{Edge:} Submit code at maximum allowed length; submit code that runs close to time/memory limits.
+            \item \emph{Exceptional:} Submit malicious code (e.g., infinite loop, file access); submit empty or syntactically invalid code.
+            \item Expected Result:
+                \begin{itemize}
+                  \item Typical: Code graded, output and feedback displayed.
+                  \item Edge: Large/slow submissions handled, limits enforced.
+                  \item Exceptional: Malicious/invalid code blocked, user notified.
+                \end{itemize}
+            \item Pass/Fail: Output matches expected, grade visible in profile.
         \end{itemize}
     \item \textbf{Educator Course Management}
         \begin{itemize}
-            \item Steps: Create/update/delete course, upload materials
-            \item Expected Result: Changes reflected for students, materials accessible
-            \item Pass/Fail: CRUD operations function, permissions enforced
+            \item \emph{Typical:} Create a new course, upload materials, update course info.
+            \item \emph{Edge:} Upload a file at the size limit; make rapid, successive updates.
+            \item \emph{Exceptional:} Attempt to delete a course in use; upload unsupported file types; educator tries unauthorized changes.
+            \item Expected Result:
+                \begin{itemize}
+                  \item Typical: Changes visible to students, materials accessible.
+                  \item Edge: Size/operation limits enforced, system remains stable.
+                  \item Exceptional: In-use/unauthorized actions blocked, errors reported.
+                \end{itemize}
+            \item Pass/Fail: CRUD operations function, permissions enforced.
         \end{itemize}
     \item \textbf{Profile and Progress Tracking}
         \begin{itemize}
-            \item Steps: Complete modules, view progress page
-            \item Expected Result: Progress updates in real time
-            \item Pass/Fail: Progress bar/percentage accurate, completed modules listed
+            \item \emph{Typical:} Complete module, progress bar updates.
+            \item \emph{Edge:} Complete all modules in rapid succession; access progress from multiple devices simultaneously.
+            \item \emph{Exceptional:} Data corruption or missing progress data; attempt to alter progress via API.
+            \item Expected Result:
+                \begin{itemize}
+                  \item Typical: Progress updates in real time.
+                  \item Edge: Sync issues handled, state remains consistent.
+                  \item Exceptional: Data integrity preserved, tampering rejected.
+                \end{itemize}
+            \item Pass/Fail: Progress bar/percentage accurate, completed modules listed.
         \end{itemize}
-        \item \textbf{Licence Management}
+    \item \textbf{Licence Management}
         \begin{itemize}
-            \item Steps: Attempt to access system features without a licence key; enter invalid key; enter valid key.
-            \item Expected Result: Access denied until a valid key is provided; valid key grants access.
+            \item \emph{Typical:} Enter valid licence key, gain access.
+            \item \emph{Edge:} Enter licence key at maximum/minimum accepted length; attempt to use a key already in use by another user.
+            \item \emph{Exceptional:} Input malformed key, SQL/script injection in licence field, repeated invalid attempts.
+            \item Expected Result:
+                \begin{itemize}
+                  \item Typical: Valid key grants access.
+                  \item Edge: Key limits enforced, duplicate use prevented.
+                  \item Exceptional: Malformed/injected keys rejected, lockout after repeated failures.
+                \end{itemize}
             \item Pass/Fail: System restricts access appropriately; error messages are clear.
         \end{itemize}
 \end{enumerate}
