@@ -163,7 +163,7 @@ This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) f
 
 \begin{description}
     \item[Frontend Application:] A React application providing the user interface across all devices.
-    \item[Backend Services:] Rust-based AWS Lambda functions for service logic.
+    \item[Backend Services:] Nodejs-based AWS Lambda functions for service logic.
     \item[SurrealDB:] Primary database for persistent data.
     \item[AWS Services:] API Gateway, Lambda, Cognito (auth/MFA), S3 (media), CloudFront (CDN), Fargate (code execution).
 \end{description}
@@ -201,7 +201,7 @@ SurrealDB's multi-model database supports course, user, credit/payment, progress
 
 \section{Testability}
 \begin{itemize}
-    \item Automated unit and integration tests in Rust.
+    \item Automated unit and integration tests in Nodejs.
     \item CI/CD pipeline with test coverage enforcement.
 \end{itemize}
 
@@ -344,10 +344,14 @@ Kaiju Academy uses a credit-based payment system. Users buy credits through an i
 \begin{enumerate}
     \item User navigates to the ``Buy Credits'' page from the profile or course page.
     \item User selects a credit package (e.g., 100 credits, 200 credits).
-    \item User is redirected to a third-party payment gateway (e.g., Stripe) to complete the transaction.
+    \item User can select to redeem a key or pay with credit card.
+        \begin{itemize}[leftmargin=1em]
+            \item If redeeming a key, user enters the key to top up the credit balance.
+            \item If paying with credit card, user is redirected to a third-party payment gateway (e.g., Stripe) to complete the transaction.
+        \end{itemize}
     \item Upon successful payment, the backend updates the user's credit balance.
     \item User can now browse courses; when enrolling in a paid course, the platform checks credit balance:
-        \begin{itemize}
+        \begin{itemize}[leftmargin=1em]
             \item If sufficient, deducts credits and confirms registration.
             \item If insufficient, prompts the user to buy more credits.
         \end{itemize}
@@ -368,12 +372,14 @@ Kaiju Academy uses a credit-based payment system. Users buy credits through an i
 \section{Licence Key Verification}
 
 \textbf{Overview:} \\
-Upon first login or before accessing any main features, users must enter a valid licence key. The backend validates the key against a list (hardcoded or stored in the database). If the key is valid, access is granted; otherwise, the user is denied access and prompted again.
+Since some of the courses on Kaiju Academy are charged, we need to offer ways for users to purchase credits. To purchase credits, except for paying with credit card, we also offer a licence key purchase option. This part will be explaining the licence key verification process.
 
 \begin{enumerate}
-    \item After successful login, the user is prompted for a licence key.
+    \item When user is trying to purchase credits, the user will be redirected to select the payment method.
+    \item If user selects to redeem a licence key, user will be prompted to enter the licence key.
+    \item User can purchase license keys with different price and credit amount and they would be stored in the database.
     \item The entered key is sent to the backend for validation.
-    \item If valid, the session is marked as “licenced” and the user proceeds.
+    \item If valid, user's credit balance will be updated accordingly.
     \item If invalid, an error message is displayed and access is denied.
 \end{enumerate}
 
