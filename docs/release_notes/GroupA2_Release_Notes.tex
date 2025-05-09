@@ -41,16 +41,22 @@ Version & Release Date & Author(s) & Summary \\
     \item Educator course and material management
     \item Error handling, security, and data integrity
     \item Responsive UI/UX across devices (desktop, tablet, mobile)
-    \item Licence management: entering and validating a licence key before accessing course content.
+    \item Credit system: users can purchase credits and use them to enroll in paid courses.
+\end{itemize}
+
+\subsection{Feature Note on Licence Keys}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Licence key redemption for credits is designed and documented:} Users will be able to redeem a licence key to add credits to their account. This provides an alternative to direct payment, as described in the Design and Implementation document. \textbf{This feature is not yet implemented in the current release.}
 \end{itemize}
 
 \subsection{Excluded Features}
 \begin{itemize}[leftmargin=*]
     \item Community features (forum, dashboard, notifications, calendar)
-    \item Credit/Payment purchasing and related flows
+    \item Credit/Payment purchasing and related flows via licence key (see note above)
     \item Modding/hacking scenarios and hardware-specific edge cases
     \item Third-party payment gateway/internal payment logic
 \end{itemize}
+
 \section{What's New in Version 1.1}
 
 \begin{itemize}[leftmargin=*]
@@ -77,10 +83,8 @@ Version & Release Date & Author(s) & Summary \\
     \item Limited browser support for some interactive editor features; recommend Chrome or Firefox for best experience.
     \item Mobile UI in beta; minor layout issues may occur on certain devices.
     \item Community/forum features are not included in this release.
-    \item Licence management requirement is documented in SRS and Design, but not implemented in this release.
+    \item \textbf{Licence key redemption for credits is documented in the Design and SRS, but not yet implemented in this release. Users can only purchase credits directly via payment gateway at this time.}
 \end{itemize}
-
-
 
 \section{Upgrade Instructions}
 
@@ -104,6 +108,5 @@ Version & Release Date & Author(s) & Summary \\
 
 \section{Acknowledgments}
 This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
-
 
 \end{document}
