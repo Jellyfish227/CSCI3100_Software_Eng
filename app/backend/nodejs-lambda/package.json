@@ -1,0 +1,30 @@
+{
+  "name": "kaiju-academy-backend",
+  "version": "1.0.0",
+  "description": "AWS Lambda functions for Kaiju Academy learning platform",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir -p .aws-sam/build && cp -r src node_modules package.json .aws-sam/build/",
+    "seed": "node src/scripts/seed-db.js",
+    "start-mongodb": "mongod --dbpath ./data",
+    "dev": "nodemon src/local-server.js",
+    "dev:atlas": "MONGODB_USER=mefbayar MONGODB_PASSWORD=ZlTTw0S77HEU829H MONGODB_CLUSTER=kaiju.nwdjnfi.mongodb.net MONGODB_OPTIONS=retryWrites=true&w=majority&appName=Kaiju JWT_SECRET=kaiju-academy-secret-key nodemon src/local-server.js",
+    "setup:atlas": "node src/scripts/setup-atlas.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1450.0",
+    "dotenv": "^16.5.0",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^8.0.0",
+    "surrealdb": "^1.3.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "nodemon": "^2.0.22"
+  },
+  "author": "Kaiju Academy Team",
+  "license": "ISC"
+}

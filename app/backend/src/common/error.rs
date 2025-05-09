@@ -55,9 +55,12 @@ impl From<AppError> for ApiGatewayProxyResponse {
         
         let body_str = body.to_string();
         
+        let mut headers = HeaderMap::new();
+        headers.insert("Content-Type", "application/json".parse().unwrap());
+        
         ApiGatewayProxyResponse {
             status_code,
-            headers: HeaderMap::new(),
+            headers,
             multi_value_headers: HeaderMap::new(),
             body: Some(Body::from(body_str)),
             is_base64_encoded: false,

@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { useAuth } from "@/lib/auth"
 
 export function UserNav() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleProfileClick = () => {
@@ -14,6 +14,11 @@ export function UserNav() {
     } else if (user?.role === "educator") {
       navigate('/educator-profile')
     }
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/auth/sign-in')
   }
 
   return (
@@ -29,8 +34,8 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">User</p>
-            <p className="text-xs leading-none text-muted-foreground">user@example.com</p>
+            <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user?.email || 'user@example.com'}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -45,7 +50,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

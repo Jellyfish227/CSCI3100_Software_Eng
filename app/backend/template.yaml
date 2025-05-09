@@ -1,0 +1,361 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Kaiju Academy Backend API
+  SAM Template for deploying API Gateway and Lambda functions
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: provided.al2
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        RUST_BACKTRACE: 1
+        LOG_LEVEL: info
+        SURREALDB_HOST: !Ref SurrealDBHost
+        SURREALDB_PORT: !Ref SurrealDBPort
+        SURREALDB_USER: !Ref SurrealDBUser
+        SURREALDB_PASS: !Ref SurrealDBPassword
+        SURREALDB_NS: !Ref SurrealDBNamespace
+        SURREALDB_DB: !Ref SurrealDBDatabase
+    VpcConfig:
+      SecurityGroupIds:
+        - !Ref LambdaSecurityGroup
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+
+Parameters:
+  SurrealDBHost:
+    Type: String
+    Description: SurrealDB host address
+    Default: "your-surrealdb-instance.compute.amazonaws.com"
+  
+  SurrealDBPort:
+    Type: String
+    Description: SurrealDB port
+    Default: "8000"
+  
+  SurrealDBUser:
+    Type: String
+    Description: SurrealDB username
+    Default: "root"
+  
+  SurrealDBPassword:
+    Type: String
+    Description: SurrealDB password
+    NoEcho: true
+  
+  SurrealDBNamespace:
+    Type: String
+    Description: SurrealDB namespace
+    Default: "kaiju"
+  
+  SurrealDBDatabase:
+    Type: String
+    Description: SurrealDB database
+    Default: "academy"
+    
+  ExistingVPC:
+    Type: String
+    Description: ID of an existing VPC to use (leave blank to create a new one)
+    Default: ""
+    
+  ExistingSubnet1:
+    Type: String
+    Description: ID of an existing subnet in the VPC (leave blank to create new ones)
+    Default: ""
+    
+  ExistingSubnet2:
+    Type: String
+    Description: ID of an existing subnet in the VPC (leave blank to create new ones)
+    Default: ""
+
+Conditions:
+  CreateNewVPC: !Equals [!Ref ExistingVPC, ""]
+  CreateNewSubnets: !Equals [!Ref ExistingSubnet1, ""]
+
+Resources:
+  # API Gateway
+  KaijuAcademyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+
+  # VPC Configuration
+  VPC:
+    Type: AWS::EC2::VPC
+    Condition: CreateNewVPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: KaijuAcademyVPC
+
+  # Private Subnet 1
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Condition: CreateNewSubnets
+    Properties:
+      VpcId: !If [CreateNewVPC, !Ref VPC, !Ref ExistingVPC]
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags:
+        - Key: Name
+          Value: KaijuAcademyPrivateSubnet1
+
+  # Private Subnet 2
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: CreateNewSubnets
+    Properties:
+      VpcId: !If [CreateNewVPC, !Ref VPC, !Ref ExistingVPC]
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags:
+        - Key: Name
+          Value: KaijuAcademyPrivateSubnet2
+
+  # Lambda Security Group (for access to SurrealDB)
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Lambda functions to access SurrealDB
+      VpcId: !If [CreateNewVPC, !Ref VPC, !Ref ExistingVPC]
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: !Ref SurrealDBPort
+          ToPort: !Ref SurrealDBPort
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Authentication Lambda Functions
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        Login:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/login
+            Method: post
+        Register:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/register
+            Method: post
+        RefreshToken:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/refresh
+            Method: post
+      Policies:
+        - VPCAccessPolicy: {}
+
+  # User Lambda Functions
+  UserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /users/{id}
+            Method: get
+        UpdateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /users/{id}
+            Method: put
+        ListUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /users
+            Method: get
+      Policies:
+        - VPCAccessPolicy: {}
+
+  # Course Lambda Functions
+  CourseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        GetCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: get
+        ListCourses:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses
+            Method: get
+        CreateCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses
+            Method: post
+        UpdateCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: put
+        DeleteCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}
+            Method: delete
+      Policies:
+        - VPCAccessPolicy: {}
+
+  # Quiz Lambda Functions
+  QuizFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        GetQuiz:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /quizzes/{id}
+            Method: get
+        ListQuizzes:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /quizzes
+            Method: get
+        CreateQuiz:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /quizzes
+            Method: post
+        SubmitQuiz:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /quizzes/{id}/submit
+            Method: post
+      Policies:
+        - VPCAccessPolicy: {}
+
+  # Code Execution Lambda Functions
+  CodeExecutionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        ExecuteCode:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /code/execute
+            Method: post
+        SubmitSolution:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /code/submit
+            Method: post
+      Policies:
+        - VPCAccessPolicy: {}
+
+  # Forum Lambda Functions
+  ForumFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Events:
+        ListPosts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /forum/posts
+            Method: get
+        GetPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /forum/posts/{id}
+            Method: get
+        CreatePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /forum/posts
+            Method: post
+        AddComment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /forum/posts/{id}/comments
+            Method: post
+      Policies:
+        - VPCAccessPolicy: {}
+
+Outputs:
+  KaijuAcademyApi:
+    Description: "API Gateway endpoint URL for Prod stage for Kaiju Academy functions"
+    Value: !Sub "https://${KaijuAcademyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  
+  AuthFunction:
+    Description: "Auth Lambda Function ARN"
+    Value: !GetAtt AuthFunction.Arn
+  
+  UserFunction:
+    Description: "User Lambda Function ARN"
+    Value: !GetAtt UserFunction.Arn
+  
+  CourseFunction:
+    Description: "Course Lambda Function ARN"
+    Value: !GetAtt CourseFunction.Arn
+  
+  QuizFunction:
+    Description: "Quiz Lambda Function ARN"
+    Value: !GetAtt QuizFunction.Arn
+  
+  CodeExecutionFunction:
+    Description: "Code Execution Lambda Function ARN"
+    Value: !GetAtt CodeExecutionFunction.Arn
+  
+  ForumFunction:
+    Description: "Forum Lambda Function ARN"
+    Value: !GetAtt ForumFunction.Arn
+  
+  LambdaSecurityGroup:
+    Description: "Lambda Security Group ID"
+    Value: !Ref LambdaSecurityGroup 

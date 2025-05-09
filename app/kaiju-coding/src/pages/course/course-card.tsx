@@ -2,15 +2,15 @@ import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
-import type { CourseData } from "@/data/course-data"
+import { Course } from "@/types/course"
 
 interface CourseCardProps {
-  course: CourseData
+  course: Course
 }
 
 export function CourseCard({ course }: CourseCardProps) {
   const navigate = useNavigate()
-  const { id, title, image, rating, reviews, duration, students, price, instructor } = course
+  const { id, title, thumbnail, duration_hours, students, category, educator, rating, reviews, price } = course
 
   const handleJoinCourse = () => {
     navigate(`/course/${id}`)
@@ -19,11 +19,11 @@ export function CourseCard({ course }: CourseCardProps) {
   return (
     <Card className="overflow-hidden">
       <div className="relative aspect-video">
-        <img src={image || "/placeholder.svg"} alt={title} className="object-cover w-full h-full" />
+        <img src={thumbnail || "/placeholder.svg"} alt={title} className="object-cover w-full h-full" />
       </div>
       <CardContent className="p-4">
         <h3 className="font-medium text-base mb-2">{title}</h3>
-        {instructor && <p className="text-sm text-muted-foreground mb-2">{instructor}</p>}
+        {educator && <p className="text-sm text-muted-foreground mb-2">{educator.name}</p>}
         <div className="flex items-center mb-2">
           {Array(5)
             .fill(null)
@@ -52,7 +52,7 @@ export function CourseCard({ course }: CourseCardProps) {
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            {duration}
+            {duration_hours}
           </div>
           <div className="flex items-center gap-1">
             <svg
