@@ -8,11 +8,19 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
   return (
     <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
       <Link 
-        to="/courses" 
+        to="/" 
         className="text-sm font-medium text-primary transition-colors hover:text-primary"
       >
-        Courses
+        Browse Courses
       </Link>
+      {user?.role === "educator" && (
+        <Link 
+          to="/educator/courses" 
+          className="text-sm font-medium transition-colors hover:text-primary"
+        >
+          Manage Courses
+        </Link>
+      )}
       <Link 
         to="/assessment" 
         className="text-sm font-medium transition-colors hover:text-primary"

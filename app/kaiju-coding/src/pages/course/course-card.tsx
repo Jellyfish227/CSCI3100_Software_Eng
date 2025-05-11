@@ -17,13 +17,21 @@ export function CourseCard({ course }: CourseCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden">
-      <div className="relative aspect-video">
-        <img src={thumbnail || "/placeholder.svg"} alt={title} className="object-cover w-full h-full" />
+    <Card className="overflow-hidden flex flex-col h-full">
+      <div className="relative w-full" style={{ height: "160px", overflow: "hidden" }}>
+        <img 
+          src={thumbnail || "/placeholder.svg"} 
+          alt={title} 
+          className="object-cover w-full h-full" 
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/placeholder.svg";
+          }}
+        />
       </div>
-      <CardContent className="p-4">
-        <h3 className="font-medium text-base mb-2">{title}</h3>
-        {educator && <p className="text-sm text-muted-foreground mb-2">{educator.name}</p>}
+      <CardContent className="p-4 flex-grow">
+        <h3 className="font-medium text-base mb-2 line-clamp-2 h-12">{title}</h3>
+        {educator && <p className="text-sm text-muted-foreground mb-2 truncate">{educator.name}</p>}
         <div className="flex items-center mb-2">
           {Array(5)
             .fill(null)
@@ -76,7 +84,7 @@ export function CourseCard({ course }: CourseCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center p-4 pt-0">
+      <CardFooter className="flex justify-between items-center p-4 pt-0 mt-auto">
         <div className="font-bold">
           ${price} <span className="text-xs text-muted-foreground font-normal">/year</span>
         </div>

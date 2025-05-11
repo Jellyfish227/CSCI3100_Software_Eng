@@ -5,7 +5,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { connectToDatabase } = require('./utils/db');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 // Import handlers
 const authHandlers = require('./handlers/auth');
@@ -33,15 +34,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Connect to MongoDB
-connectToDatabase()
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  });
+// Initialize DynamoDB client for local development
+const client = new DynamoDBClient({
+  region: 'local',
+  endpoint: 'http://localhost:8000', // Local DynamoDB endpoint
+  credentials: {
+    accessKeyId: 'local',
+    secretAccessKey: 'local'
+  }
+});
+
+console.log('DynamoDB client initialized for local development');
 
 // Convert Lambda function response to Express response
 const lambdaToExpress = async (lambdaHandler, req, res) => {

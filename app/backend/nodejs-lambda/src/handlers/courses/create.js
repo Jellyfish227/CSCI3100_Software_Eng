@@ -1,9 +1,10 @@
 /**
- * Create course handler
+ * Course creation handler
  */
 const { success, error } = require('../../utils/response');
-const { users } = require('../auth/login');
-const { courses } = require('./list');
+const { createCourse } = require('../../utils/db');
+const { v4: uuidv4 } = require('uuid');
+const { requireRole } = require('../../middleware/auth');
 
 /**
  * Handle course creation request
@@ -12,65 +13,57 @@ const { courses } = require('./list');
  */
 const handler = async (event) => {
   try {
+    // Verify user is an educator
+    try {
+      event = await requireRole('educator')(event);
+    } catch (err) {
+      return error(403, 'Authorization Error', err.message);
+    }
+
     // Parse request body
     const body = JSON.parse(event.body || '{}');
     
     // Validate required fields
-    if (!body.title || !body.description) {
-      return error(400, 'Validation Error', 'Title and description are required');
+    const requiredFields = ['title', 'description', 'difficulty', 'category'];
+    const missingFields = requiredFields.filter(field => !body[field]);
+    
+    if (missingFields.length > 0) {
+      return error(400, 'Bad Request', `Missing required fields: ${missingFields.join(', ')}`);
     }
     
-    // In a real app, we would extract the user ID from the JWT token
-    // For now, we'll use a mock authentication check
-    const authHeader = event.headers?.Authorization || '';
-    if (!authHeader.startsWith('Bearer ')) {
-      return error(401, 'Authentication Error', 'Invalid or missing authentication token');
-    }
-    
-    // Extract token and decode it
-    const token = authHeader.substring(7);
-    let userId;
-    try {
-      // In a real app, this would validate the JWT
-      // For now, we'll just decode the base64 token from the login handler
-      const decoded = Buffer.from(token, 'base64').toString();
-      userId = decoded.split(':')[0];
-    } catch (err) {
-      return error(401, 'Authentication Error', 'Invalid authentication token');
-    }
-    
-    // Check if the user exists and is an educator or admin
-    const user = users.find(u => u.id === userId);
-    if (!user || (user.role !== 'educator' && user.role !== 'admin')) {
-      return error(403, 'Authorization Error', 'Only educators and admins can create courses');
-    }
+    // Generate course ID
+    const courseId = uuidv4();
     
     // Create course object
-    const courseId = `course:${courses.length + 1}`;
-    const courseData = {
+    const course = {
       id: courseId,
       title: body.title,
       description: body.description,
-      difficulty: body.difficulty || 'beginner',
+      difficulty: body.difficulty,
+      category: body.category,
+      educator: event.user.id, // Set educator from authenticated user
       tags: body.tags || [],
-      educator: userId,
-      thumbnail: body.thumbnail_url || 'https://example.com/default-thumbnail.jpg',
+      thumbnail: body.thumbnail || null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      is_published: body.is_published !== undefined ? body.is_published : false,
+      is_published: body.is_published ? 'true' : 'false', // Convert boolean to string for DynamoDB
       duration_hours: body.duration_hours || 0,
+      students: [],
+      rating: 0,
+      reviews: [],
+      price: body.price || 0
     };
     
-    // Add to mock courses array
-    courses.push(courseData);
+    // Create course in DynamoDB
+    await createCourse(course);
     
     // Return success response
-    return success(201, {
-      message: "Course created successfully",
-      course: courseData
+    return success(201, { 
+      message: 'Course created successfully',
+      course
     });
   } catch (err) {
-    console.error('Error in create course handler:', err);
+    console.error('Error in course creation handler:', err);
     return error(500, 'Internal Server Error', err.message || 'An unexpected error occurred');
   }
 };

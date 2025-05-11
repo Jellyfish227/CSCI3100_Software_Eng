@@ -1,63 +1,30 @@
 /**
- * Delete course handler
+ * Course delete handler
  */
 const { success, error } = require('../../utils/response');
-const { courses } = require('./list');
-const { users } = require('../auth/login');
+const { getCourseById, deleteCourse } = require('../../utils/db');
+const { requireOwnership } = require('../../middleware/auth');
 
 /**
- * Handle course deletion request
+ * Handle course delete request
  * @param {object} event - API Gateway Lambda proxy event
  * @returns {object} Lambda proxy response
  */
 const handler = async (event) => {
   try {
-    // Extract course ID from the path
-    const pathParts = event.path.split('/');
-    const courseId = pathParts[pathParts.length - 1];
-    
-    // Find the course
-    const courseIndex = courses.findIndex(c => c.id === `course:${courseId}` || c.id === courseId);
-    
-    // Return 404 if course not found
-    if (courseIndex === -1) {
-      return error(404, 'Not Found', 'Course not found');
-    }
-    
-    // Check authorization
-    const authHeader = event.headers?.Authorization || '';
-    if (!authHeader.startsWith('Bearer ')) {
-      return error(401, 'Authentication Error', 'Invalid or missing authentication token');
-    }
-    
-    // Extract token and decode it
-    const token = authHeader.substring(7);
-    let userId;
+    // Verify user owns the course
     try {
-      const decoded = Buffer.from(token, 'base64').toString();
-      userId = decoded.split(':')[0];
+      event = await requireOwnership(getCourseById)(event);
     } catch (err) {
-      return error(401, 'Authentication Error', 'Invalid authentication token');
+      return error(403, 'Authorization Error', err.message);
     }
     
-    // Find the user
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-      return error(401, 'Authentication Error', 'User not found');
-    }
-    
-    // Check if user has permission (only course educator or admin can delete)
-    const course = courses[courseIndex];
-    if (user.role !== 'admin' && course.educator !== userId) {
-      return error(403, 'Authorization Error', 'You do not have permission to delete this course');
-    }
-    
-    // Remove from the array
-    courses.splice(courseIndex, 1);
+    // Delete course from DynamoDB
+    await deleteCourse(event.pathParameters.id);
     
     // Return success response
-    return success(200, {
-      message: "Course deleted successfully"
+    return success(200, { 
+      message: 'Course deleted successfully'
     });
   } catch (err) {
     console.error('Error in course delete handler:', err);

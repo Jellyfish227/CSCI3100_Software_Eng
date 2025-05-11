@@ -40,6 +40,20 @@ exports.handler = async (event) => {
       return await authHandlers.validate.handler(event);
     }
     
+    if (path === '/auth/profile' && httpMethod === 'PUT') {
+      // Add JWT validation middleware
+      const { validateToken } = require('./middleware/auth');
+      const authenticatedEvent = await validateToken(event);
+      return await authHandlers.updateProfile.handler(authenticatedEvent);
+    }
+    
+    if ((path === '/auth/user' || path.startsWith('/auth/user/')) && httpMethod === 'GET') {
+      // Add JWT validation middleware
+      const { validateToken } = require('./middleware/auth');
+      const authenticatedEvent = await validateToken(event);
+      return await authHandlers.getUser.handler(authenticatedEvent);
+    }
+    
     // Course routes
     if (path === '/courses' && httpMethod === 'GET') {
       return await courseHandlers.list.handler(event);
@@ -49,7 +63,40 @@ exports.handler = async (event) => {
       return await courseHandlers.featured.handler(event);
     }
     
-    if (path.startsWith('/courses/') && httpMethod === 'GET') {
+    if (path.startsWith('/courses/') && path.includes('/content') && httpMethod === 'GET') {
+      const courseId = path.split('/')[2];
+      event.pathParameters = { ...event.pathParameters, id: courseId };
+      return await courseHandlers.content.getContent(event);
+    }
+    
+    if (path.startsWith('/courses/') && path.includes('/content') && httpMethod === 'POST') {
+      // Add JWT validation middleware
+      const { validateToken } = require('./middleware/auth');
+      const authenticatedEvent = await validateToken(event);
+      const courseId = path.split('/')[2];
+      authenticatedEvent.pathParameters = { ...authenticatedEvent.pathParameters, id: courseId };
+      return await courseHandlers.content.addContent(authenticatedEvent);
+    }
+    
+    if (path.includes('/content/') && httpMethod === 'PUT') {
+      // Add JWT validation middleware
+      const { validateToken } = require('./middleware/auth');
+      const authenticatedEvent = await validateToken(event);
+      const contentId = path.split('/content/')[1];
+      authenticatedEvent.pathParameters = { ...authenticatedEvent.pathParameters, content_id: contentId };
+      return await courseHandlers.content.updateContent(authenticatedEvent);
+    }
+    
+    if (path.includes('/content/') && httpMethod === 'DELETE') {
+      // Add JWT validation middleware
+      const { validateToken } = require('./middleware/auth');
+      const authenticatedEvent = await validateToken(event);
+      const contentId = path.split('/content/')[1];
+      authenticatedEvent.pathParameters = { ...authenticatedEvent.pathParameters, content_id: contentId };
+      return await courseHandlers.content.deleteContent(authenticatedEvent);
+    }
+    
+    if (path.startsWith('/courses/') && httpMethod === 'GET' && !path.includes('/content')) {
       return await courseHandlers.get.handler(event);
     } 
     
@@ -57,11 +104,11 @@ exports.handler = async (event) => {
       return await courseHandlers.create.handler(event);
     } 
     
-    if (path.startsWith('/courses/') && httpMethod === 'PUT') {
+    if (path.startsWith('/courses/') && httpMethod === 'PUT' && !path.includes('/content')) {
       return await courseHandlers.update.handler(event);
     } 
     
-    if (path.startsWith('/courses/') && httpMethod === 'DELETE') {
+    if (path.startsWith('/courses/') && httpMethod === 'DELETE' && !path.includes('/content')) {
       return await courseHandlers.delete.handler(event);
     }
     

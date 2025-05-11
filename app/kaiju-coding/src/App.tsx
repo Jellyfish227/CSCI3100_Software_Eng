@@ -6,7 +6,6 @@ import { PasswordReset } from './pages/auth/password-reset'
 import CourseOverview from './pages/course-overview'
 import CourseContent from './pages/course-content'
 import { AuthProvider, useAuth } from './lib/auth'
-import CourseManagement from './pages/course/course-management'
 import CourseForm from './pages/course/course-form'
 import AssessmentPage from './pages/assessment/assessment-page'
 import AssessmentForm from './pages/assessment/assessment-form'
@@ -14,6 +13,9 @@ import AssessmentView from './pages/assessment/assessment-view'
 import { StudentProfile } from './pages/profile/StudentProfile'
 import { TeacherProfile } from './pages/profile/TeacherProfile'
 import GradeSubmission from './pages/assessment/grade-submission'
+import EducatorCourseManagement from './pages/educator/course-management'
+import CourseContentManagement from './pages/educator/course-content-management'
+import { Toaster } from './components/ui/toaster'
 
 // Protected Route component
 const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: string }) => {
@@ -44,20 +46,12 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/password-reset" element={<PasswordReset />} />
           
-          {/* Student routes */}
+          {/* General course routes */}
           <Route
             path="/"
             element={
               <ProtectedRoute>
                 <CourseOverview />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/courses"
-            element={
-              <ProtectedRoute>
-                <CourseManagement />
               </ProtectedRoute>
             }
           />
@@ -69,6 +63,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          {/* Assessment routes */}
           <Route
             path="/assessment"
             element={
@@ -77,18 +73,34 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/assessment/:assessmentId"
+            element={
+              <ProtectedRoute>
+                <AssessmentView />
+              </ProtectedRoute>
+            }
+          />
           
           {/* Educator-only routes */}
           <Route
-            path="/courses"
+            path="/educator/courses"
             element={
-              <ProtectedRoute>
-                <CourseManagement />
+              <ProtectedRoute requiredRole="educator">
+                <EducatorCourseManagement />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/courses/new"
+            path="/educator/course/:courseId/content"
+            element={
+              <ProtectedRoute requiredRole="educator">
+                <CourseContentManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses/create"
             element={
               <ProtectedRoute requiredRole="educator">
                 <CourseForm mode="create" />
@@ -116,15 +128,6 @@ function App() {
             element={
               <ProtectedRoute requiredRole="educator">
                 <AssessmentForm mode="edit" />
-              </ProtectedRoute>
-            }
-          />
-          
-          <Route
-            path="/assessment/:assessmentId"
-            element={
-              <ProtectedRoute>
-                <AssessmentView />
               </ProtectedRoute>
             }
           />
@@ -188,6 +191,7 @@ function App() {
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <Toaster />
       </Router>
     </AuthProvider>
   )

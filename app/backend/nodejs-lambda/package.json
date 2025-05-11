@@ -5,22 +5,19 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "mkdir -p .aws-sam/build && cp -r src node_modules package.json .aws-sam/build/",
-    "seed": "node src/scripts/seed-db.js",
-    "start-mongodb": "mongod --dbpath ./data",
-    "dev": "nodemon src/local-server.js",
-    "dev:atlas": "MONGODB_USER=mefbayar MONGODB_PASSWORD=ZlTTw0S77HEU829H MONGODB_CLUSTER=kaiju.nwdjnfi.mongodb.net MONGODB_OPTIONS=retryWrites=true&w=majority&appName=Kaiju JWT_SECRET=kaiju-academy-secret-key nodemon src/local-server.js",
-    "setup:atlas": "node src/scripts/setup-atlas.js"
+    "build": "mkdir -p .aws-sam/build && cp -r src package.json .aws-sam/build/ && cd .aws-sam/build && npm install --only=production && npm prune --production",
+    "clean-build": "rm -rf .aws-sam/build && npm run build && cd .aws-sam/build && find node_modules -type d -name 'aws-sdk' -exec rm -rf {} + 2>/dev/null || true && find node_modules -type d \\( -name 'test' -o -name 'tests' -o -name 'example' -o -name 'examples' -o -name 'docs' -o -name '.github' \\) -exec rm -rf {} + 2>/dev/null || true && find node_modules -type f \\( -name '*.md' -o -name '*.ts' -o -name 'LICENSE' -o -name 'CHANGELOG*' -o -name 'README*' -o -name '.npmignore' -o -name '.gitignore' \\) -delete",
+    "dev": "nodemon src/local-server.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.1450.0",
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
     "dotenv": "^16.5.0",
     "jsonwebtoken": "^9.0.1",
-    "mongoose": "^8.0.0",
-    "surrealdb": "^1.3.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "aws-sdk": "^2.1450.0",
     "body-parser": "^2.2.0",
     "express": "^5.1.0",
     "nodemon": "^2.0.22"

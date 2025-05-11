@@ -3,12 +3,18 @@ node_modules/
 
 # Environment variables
 .env
+.env.*
+!.env.template
+!.env.example
 
 # MongoDB data directory
 data/
 
 # AWS SAM build directory
 .aws-sam/
+
+# AWS SAM packaged template
+packaged.yaml
 
 # Logs
 logs
@@ -28,4 +34,13 @@ npm-debug.log*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Local development files
+local-secrets.json
+credentials.json 

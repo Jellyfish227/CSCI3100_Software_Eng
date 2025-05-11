@@ -133,24 +133,7 @@ PORT=3000
 JWT_SECRET=your_jwt_secret_key
 ```
 
-2. Update your actual values in the `.env` file. For the Kaiju Academy MongoDB Atlas instance, use:
-
-```
-MONGODB_USER=mefbayar
-MONGODB_PASSWORD=ZlTTw0S77HEU829H
-MONGODB_CLUSTER=kaiju.nwdjnfi.mongodb.net
-MONGODB_DATABASE=
-MONGODB_OPTIONS=retryWrites=true&w=majority&appName=Kaiju
-```
-
-3. For AWS Lambda deployment, add these environment variables to your Lambda function configuration.
-
-This approach ensures:
-- Credentials are not exposed in your source code
-- Different environments can use different databases
-- You can easily rotate credentials without changing code
-
-The database connection in `src/utils/db.js` is already set up to use these environment variables with fallbacks to default values.
+**IMPORTANT**: Never commit your `.env` file or any file containing credentials to version control!
 
 5. Run the local development server:
 
@@ -165,6 +148,47 @@ npm run dev:atlas
 The API will be accessible at http://localhost:3000.
 
 ## AWS Deployment
+
+### Secure Credential Management
+
+For secure AWS deployments, store sensitive information like MongoDB credentials and JWT secrets in AWS Systems Manager Parameter Store:
+
+1. Create secure parameters in AWS SSM:
+
+```bash
+# Create MongoDB parameters
+aws ssm put-parameter --name "/kaiju/mongodb/user" --value "your_mongodb_username" --type SecureString
+aws ssm put-parameter --name "/kaiju/mongodb/password" --value "your_mongodb_password" --type SecureString
+aws ssm put-parameter --name "/kaiju/mongodb/cluster" --value "your_cluster.mongodb.net" --type SecureString
+aws ssm put-parameter --name "/kaiju/mongodb/database" --value "your_database_name" --type SecureString
+
+# Create JWT secret parameter
+aws ssm put-parameter --name "/kaiju/jwt/secret" --value "your_jwt_secret" --type SecureString
+```
+
+2. These parameters are automatically referenced in the `template.yaml` file.
+
+### Optimizing Lambda Package Size
+
+AWS Lambda has a deployment package size limit of 250MB unzipped. To optimize the package size:
+
+1. Use the clean-build script to reduce package size:
+
+```bash
+npm run clean-build
+```
+
+2. The build script automatically:
+   - Installs only production dependencies
+   - Removes the aws-sdk (provided by Lambda)
+   - Removes test files, documentation, and unnecessary files
+
+3. If you encounter size limit errors, consider:
+   - Moving large dependencies to Lambda Layers
+   - Breaking down your application into smaller functions
+   - Using the included build-and-deploy.sh script which has advanced optimization
+
+### Basic Deployment
 
 1. Test locally using SAM CLI:
 

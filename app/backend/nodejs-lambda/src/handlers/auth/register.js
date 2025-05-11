@@ -2,7 +2,8 @@
  * User registration handler
  */
 const { success, error } = require('../../utils/response');
-const { users } = require('./login');
+const { getUserByEmail, createUser } = require('../../utils/db');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * Handle registration request
@@ -25,26 +26,25 @@ const handler = async (event) => {
     }
     
     // Check if email exists
-    const existingUser = users.find(u => u.email === body.email);
+    const existingUser = await getUserByEmail(body.email);
     if (existingUser) {
       return error(409, 'Validation Error', 'Email already in use');
     }
     
     // Create user object
-    const userId = `user:${users.length + 1}`;
     const userData = {
-      id: userId,
+      id: `user:${uuidv4()}`,
       email: body.email,
       password: body.password, // This should be hashed in a real app
       name: body.name,
-      role: body.role || 'student',
+      role: body.role,
       bio: body.bio || '',
       profile_image: body.profile_image || null,
       created_at: new Date().toISOString()
     };
     
-    // Add to mock users array
-    users.push(userData);
+    // Create user in DynamoDB
+    await createUser(userData);
     
     // Prepare user data for response (remove password)
     const safeUser = {

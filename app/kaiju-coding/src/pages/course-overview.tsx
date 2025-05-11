@@ -25,7 +25,8 @@ export default function CourseOverviewPage() {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const courses = await apiService.getCourses()
+      const response = await apiService.getCourses()
+      const courses = response.courses
       setCoursesData(courses)
       setSearchResults(courses)
       
@@ -33,9 +34,17 @@ export default function CourseOverviewPage() {
       const uniqueCategories = [...new Set(courses.map(course => course.category))]
       setCategories(uniqueCategories)
       
-      const featuredCourse = await apiService.getFeaturedCourse()
-      console.log(featuredCourse)
-      setFeaturedCourse(featuredCourse)
+      try {
+        const featuredCourse = await apiService.getFeaturedCourse()
+        console.log(featuredCourse)
+        setFeaturedCourse(featuredCourse)
+      } catch (error) {
+        console.error("Failed to fetch featured course:", error)
+        // If there's no featured course API or it fails, use the first course as featured
+        if (courses.length > 0) {
+          setFeaturedCourse(courses[0])
+        }
+      }
     }
     fetchCourses()
   }, [])  

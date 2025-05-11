@@ -1,9 +1,9 @@
 /**
- * Update course handler
+ * Course update handler
  */
 const { success, error } = require('../../utils/response');
-const { courses } = require('./list');
-const { users } = require('../auth/login');
+const { getCourseById, updateCourse } = require('../../utils/db');
+const { requireOwnership } = require('../../middleware/auth');
 
 /**
  * Handle course update request
@@ -12,68 +12,37 @@ const { users } = require('../auth/login');
  */
 const handler = async (event) => {
   try {
-    // Extract course ID from the path
-    const pathParts = event.path.split('/');
-    const courseId = pathParts[pathParts.length - 1];
+    // Verify user owns the course
+    try {
+      event = await requireOwnership(getCourseById)(event);
+    } catch (err) {
+      return error(403, 'Authorization Error', err.message);
+    }
     
     // Parse request body
     const body = JSON.parse(event.body || '{}');
     
-    // Find the course
-    const courseIndex = courses.findIndex(c => c.id === `course:${courseId}` || c.id === courseId);
+    // Get existing course
+    const existingCourse = await getCourseById(event.pathParameters.id);
     
-    // Return 404 if course not found
-    if (courseIndex === -1) {
+    if (!existingCourse) {
       return error(404, 'Not Found', 'Course not found');
     }
     
-    // Check authorization
-    const authHeader = event.headers?.Authorization || '';
-    if (!authHeader.startsWith('Bearer ')) {
-      return error(401, 'Authentication Error', 'Invalid or missing authentication token');
-    }
-    
-    // Extract token and decode it
-    const token = authHeader.substring(7);
-    let userId;
-    try {
-      const decoded = Buffer.from(token, 'base64').toString();
-      userId = decoded.split(':')[0];
-    } catch (err) {
-      return error(401, 'Authentication Error', 'Invalid authentication token');
-    }
-    
-    // Find the user
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-      return error(401, 'Authentication Error', 'User not found');
-    }
-    
-    // Check if user has permission (only course educator or admin can update)
-    const course = courses[courseIndex];
-    if (user.role !== 'admin' && course.educator !== userId) {
-      return error(403, 'Authorization Error', 'You do not have permission to update this course');
-    }
-    
-    // Update course fields
+    // Update course object
     const updatedCourse = {
-      ...course,
-      title: body.title || course.title,
-      description: body.description || course.description,
-      difficulty: body.difficulty || course.difficulty,
-      tags: body.tags || course.tags,
-      thumbnail: body.thumbnail_url || course.thumbnail,
-      updated_at: new Date().toISOString(),
-      is_published: body.is_published !== undefined ? body.is_published : course.is_published,
-      duration_hours: body.duration_hours || course.duration_hours
+      ...existingCourse,
+      ...body,
+      educator: existingCourse.educator, // Preserve original educator
+      updated_at: new Date().toISOString()
     };
     
-    // Update in the array
-    courses[courseIndex] = updatedCourse;
+    // Update course in DynamoDB
+    await updateCourse(event.pathParameters.id, updatedCourse);
     
     // Return success response
-    return success(200, {
-      message: "Course updated successfully",
+    return success(200, { 
+      message: 'Course updated successfully',
       course: updatedCourse
     });
   } catch (err) {

@@ -4,91 +4,112 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Video, FileText, MessageSquare, Award } from "lucide-react"
-
-interface CourseModule {
-  id: string
-  title: string
-  description: string
-  type: "video" | "reading" | "quiz"
-  duration: string
-  completed: boolean
-}
-
-interface CourseSection {
-  id: string
-  title: string
-  modules: CourseModule[]
-}
-
-// Mock data - replace with actual data from your backend
-const mockCourseData = {
-  id: "intro-python",
-  title: "Introduction to Python Programming",
-  instructor: "Dr. Sarah Chen",
-  description: "Learn the fundamentals of Python programming language, from basic syntax to advanced concepts.",
-  progress: 35,
-  sections: [
-    {
-      id: "section-1",
-      title: "Getting Started with Python",
-      modules: [
-        {
-          id: "module-1",
-          title: "Introduction to Python",
-          description: "Overview of Python and its applications",
-          type: "video",
-          duration: "15 min",
-          completed: true
-        },
-        {
-          id: "module-2",
-          title: "Setting up your Python Environment",
-          description: "Install Python and set up your development environment",
-          type: "reading",
-          duration: "20 min",
-          completed: true
-        },
-        {
-          id: "module-3",
-          title: "Basic Syntax Quiz",
-          description: "Test your understanding of Python basics",
-          type: "quiz",
-          duration: "10 min",
-          completed: false
-        }
-      ]
-    },
-    {
-      id: "section-2",
-      title: "Python Fundamentals",
-      modules: [
-        {
-          id: "module-4",
-          title: "Variables and Data Types",
-          description: "Learn about Python's basic data types and variables",
-          type: "video",
-          duration: "25 min",
-          completed: false
-        },
-        {
-          id: "module-5",
-          title: "Control Flow",
-          description: "Understanding if statements and loops",
-          type: "reading",
-          duration: "30 min",
-          completed: false
-        }
-      ]
-    }
-  ]
-}
+import { useEffect, useState } from "react"
+import { apiService } from "@/services/apiService"
+import { Course } from "@/types/course"
+import { CourseContentList } from "@/types/courseContent"
+import { useAuth } from "../lib/auth"
 
 export default function CourseContent() {
-  const { courseId } = useParams()
+  const { courseId } = useParams<{ courseId: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  
+  const [course, setCourse] = useState<Course | null>(null)
+  const [courseContent, setCourseContent] = useState<CourseContentList | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [progress, setProgress] = useState(0)
 
-  // In a real application, you would fetch the course data based on courseId
-  const courseData = mockCourseData
+  useEffect(() => {
+    if (!courseId) return
+
+    const fetchCourseAndContent = async () => {
+      try {
+        setLoading(true)
+        // Fetch course details
+        const courseData = await apiService.getCourse(courseId)
+        setCourse(courseData)
+        
+        // Fetch course content
+        const contentData = await apiService.getCourseContent(courseId)
+        setCourseContent(contentData)
+        
+        // Calculate progress (in a real app, this would come from user's progress data)
+        calculateProgress(contentData)
+      } catch (err) {
+        console.error("Error fetching course data:", err)
+        setError("Failed to load course content. Please try again later.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCourseAndContent()
+  }, [courseId])
+
+  // Calculate progress based on content (simplified version)
+  const calculateProgress = (content: CourseContentList) => {
+    if (!content || !content.topics) return
+    
+    let totalItems = 0
+    let completedItems = 0
+    
+    content.topics.forEach(topic => {
+      topic.entries.forEach(entry => {
+        totalItems++
+        // This would be based on user progress data in a real app
+        if (entry.status === "published") {
+          // For now, we're just simulating progress with random data
+          // In a real app, you would check if the user has completed this content
+          if (Math.random() > 0.6) completedItems++
+        }
+      })
+    })
+    
+    const calculatedProgress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0
+    setProgress(calculatedProgress)
+  }
+  
+  // Map content type to icon
+  const getContentTypeIcon = (type: string) => {
+    switch (type) {
+      case "video":
+        return <Video className="h-5 w-5" />
+      case "tutorial":
+      case "lesson":
+        return <FileText className="h-5 w-5" />
+      case "quiz":
+        return <Award className="h-5 w-5" />
+      default:
+        return <FileText className="h-5 w-5" />
+    }
+  }
+
+  // Handle loading state
+  if (loading) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="text-center">
+          <p>Loading course content...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Handle error state
+  if (error || !course) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="text-center">
+          <p className="text-red-500">{error || "Course not found"}</p>
+          <Button onClick={() => navigate("/dashboard")} className="mt-4">
+            Return to Dashboard
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto py-8">
@@ -96,8 +117,8 @@ export default function CourseContent() {
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-6">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">{courseData.title}</h1>
-            <p className="text-muted-foreground">Instructor: {courseData.instructor}</p>
+            <h1 className="text-3xl font-bold">{course.title}</h1>
+            <p className="text-muted-foreground">Instructor: {course.educator.name}</p>
           </div>
 
           <Card>
@@ -107,8 +128,8 @@ export default function CourseContent() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <Progress value={courseData.progress} className="h-2" />
-                <p className="text-sm text-muted-foreground">{courseData.progress}% Complete</p>
+                <Progress value={progress} className="h-2" />
+                <p className="text-sm text-muted-foreground">{progress}% Complete</p>
               </div>
             </CardContent>
           </Card>
@@ -121,31 +142,29 @@ export default function CourseContent() {
             </TabsList>
 
             <TabsContent value="content" className="space-y-4">
-              {courseData.sections.map((section) => (
-                <Card key={section.id}>
+              {courseContent?.topics.map((topic) => (
+                <Card key={topic.name}>
                   <CardHeader>
-                    <CardTitle>{section.title}</CardTitle>
+                    <CardTitle>{topic.name}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {section.modules.map((module) => (
+                      {topic.entries.map((content) => (
                         <div
-                          key={module.id}
+                          key={content.id}
                           className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                         >
                           <div className="flex items-center space-x-4">
-                            {module.type === "video" && <Video className="h-5 w-5" />}
-                            {module.type === "reading" && <FileText className="h-5 w-5" />}
-                            {module.type === "quiz" && <Award className="h-5 w-5" />}
+                            {getContentTypeIcon(content.type)}
                             <div>
-                              <h3 className="font-medium">{module.title}</h3>
-                              <p className="text-sm text-muted-foreground">{module.description}</p>
+                              <h3 className="font-medium">{content.title}</h3>
+                              <p className="text-sm text-muted-foreground">{content.description}</p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-4">
-                            <span className="text-sm text-muted-foreground">{module.duration}</span>
-                            <Button variant={module.completed ? "outline" : "default"}>
-                              {module.completed ? "Review" : "Start"}
+                            <span className="text-sm text-muted-foreground">{content.duration_minutes} min</span>
+                            <Button variant="default">
+                              Start
                             </Button>
                           </div>
                         </div>
@@ -154,6 +173,15 @@ export default function CourseContent() {
                   </CardContent>
                 </Card>
               ))}
+              
+              {/* Show message if no content */}
+              {(!courseContent?.topics || courseContent.topics.length === 0) && (
+                <Card>
+                  <CardContent className="py-6">
+                    <p className="text-center text-muted-foreground">No content available for this course yet.</p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             <TabsContent value="overview">
@@ -162,7 +190,18 @@ export default function CourseContent() {
                   <CardTitle>Course Overview</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{courseData.description}</p>
+                  <p className="text-muted-foreground">{course.description}</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="discussion">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Discussion</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Discussion forum coming soon.</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -188,6 +227,25 @@ export default function CourseContent() {
               </div>
             </CardContent>
           </Card>
+          
+          {/* Show Edit Content button for educators */}
+          {user && course && user.id === course.educator.id && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Instructor Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Button 
+                    className="w-full"
+                    onClick={() => navigate(`/educator/course/${courseId}/content`)}
+                  >
+                    Manage Course Content
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

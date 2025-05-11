@@ -9,6 +9,7 @@ const get = require('./get');
 const update = require('./update');
 const del = require('./delete');
 const featured = require('./featured');
+const content = require('./content');
 
 module.exports = {
   create,
@@ -16,5 +17,6 @@ module.exports = {
   get,
   update,
   delete: del,
-  featured
+  featured,
+  content
 }; 

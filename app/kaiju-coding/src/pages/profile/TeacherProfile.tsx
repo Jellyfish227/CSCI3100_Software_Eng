@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Book, Award, UserCircle, Save } from "lucide-react"
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
+import { apiService } from "@/services/apiService"
+import { toast } from "@/components/ui/use-toast"
 
 interface TeacherProfileProps {
   name: string
@@ -36,46 +38,37 @@ export function TeacherProfile({
 }: TeacherProfileProps) {
   const [editedBio, setEditedBio] = useState(bio)
   const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Function to handle the form submission (POST request)
-  const handleUpdateProfile = () => {
-    // Prepare data for POST request
+  // Function to handle the form submission (PUT request)
+  const handleUpdateProfile = async () => {
+    // Prepare data for PUT request
     const profileData = {
       name,
-      email,
       bio: editedBio,
       subjects
     }
 
-    // Log the data that would be sent (instead of actually sending)
-    console.log('Profile data to be updated:', profileData)
+    setIsLoading(true)
     
-    // Here you would normally send the POST request
-    // Example:
-    // async function updateProfile() {
-    //   try {
-    //     const response = await fetch('/api/profile/update', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(profileData),
-    //     });
-    //     const data = await response.json();
-    //     if (response.ok) {
-    //       // Handle success
-    //       setIsEditing(false);
-    //     } else {
-    //       // Handle error
-    //       console.error('Failed to update profile:', data.message);
-    //     }
-    //   } catch (error) {
-    //     console.error('Error updating profile:', error);
-    //   }
-    // }
-    
-    // For now, just toggle the editing state
-    setIsEditing(false)
+    try {
+      await apiService.updateProfile(profileData)
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+        variant: "default",
+      })
+      setIsEditing(false)
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast({
+        title: "Update Failed",
+        description: error instanceof Error ? error.message : "Failed to update profile",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -134,9 +127,10 @@ export function TeacherProfile({
                     <Button 
                       className="w-h bg-[#4aafbf] hover:bg-[#3d9aa9] flex items-center gap-2"
                       onClick={handleUpdateProfile}
+                      disabled={isLoading}
                     >
                       <Save className="h-4 w-4" />
-                      Save Changes
+                      {isLoading ? "Saving..." : "Save Changes"}
                     </Button>
                     <Button 
                       variant="outline" 
@@ -145,6 +139,7 @@ export function TeacherProfile({
                         setEditedBio(bio) // Reset to original
                         setIsEditing(false)
                       }}
+                      disabled={isLoading}
                     >
                       Cancel
                     </Button>

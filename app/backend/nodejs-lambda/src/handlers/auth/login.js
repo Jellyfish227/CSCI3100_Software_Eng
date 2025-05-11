@@ -2,8 +2,7 @@
  * User login handler
  */
 const { success, error } = require('../../utils/response');
-const { connectToDatabase } = require('../../utils/db');
-const User = require('../../models/User');
+const { getUserByEmail, updateUser } = require('../../utils/db');
 const jwt = require('jsonwebtoken');
 
 // Secret key for JWT
@@ -16,9 +15,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'kaiju-academy-secret-key';
  */
 const handler = async (event) => {
   try {
-    // Connect to database
-    await connectToDatabase();
-    
     // Parse request body
     const body = JSON.parse(event.body || '{}');
     
@@ -28,7 +24,7 @@ const handler = async (event) => {
     }
     
     // Find user by email
-    const user = await User.findOne({ email: body.email });
+    const user = await getUserByEmail(body.email);
     
     // User not found
     if (!user) {
@@ -42,13 +38,14 @@ const handler = async (event) => {
     }
     
     // Update last login time
-    user.last_login = new Date();
-    await user.save();
+    await updateUser(user.id, {
+      last_login: new Date().toISOString()
+    });
     
     // Generate JWT token
     const token = jwt.sign(
       { 
-        userId: user._id,
+        userId: user.id,
         email: user.email,
         role: user.role
       }, 
@@ -58,7 +55,7 @@ const handler = async (event) => {
     
     // Prepare user data for response (exclude password)
     const safeUser = {
-      id: user._id,
+      id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,

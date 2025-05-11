@@ -14,7 +14,85 @@ Globals:
     Environment:
       Variables:
         LOG_LEVEL: info
+        JWT_SECRET: '{{resolve:secretsmanager:/kaiju/jwt/secret:SecretString}}'
+        USERS_TABLE: kaiju-users
+        COURSES_TABLE: kaiju-courses
+        COURSE_CONTENT_TABLE: kaiju-course-content
 Resources:
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: email
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      GlobalSecondaryIndexes:
+      - IndexName: EmailIndex
+        KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+    Metadata:
+      SamResourceId: UsersTable
+  CoursesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-courses
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: educator
+        AttributeType: S
+      - AttributeName: is_published
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      GlobalSecondaryIndexes:
+      - IndexName: EducatorIndex
+        KeySchema:
+        - AttributeName: educator
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: PublishedIndex
+        KeySchema:
+        - AttributeName: is_published
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+    Metadata:
+      SamResourceId: CoursesTable
+  CourseContentTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-course-content
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      - AttributeName: course_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      GlobalSecondaryIndexes:
+      - IndexName: CourseIndex
+        KeySchema:
+        - AttributeName: course_id
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+    Metadata:
+      SamResourceId: CourseContentTable
   KaijuAcademyApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -28,8 +106,24 @@ Resources:
   MainFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://kaiju-academy-backend-sam/abeb5e011d8152cf24a543f4d447469f
+      CodeUri: s3://kaiju-academy-backend-sam/11c5b652f690bf6e79d7c97c2061193b
       Handler: src/index.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: CoursesTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: CourseContentTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - secretsmanager:GetSecretValue
+          Resource:
+            Fn::Sub: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/kaiju/jwt/secret-*
       Events:
         Login:
           Type: Api
@@ -45,6 +139,34 @@ Resources:
               Ref: KaijuAcademyApi
             Path: /auth/register
             Method: post
+        ValidateToken:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /auth/validate
+            Method: get
+        UpdateProfile:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /auth/profile
+            Method: put
+        GetUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /auth/user
+            Method: get
+        GetUserById:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /auth/user/{id}
+            Method: get
         ListCourses:
           Type: Api
           Properties:
@@ -58,6 +180,13 @@ Resources:
             RestApiId:
               Ref: KaijuAcademyApi
             Path: /courses/{id}
+            Method: get
+        GetFeaturedCourse:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /courses/featured
             Method: get
         CreateCourse:
           Type: Api
@@ -79,6 +208,34 @@ Resources:
             RestApiId:
               Ref: KaijuAcademyApi
             Path: /courses/{id}
+            Method: delete
+        GetCourseContent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /courses/{id}/content
+            Method: get
+        AddCourseContent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /courses/{id}/content
+            Method: post
+        UpdateCourseContent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /courses/content/{id}
+            Method: put
+        DeleteCourseContent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: KaijuAcademyApi
+            Path: /courses/content/{id}
             Method: delete
         ExecuteCode:
           Type: Api

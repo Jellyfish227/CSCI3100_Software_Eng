@@ -2,8 +2,7 @@
  * Course listing handler
  */
 const { success, error } = require('../../utils/response');
-const { connectToDatabase } = require('../../utils/db');
-const Course = require('../../models/Course');
+const { listCourses } = require('../../utils/db');
 
 /**
  * Handle course listing request
@@ -12,9 +11,6 @@ const Course = require('../../models/Course');
  */
 const handler = async (event) => {
   try {
-    // Connect to database
-    await connectToDatabase();
-    
     // Extract query parameters
     const queryParams = event.queryStringParameters || {};
     const limit = parseInt(queryParams.limit) || 100;
@@ -26,87 +22,69 @@ const handler = async (event) => {
     const category = queryParams.category || '';
     const difficulty = queryParams.difficulty || '';
     
-    // Build query
-    const query = {};
+    // Build filter expression
+    let filterExpressions = [];
+    const expressionAttributeValues = {};
+    const expressionAttributeNames = {};
     
-    // Filter by published status if needed
     if (publishedOnly) {
-      query.is_published = true;
+      filterExpressions.push('#is_published = :is_published');
+      expressionAttributeNames['#is_published'] = 'is_published';
+      expressionAttributeValues[':is_published'] = 'true';
     }
     
-    // Filter by category if provided
     if (category) {
-      query.category = category;
+      filterExpressions.push('#category = :category');
+      expressionAttributeNames['#category'] = 'category';
+      expressionAttributeValues[':category'] = category;
     }
     
-    // Filter by difficulty if provided
     if (difficulty) {
-      query.difficulty = difficulty;
+      filterExpressions.push('#difficulty = :difficulty');
+      expressionAttributeNames['#difficulty'] = 'difficulty';
+      expressionAttributeValues[':difficulty'] = difficulty;
     }
     
-    // Filter by educator if provided
     if (educatorId) {
-      query.educator = educatorId;
+      filterExpressions.push('#educator = :educator');
+      expressionAttributeNames['#educator'] = 'educator';
+      expressionAttributeValues[':educator'] = educatorId;
     }
     
-    // Add search if provided
-    let courseQuery = Course.find(query);
-    
-    if (search) {
-      courseQuery = Course.find({
-        $and: [
-          query,
-          { $text: { $search: search } }
-        ]
-      }).sort({ score: { $meta: "textScore" } });
-    }
-    
-    // Count total documents for pagination
-    const totalDocs = await Course.countDocuments(query);
-    
-    // Populate educator details
-    courseQuery = courseQuery
-      .populate('educator', 'name email profile_image bio')
-      .skip((page - 1) * limit)
-      .limit(limit);
+    // Build DynamoDB query parameters
+    const dynamoParams = {
+      FilterExpression: filterExpressions.length > 0 ? filterExpressions.join(' AND ') : undefined,
+      ExpressionAttributeNames: Object.keys(expressionAttributeNames).length > 0 ? expressionAttributeNames : undefined,
+      ExpressionAttributeValues: Object.keys(expressionAttributeValues).length > 0 ? expressionAttributeValues : undefined,
+      Limit: limit
+    };
     
     // Execute query
-    const courses = await courseQuery.exec();
+    const courses = await listCourses(dynamoParams);
     
-    // Format response
-    const formattedCourses = courses.map(course => ({
-      id: course._id,
-      title: course.title,
-      description: course.description,
-      difficulty: course.difficulty,
-      tags: course.tags,
-      educator: {
-        id: course.educator._id,
-        name: course.educator.name,
-        email: course.educator.email,
-        profile_image: course.educator.profile_image,
-        bio: course.educator.bio
-      },
-      thumbnail: course.thumbnail,
-      created_at: course.created_at,
-      updated_at: course.updated_at,
-      is_published: course.is_published,
-      duration_hours: course.duration_hours,
-      category: course.category,
-      students: course.students,
-      rating: course.rating,
-      reviews: course.reviews,
-      price: course.price
-    }));
+    // Apply search filter if provided
+    let filteredCourses = courses;
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredCourses = courses.filter(course => 
+        course.title.toLowerCase().includes(searchLower) || 
+        course.description.toLowerCase().includes(searchLower) ||
+        course.tags.some(tag => tag.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    // Apply pagination
+    const startIndex = (page - 1) * limit;
+    const paginatedCourses = filteredCourses.slice(startIndex, startIndex + limit);
     
     // Return success response with courses and pagination info
     return success(200, { 
-      courses: formattedCourses,
+      courses: paginatedCourses,
       pagination: {
-        total: totalDocs,
+        total: filteredCourses.length,
         page,
         limit,
-        pages: Math.ceil(totalDocs / limit)
+        pages: Math.ceil(filteredCourses.length / limit)
       }
     });
   } catch (err) {

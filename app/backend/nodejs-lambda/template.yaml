@@ -14,16 +14,85 @@ Globals:
     Environment:
       Variables:
         LOG_LEVEL: info
-        # MongoDB Connection Parameters
-        MONGODB_USER: mefbayar
-        MONGODB_PASSWORD: ZlTTw0S77HEU829H
-        MONGODB_CLUSTER: kaiju.nwdjnfi.mongodb.net
-        MONGODB_DATABASE: ''
-        MONGODB_OPTIONS: retryWrites=true&w=majority&appName=Kaiju
         # JWT Configuration
-        JWT_SECRET: kaiju-academy-secret-key
+        JWT_SECRET: '{{resolve:secretsmanager:/kaiju/jwt/secret:SecretString}}'
+        USERS_TABLE: kaiju-users
+        COURSES_TABLE: kaiju-courses
+        COURSE_CONTENT_TABLE: kaiju-course-content
 
 Resources:
+  # DynamoDB Tables
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  CoursesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-courses
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: educator
+          AttributeType: S
+        - AttributeName: is_published
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EducatorIndex
+          KeySchema:
+            - AttributeName: educator
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: PublishedIndex
+          KeySchema:
+            - AttributeName: is_published
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  CourseContentTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-course-content
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: course_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CourseIndex
+          KeySchema:
+            - AttributeName: course_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
   # API Gateway
   KaijuAcademyApi:
     Type: AWS::Serverless::Api
@@ -40,6 +109,20 @@ Resources:
     Properties:
       CodeUri: .
       Handler: src/index.handler
+      Policies:
+        # DynamoDB CRUD policies
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoursesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CourseContentTable
+        # Secrets Manager policy for JWT
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/kaiju/jwt/secret-*'
       Events:
         # Auth routes
         Login:
@@ -59,6 +142,24 @@ Resources:
           Properties:
             RestApiId: !Ref KaijuAcademyApi
             Path: /auth/validate
+            Method: get
+        UpdateProfile:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/profile
+            Method: put
+        GetUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/user
+            Method: get
+        GetUserById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /auth/user/{id}
             Method: get
         
         # Course routes
@@ -97,6 +198,32 @@ Resources:
           Properties:
             RestApiId: !Ref KaijuAcademyApi
             Path: /courses/{id}
+            Method: delete
+        
+        # Course Content routes
+        GetCourseContent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/content
+            Method: get
+        AddCourseContent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/content
+            Method: post
+        UpdateCourseContent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/content/{id}
+            Method: put
+        DeleteCourseContent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/content/{id}
             Method: delete
         
         # Code execution routes
