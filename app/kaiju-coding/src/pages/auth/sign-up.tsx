@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export function SignUp() {
   const navigate = useNavigate()
-  const { signup, user } = useAuth()
+  const { signup } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")

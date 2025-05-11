@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
 
 interface AssessmentFormProps {
   mode: "create" | "edit"
 }
 
 export default function AssessmentForm({ mode }: AssessmentFormProps) {
-  const { courseId, assessmentId } = useParams()
+  const { courseId } = useParams()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     title: "",

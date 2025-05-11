@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, Edit, Trash2, Eye, Upload } from "lucide-react"
 import { useAuth } from "@/lib/auth"
-import type { CourseData } from "@/data/course-data"
 
 export default function CourseManagementPage() {
   const navigate = useNavigate()

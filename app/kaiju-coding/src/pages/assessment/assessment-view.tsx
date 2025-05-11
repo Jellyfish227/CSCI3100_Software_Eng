@@ -1,12 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+// import { useState } from "react"
 
 export default function AssessmentView() {
-  const { assessmentId } = useParams()
   const navigate = useNavigate()
-  const [file, setFile] = useState<File | null>(null)
+  // const [setFile] = useState<File | null>(null)
 
   return (
     <div className="container mx-auto py-8">
@@ -19,7 +18,7 @@ export default function AssessmentView() {
           <div className="space-y-4">
             <input
               type="file"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              // onChange={(e) => setFile(e.target.files?.[0] || null)}
               className="w-full"
             />
             <Button onClick={() => navigate('/assessment')}>

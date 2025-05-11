@@ -4,6 +4,7 @@
 const { success, error } = require('../../utils/response');
 const { getUserByEmail, createUser } = require('../../utils/db');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 
 /**
  * Handle registration request
@@ -31,11 +32,15 @@ const handler = async (event) => {
       return error(409, 'Validation Error', 'Email already in use');
     }
     
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(body.password, salt);
+    
     // Create user object
     const userData = {
       id: `user:${uuidv4()}`,
       email: body.email,
-      password: body.password, // This should be hashed in a real app
+      password: hashedPassword,
       name: body.name,
       role: body.role,
       bio: body.bio || '',

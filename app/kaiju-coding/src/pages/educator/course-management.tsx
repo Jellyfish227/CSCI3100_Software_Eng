@@ -30,6 +30,8 @@ export default function CourseManagement() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  console.log(isDeleteModalOpen);
+
   useEffect(() => {
     fetchEducatorCourses();
   }, []);
@@ -61,7 +63,7 @@ export default function CourseManagement() {
   };
 
   const handleEditCourse = (course: Course) => {
-    navigate(`/courses/${course.id}/edit`, { state: { course } });
+    navigate(`/courses/edit/${course.id}`);
   };
 
   const handleViewCourse = (courseId: string) => {

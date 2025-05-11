@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { Course } from "@/types/course"
+import { apiService } from "@/services/apiService"
+import { useState } from "react"
+import { toast } from "@/components/ui/use-toast"
 
 interface CourseCardProps {
   course: Course
@@ -10,10 +13,37 @@ interface CourseCardProps {
 
 export function CourseCard({ course }: CourseCardProps) {
   const navigate = useNavigate()
-  const { id, title, thumbnail, duration_hours, students, category, educator, rating, reviews, price } = course
+  const { id, title, thumbnail, duration_hours, students, educator, rating, reviews, price } = course
+  const [isEnrolling, setIsEnrolling] = useState(false)
 
-  const handleJoinCourse = () => {
-    navigate(`/course/${id}`)
+  const handleJoinCourse = async () => {
+    // Check if user is authenticated
+    if (!apiService.isAuthenticated()) {
+      // Redirect to login page if not authenticated
+      navigate(`/login?redirect=/course/${id}`)
+      return
+    }
+
+    try {
+      setIsEnrolling(true)
+      // Enroll in the course
+      await apiService.enrollInCourse(id)
+      toast({
+        title: "Success",
+        description: `You've successfully enrolled in ${title}`,
+      })
+      // Navigate to the course page
+      navigate(`/course/${id}`)
+    } catch (error) {
+      console.error('Error enrolling in course:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to enroll in course",
+        variant: "destructive"
+      })
+    } finally {
+      setIsEnrolling(false)
+    }
   }
 
   return (
@@ -91,8 +121,9 @@ export function CourseCard({ course }: CourseCardProps) {
         <Button 
           className="bg-[#1e2a4a] hover:bg-[#141d33]"
           onClick={handleJoinCourse}
+          disabled={isEnrolling}
         >
-          Join
+          {isEnrolling ? "Enrolling..." : "Join"}
         </Button>
       </CardFooter>
     </Card>

@@ -15,6 +15,10 @@ import { TeacherProfile } from './pages/profile/TeacherProfile'
 import GradeSubmission from './pages/assessment/grade-submission'
 import EducatorCourseManagement from './pages/educator/course-management'
 import CourseContentManagement from './pages/educator/course-content-management'
+import EnrolledCourses from './pages/student/enrolled-courses'
+import StudentCourseContent from './pages/student/course-content'
+import ContentDetail from './pages/student/content-detail'
+import Quiz from './pages/student/quiz'
 import { Toaster } from './components/ui/toaster'
 
 // Protected Route component
@@ -64,6 +68,40 @@ function App() {
             }
           />
           
+          {/* Student routes */}
+          <Route
+            path="/student/enrolled-courses"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <EnrolledCourses />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/course/:courseId/content"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <StudentCourseContent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/course/:courseId/content/:contentId"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <ContentDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/course/:courseId/quiz/:contentId"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <Quiz />
+              </ProtectedRoute>
+            }
+          />
+          
           {/* Assessment routes */}
           <Route
             path="/assessment"
@@ -109,6 +147,14 @@ function App() {
           />
           <Route
             path="/courses/:courseId/edit"
+            element={
+              <ProtectedRoute requiredRole="educator">
+                <CourseForm mode="edit" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/courses/edit/:id"
             element={
               <ProtectedRoute requiredRole="educator">
                 <CourseForm mode="edit" />

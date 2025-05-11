@@ -23,22 +23,25 @@ const handler = async (event) => {
     const body = JSON.parse(event.body || '{}');
     
     // Get existing course
-    const existingCourse = await getCourseById(event.pathParameters.id);
+    const courseId = event.pathParameters.id;
+    const existingCourse = await getCourseById(courseId);
     
     if (!existingCourse) {
       return error(404, 'Not Found', 'Course not found');
     }
     
-    // Update course object
-    const updatedCourse = {
-      ...existingCourse,
-      ...body,
-      educator: existingCourse.educator, // Preserve original educator
-      updated_at: new Date().toISOString()
-    };
+    // Prepare update data (excluding key attributes)
+    const updateData = { ...body };
+    
+    // Remove key attribute to avoid DynamoDB error
+    delete updateData.id;
+    
+    // Ensure we preserve the educator and add updated timestamp
+    updateData.educator = existingCourse.educator;
+    updateData.updated_at = new Date().toISOString();
     
     // Update course in DynamoDB
-    await updateCourse(event.pathParameters.id, updatedCourse);
+    const updatedCourse = await updateCourse(courseId, updateData);
     
     // Return success response
     return success(200, { 

@@ -10,7 +10,14 @@ import { CourseContent, CourseContentCreateData, CourseContentList, CourseConten
 // 1. Keep it as '/api' and configure the production server with the same proxy setup
 // 2. Set it directly to your API URL: 
 //    const API_BASE_URL = 'https://YOUR_API_ID.execute-api.YOUR_REGION.amazonaws.com/prod';
-const API_BASE_URL = '/api';
+
+// Check if we're in production environment
+const isProduction = import.meta.env.PROD;
+
+// Use the appropriate API URL based on environment
+const API_BASE_URL = isProduction 
+  ? 'https://11l6evus32.execute-api.ap-southeast-1.amazonaws.com/Stage' // Your API Gateway URL
+  : '/api'; // Local development with proxy
 
 export const apiService = {
   /**
@@ -65,6 +72,7 @@ export const apiService = {
    */
   async getCourse(id: string): Promise<Course> {
     try {
+      console.log(`getCourse - Fetching course with ID: ${id}`);
       const response = await fetch(`${API_BASE_URL}/courses/${id}`);
       
       if (!response.ok) {
@@ -72,7 +80,16 @@ export const apiService = {
       }
       
       const data = await response.json();
-      return data.course;
+      console.log(`getCourse - Response data:`, data);
+      
+      // Handle different response formats
+      const courseData = data.course || data.body?.course || data;
+      
+      if (!courseData) {
+        throw new Error('Invalid course data format returned from API');
+      }
+      
+      return courseData;
     } catch (error) {
       console.error(`Error fetching course ${id}:`, error);
       throw error;
@@ -287,11 +304,14 @@ export const apiService = {
       }
       
       const data = await response.json();
-      return data.body.content;
+      console.log("Update content response:", data);
+      return data.content;
     } catch (error) {
       console.error(`Error updating course content ${contentId}:`, error);
       throw error;
     }
+
+    
   },
 
   /**
@@ -319,7 +339,8 @@ export const apiService = {
       }
       
       const data = await response.json();
-      return data.body.message;
+      console.log("Delete content response:", data);
+      return data.message;
     } catch (error) {
       console.error(`Error deleting course content ${contentId}:`, error);
       throw error;
@@ -492,10 +513,15 @@ export const apiService = {
    * Alias for register to maintain backward compatibility
    */
   async signup(email: string, password: string, name: string, role: "student" | "educator"): Promise<{ user: User; token: string }> {
-    const { user } = await this.register({ email, password, name, role });
-    // After registration, perform a login to get the token
-    const loginResult = await this.login(email, password);
-    return loginResult;
+    try {
+      const { user } = await this.register({ email, password, name, role });
+      console.log("Signup user:", user);
+      const loginResult = await this.login(email, password);
+      return loginResult;
+    } catch (error) {
+      console.error('Signup error:', error);
+      throw error;
+    }
   },
 
   /**
@@ -665,6 +691,649 @@ export const apiService = {
       return this.getCourses({ educator: userData.id });
     } catch (error) {
       console.error('Error fetching educator courses:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Enroll a student in a course
+   * @param courseId Course ID to enroll in
+   * @returns Enrollment details
+   */
+  async enrollInCourse(courseId: string): Promise<{
+    id: string;
+    course_id: string;
+    student_id: string;
+    enrolled_at: string;
+    progress: number;
+    status: string;
+  }> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/enroll`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to enroll in course');
+      }
+      
+      const data = await response.json();
+      return data.enrollment;
+    } catch (error) {
+      console.error(`Error enrolling in course ${courseId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Unenroll a student from a course
+   * @param courseId Course ID to unenroll from
+   * @returns Success message
+   */
+  async unenrollFromCourse(courseId: string): Promise<string> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/unenroll`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to unenroll from course');
+      }
+      
+      const data = await response.json();
+      return data.message;
+    } catch (error) {
+      console.error(`Error unenrolling from course ${courseId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get courses the student is enrolled in
+   * @returns List of enrolled courses
+   */
+  async getEnrolledCourses(): Promise<{
+    id: string;
+    title: string;
+    description: string;
+    educator: {
+      id: string;
+      name: string;
+    };
+    enrollment: {
+      id: string;
+      enrolled_at: string;
+      progress: number;
+      status: string;
+      last_accessed: string;
+    };
+    thumbnail: string;
+  }[]> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/enrolled`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to get enrolled courses');
+      }
+      
+      const data = await response.json();
+      return data.courses;
+    } catch (error) {
+      console.error('Error getting enrolled courses:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update course progress
+   * @param courseId Course ID
+   * @param progressData Progress data
+   * @returns Updated progress information
+   */
+  async updateCourseProgress(courseId: string, progressData: {
+    content_id: string;
+    completed: boolean;
+  }): Promise<{
+    course_id: string;
+    student_id: string;
+    overall_progress: number;
+    completed_content: string[];
+    last_accessed: string;
+  }> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/progress`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(progressData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update course progress');
+      }
+      
+      const data = await response.json();
+      return data.progress;
+    } catch (error) {
+      console.error(`Error updating course progress for ${courseId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get assignments for a course
+   * @param courseId Course ID
+   * @returns List of assignments
+   */
+  async getCourseAssignments(courseId: string): Promise<any[]> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/assignments`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch course assignments');
+      }
+      
+      const data = await response.json();
+      return data.assignments;
+    } catch (error) {
+      console.error(`Error fetching assignments for course ${courseId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get details of a specific assignment
+   * @param assignmentId Assignment ID
+   * @returns Assignment details
+   */
+  async getAssignment(assignmentId: string): Promise<any> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/assignments/${assignmentId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch assignment details');
+      }
+      
+      const data = await response.json();
+      return data.assignment;
+    } catch (error) {
+      console.error(`Error fetching assignment ${assignmentId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Submit an assignment
+   * @param assignmentId Assignment ID
+   * @param submissionData Submission data
+   * @returns Submission details
+   */
+  async submitAssignment(assignmentId: string, submissionData: any): Promise<any> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/assignments/${assignmentId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(submissionData)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit assignment');
+      }
+      
+      const data = await response.json();
+      return data.submission;
+    } catch (error) {
+      console.error(`Error submitting assignment ${assignmentId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get assessments for a course
+   * @param courseId Course ID
+   * @returns List of assessments
+   */
+  async getCourseAssessments(courseId: string): Promise<any[]> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/${courseId}/assessments`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch course assessments');
+      }
+      
+      const data = await response.json();
+      return data.assessments;
+    } catch (error) {
+      console.error(`Error fetching assessments for course ${courseId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get an assessment to take (for students)
+   * @param assessmentId Assessment ID
+   * @returns Assessment with questions
+   */
+  async takeAssessment(assessmentId: string): Promise<any> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/assessments/${assessmentId}/take`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch assessment');
+      }
+      
+      const data = await response.json();
+      return data.assessment;
+    } catch (error) {
+      console.error(`Error fetching assessment ${assessmentId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Submit an assessment
+   * @param assessmentId Assessment ID
+   * @param answers Student's answers
+   * @returns Assessment result
+   */
+  async submitAssessment(assessmentId: string, answers: any[]): Promise<any> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/courses/assessments/${assessmentId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ answers })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit assessment');
+      }
+      
+      const data = await response.json();
+      return data.result;
+    } catch (error) {
+      console.error(`Error submitting assessment ${assessmentId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get a presigned URL for file upload
+   * @param file The file to upload
+   * @param type File type (thumbnail, content, assignment_submission, profile_image, course_resource)
+   * @param relatedId ID of the related entity (course_id, assignment_id, etc.)
+   * @param description Optional description of the file
+   * @returns Presigned URL and file metadata
+   */
+  async getPresignedUrl(
+    file: File,
+    type: "thumbnail" | "content" | "assignment_submission" | "profile_image" | "course_resource",
+    relatedId: string,
+    description?: string
+  ): Promise<{
+    presignedUrl: string;
+    file: {
+      id: string;
+      filename: string;
+      url: string;
+      type: string;
+      size_bytes: number;
+      mime_type: string;
+      description?: string;
+      related_id: string;
+      uploaded_by: string;
+      uploaded_at: string;
+      status: string;
+    }
+  }> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      // Validate required parameters
+      if (!relatedId) {
+        throw new Error('Related ID is required');
+      }
+
+      if (!file) {
+        throw new Error('File is required');
+      }
+
+      // Request a presigned URL
+      const response = await fetch(`${API_BASE_URL}/files/presigned-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+          type: type,
+          relatedId: relatedId,
+          description: description,
+          size: file.size
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.body?.message || 'Failed to get presigned URL');
+      }
+
+      const data = await response.json();
+      const result = data.body || data;
+      
+      return {
+        presignedUrl: result.presignedUrl,
+        file: result.file
+      };
+    } catch (error) {
+      console.error('Error getting presigned URL:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Upload file directly to S3 using presigned URL
+   * @param presignedUrl The presigned URL for the S3 upload
+   * @param file The file to upload
+   * @returns True if upload was successful
+   */
+  async uploadToS3(presignedUrl: string, file: File): Promise<boolean> {
+    try {
+      const response = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type
+        },
+        body: file
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload file to S3');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error uploading to S3:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Confirm that a file was successfully uploaded to S3
+   * @param fileId The ID of the file to confirm
+   * @returns The confirmed file information
+   */
+  async confirmFileUpload(fileId: string): Promise<{
+    id: string;
+    filename: string;
+    url: string;
+    type: string;
+    size_bytes: number;
+    mime_type: string;
+    description?: string;
+    related_id: string;
+    uploaded_by: string;
+    uploaded_at: string;
+    status: string;
+  }> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/files/confirm-upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          fileId: fileId
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.body?.message || 'Failed to confirm file upload');
+      }
+
+      const data = await response.json();
+      const file = data.body?.file || data.file;
+      
+      if (!file) {
+        throw new Error('Invalid response format');
+      }
+      
+      return file;
+    } catch (error) {
+      console.error('Error confirming file upload:', error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Get a list of files associated with the authenticated user
+   * @returns Array of file metadata objects
+   */
+  async getFiles(): Promise<{
+    id: string;
+    filename: string;
+    url: string;
+    type: string;
+    size_bytes: number;
+    mime_type: string;
+    description?: string;
+    related_id: string;
+    uploaded_by: string;
+    uploaded_at: string;
+    status: string;
+  }[]> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/files`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch files');
+      }
+
+      const data = await response.json();
+      return data.files;
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a file
+   * @param fileId ID of the file to delete
+   * @returns Success message
+   */
+  async deleteFile(fileId: string): Promise<string> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/files/${fileId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete file');
+      }
+
+      const data = await response.json();
+      return data.message;
+    } catch (error) {
+      console.error(`Error deleting file ${fileId}:`, error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Upload a file using the presigned URL approach
+   * This is a convenience method that combines getPresignedUrl, uploadToS3, and confirmFileUpload
+   * @param file The file to upload
+   * @param type File type (thumbnail, content, assignment_submission, profile_image, course_resource)
+   * @param relatedId ID of the related entity (course_id, assignment_id, etc.)
+   * @param description Optional description of the file
+   * @returns Uploaded file information including the URL
+   */
+  async uploadFile(
+    file: File,
+    type: "thumbnail" | "content" | "assignment_submission" | "profile_image" | "course_resource",
+    relatedId: string,
+    description?: string
+  ): Promise<{
+    id: string;
+    filename: string;
+    url: string;
+    type: string;
+    size_bytes: number;
+    mime_type: string;
+    description?: string;
+    related_id: string;
+    uploaded_by: string;
+    uploaded_at: string;
+  }> {
+    try {
+      console.log(`uploadFile - Starting upload process for file: ${file.name}, type: ${type}, relatedId: ${relatedId}`);
+      
+      // 1. Get presigned URL
+      const { presignedUrl, file: fileMetadata } = await this.getPresignedUrl(file, type, relatedId, description);
+      console.log(`uploadFile - Got presigned URL and file metadata with ID: ${fileMetadata.id}`);
+      
+      // 2. Upload to S3 directly
+      await this.uploadToS3(presignedUrl, file);
+      console.log(`uploadFile - Successfully uploaded to S3 via presigned URL`);
+      
+      // 3. Confirm the upload
+      const confirmedFile = await this.confirmFileUpload(fileMetadata.id);
+      console.log(`uploadFile - Upload confirmed for file ID: ${confirmedFile.id}`);
+      
+      return confirmedFile;
+    } catch (error) {
+      console.error('Error in uploadFile:', error);
       throw error;
     }
   },

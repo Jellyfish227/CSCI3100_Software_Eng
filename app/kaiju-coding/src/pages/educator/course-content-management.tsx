@@ -241,24 +241,10 @@ export default function CourseContentManagement() {
         status: formData.status
       })
       
-      // Update the local state with the updated content
-      setCourseContent(prev => {
-        if (!prev) return null
-        
-        const updatedTopics = prev.topics.map(topic => {
-          if (topic.name === result.topic) {
-            return {
-              ...topic,
-              entries: topic.entries.map(entry => 
-                entry.id === result.id ? result : entry
-              )
-            }
-          }
-          return topic
-        })
-        
-        return { ...prev, topics: updatedTopics }
-      })
+      console.log("Update content result:", result)
+      
+      // Refresh content from API instead of manually updating state
+      await refreshContent()
       
       // Reset editing state
       setEditingContent(null)
@@ -298,31 +284,8 @@ export default function CourseContentManagement() {
     try {
       await apiService.deleteCourseContent(contentId)
       
-      // Update the local state
-      setCourseContent(prev => {
-        if (!prev) return null
-        
-        const updatedTopics = prev.topics.map(topic => ({
-          ...topic,
-          entries: topic.entries.filter(entry => entry.id !== contentId)
-        })).filter(topic => topic.entries.length > 0) // Remove empty topics
-        
-        return { ...prev, topics: updatedTopics }
-      })
-      
-      // Update topics list
-      if (courseContent) {
-        const updatedContent = {
-          ...courseContent,
-          topics: courseContent.topics.map(topic => ({
-            ...topic,
-            entries: topic.entries.filter(entry => entry.id !== contentId)
-          })).filter(topic => topic.entries.length > 0)
-        }
-        
-        const uniqueTopics = Array.from(new Set(updatedContent.topics.map(t => t.name)))
-        setTopics(uniqueTopics)
-      }
+      // Refresh content from API instead of manually updating state
+      await refreshContent()
       
       // Show success message
       toast({

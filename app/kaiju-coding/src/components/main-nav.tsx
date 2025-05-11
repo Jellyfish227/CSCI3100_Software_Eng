@@ -21,6 +21,14 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
           Manage Courses
         </Link>
       )}
+      {user?.role === "student" && (
+        <Link 
+          to="/student/enrolled-courses" 
+          className="text-sm font-medium transition-colors hover:text-primary"
+        >
+          My Courses
+        </Link>
+      )}
       <Link 
         to="/assessment" 
         className="text-sm font-medium transition-colors hover:text-primary"

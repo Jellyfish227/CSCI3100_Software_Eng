@@ -19,8 +19,27 @@ Globals:
         USERS_TABLE: kaiju-users
         COURSES_TABLE: kaiju-courses
         COURSE_CONTENT_TABLE: kaiju-course-content
+        ENROLLMENTS_TABLE: kaiju-enrollments
+        ASSIGNMENTS_TABLE: kaiju-assignments
+        SUBMISSIONS_TABLE: kaiju-submissions
+        ASSESSMENTS_TABLE: kaiju-assessments
+        ASSESSMENT_RESULTS_TABLE: kaiju-assessment-results
+        FILES_TABLE: kaiju-files
+        FILE_UPLOAD_BUCKET: kaiju-academy-files
 
 Resources:
+  # S3 Bucket for File Uploads
+  FileUploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: kaiju-academy-files
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET, POST, PUT, DELETE]
+            AllowedOrigins: ['*']
+            MaxAge: 3000
+
   # DynamoDB Tables
   UsersTable:
     Type: AWS::DynamoDB::Table
@@ -93,6 +112,172 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  EnrollmentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-enrollments
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: student_id
+          AttributeType: S
+        - AttributeName: course_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: StudentIndex
+          KeySchema:
+            - AttributeName: student_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: CourseIndex
+          KeySchema:
+            - AttributeName: course_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: CourseStudentIndex
+          KeySchema:
+            - AttributeName: course_id
+              KeyType: HASH
+            - AttributeName: student_id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  AssignmentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-assignments
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: course_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CourseIndex
+          KeySchema:
+            - AttributeName: course_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  SubmissionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-submissions
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: assignment_id
+          AttributeType: S
+        - AttributeName: student_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: AssignmentIndex
+          KeySchema:
+            - AttributeName: assignment_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: StudentIndex
+          KeySchema:
+            - AttributeName: student_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  AssessmentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-assessments
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: course_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: CourseIndex
+          KeySchema:
+            - AttributeName: course_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  AssessmentResultsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-assessment-results
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: assessment_id
+          AttributeType: S
+        - AttributeName: student_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: AssessmentIndex
+          KeySchema:
+            - AttributeName: assessment_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: StudentIndex
+          KeySchema:
+            - AttributeName: student_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  FilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: kaiju-files
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: related_id
+          AttributeType: S
+        - AttributeName: uploaded_by
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: RelatedIdIndex
+          KeySchema:
+            - AttributeName: related_id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserIndex
+          KeySchema:
+            - AttributeName: uploaded_by
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
   # API Gateway
   KaijuAcademyApi:
     Type: AWS::Serverless::Api
@@ -117,6 +302,21 @@ Resources:
             TableName: !Ref CoursesTable
         - DynamoDBCrudPolicy:
             TableName: !Ref CourseContentTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EnrollmentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AssignmentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SubmissionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AssessmentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AssessmentResultsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref FilesTable
+        # S3 bucket policy for file uploads
+        - S3CrudPolicy:
+            BucketName: !Ref FileUploadBucket
         # Secrets Manager policy for JWT
         - Statement:
             - Effect: Allow
@@ -226,6 +426,116 @@ Resources:
             Path: /courses/content/{id}
             Method: delete
         
+        # Course Enrollment routes
+        GetEnrolledCourses:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/enrolled
+            Method: get
+        EnrollInCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/enroll
+            Method: post
+        UnenrollFromCourse:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/unenroll
+            Method: post
+        UpdateCourseProgress:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/progress
+            Method: put
+        
+        # Assignment routes
+        GetCourseAssignments:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/assignments
+            Method: get
+        CreateAssignment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/assignments
+            Method: post
+        GetAssignment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/assignments/{assignment_id}
+            Method: get
+        SubmitAssignment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/assignments/{assignment_id}/submit
+            Method: post
+        GradeAssignment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/assignments/{assignment_id}/submissions/{submission_id}/grade
+            Method: post
+        
+        # Assessment routes
+        GetCourseAssessments:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/assessments
+            Method: get
+        CreateAssessment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/{id}/assessments
+            Method: post
+        TakeAssessment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/assessments/{id}/take
+            Method: get
+        SubmitAssessment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /courses/assessments/{id}/submit
+            Method: post
+        
+        # File Upload routes
+        GetPresignedUrl:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /files/presigned-url
+            Method: post
+        ConfirmFileUpload:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /files/confirm-upload
+            Method: post
+        GetFiles:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /files
+            Method: get
+        DeleteFile:
+          Type: Api
+          Properties:
+            RestApiId: !Ref KaijuAcademyApi
+            Path: /files/{id}
+            Method: delete
+        
         # Code execution routes
         ExecuteCode:
           Type: Api
@@ -246,4 +556,7 @@ Outputs:
     Value: !GetAtt MainFunction.Arn
   ApiURL:
     Description: "API Gateway endpoint URL"
-    Value: !Sub "https://${KaijuAcademyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/" 
+    Value: !Sub "https://${KaijuAcademyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  FileUploadBucketName:
+    Description: "S3 Bucket for file uploads"
+    Value: !Ref FileUploadBucket 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, GripVertical, Trash2, Upload, Video, FileText, Code } from "lucide-react"
+import { Plus, GripVertical, Trash2, Video, FileText, Code } from "lucide-react"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 
 interface Section {
@@ -160,7 +160,7 @@ export default function CourseEditor() {
       const newSections = sections.map((section) => {
         if (section.id === source.droppableId) {
           const newMaterials = Array.from(section.materials)
-          const [removed] = newMaterials.splice(source.index, 1)
+          // const [removed] = newMaterials.splice(source.index, 1)
           return { ...section, materials: newMaterials }
         }
         if (section.id === destination.droppableId) {

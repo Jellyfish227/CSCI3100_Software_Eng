@@ -4,6 +4,7 @@
 const { success, error } = require('../../utils/response');
 const { getUserByEmail, updateUser } = require('../../utils/db');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET || 'kaiju-academy-secret-key';
@@ -31,9 +32,9 @@ const handler = async (event) => {
       return error(401, 'Authentication Error', 'Invalid email or password');
     }
     
-    // In a production environment, you would use bcrypt to compare hashed passwords
-    // This is a simplified version for demonstration
-    if (user.password !== body.password) {
+    // Compare password with hashed password in database
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    if (!isMatch) {
       return error(401, 'Authentication Error', 'Invalid email or password');
     }
     
