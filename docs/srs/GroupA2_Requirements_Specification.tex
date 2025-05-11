@@ -1,4 +1,4 @@
-\def\myversion{1.0}
+\def\myversion{1.1}
 \def\projectname{Kaiju Academy}
 
 \documentclass[a4paper, 11pt]{scrreprt}
@@ -121,8 +121,14 @@
         1.0 & \begin{tabular}[t]{@{}l@{}}C. H. Yu\\ H. T. Lei\\ A. Enkhtaivan\\ H. K. Yum\\ C. W. Leung\end{tabular} & 2025-02-10 & \begin{revisionitem}[Updated:]
             \item Finalized draft with all requirements completed and reviewed
         \end{revisionitem}\\
-        \bottomrule
-
+        \midrule
+        1.1 & C. W. Leung & 2025-04-28 & \begin{revisionitem}[Modified:]
+            \item Updated requirements and features according to meeting1.docx instructions: roles, deleted/added features, error handling, credit system, page list, PICs.
+        \end{revisionitem}\\
+        \midrule
+        1.2 & C. W. Leung & 2025-04-28 & \begin{revisionitem}[Updated:]
+            \item Added licence management feature
+            \item Updated UI Design
     \end{tabularx}
 \end{center}
 
@@ -132,12 +138,10 @@
 \chapter{Introduction}
 \section{Document Purpose}
 This document encompasses all essential functionalities,
-including course delivery, user progress tracking, community interaction, and assessment tools, providing both
-high-level and specific requirements. This document shall form the basis for all stakeholders and developers to
-understand intended features and constraints of the platform.
+including course delivery, user progress tracking, assessment tools, user and educator profiles, and credit/payment features. All requirements reflect the current system scope as revised per stakeholder and instructor feedback.
 
 \section{Project Scope}
-Kaiju Academy is an online self-learning platform that makes learning to code easier and more engaging. The platform delivers interactive coding courses for all skill levels through a self-paced learning environment with progress tracking and instant feedback. Game-like elements drive student engagement, while community features enable collaboration between learners and educators. Through this technology-driven learning experience, Kaiju Academy aims to expand digital education access and develop a skilled tech workforce.
+Kaiju Academy is an online self-learning platform that makes learning to code easier and more engaging. The platform delivers interactive coding courses for all skill levels through a self-paced learning environment with progress tracking and instant feedback. Features now focus on interactive code assessment, course credit/payment, and profile management. Community features, code competitions, dashboards, forum, notifications, calendar, keyboard shortcuts, and accessibility customizations have been removed from scope.
 
 \section{Intended Audience and Document Overview}
 This document serves as a guide for developers, managers, testers and stakeholders of Kaiju Academy. It contains sections covering product description, requirements, features, and non-functional requirements. We recommend starting with the product description section before moving to specific requirements.
@@ -158,32 +162,24 @@ This document serves as a guide for developers, managers, testers and stakeholde
         SRS & Software Requirements Specification \\
         UI & User Interface \\
         UX & User Experience \\
+        MFA & Multi-Factor Authentication \\
         \bottomrule
     \end{tabularx}
 \end{center}
-
 
 \section{Document Conventions}
 This Project Requirements Specification adheres to the IEEE Std 830-1998 standard. The document utilizes Times New Roman font in size 11 for consistency and readability. Important terms are highlighted in bold, while supplementary notes are presented in italics. Each requirement is uniquely identified, with higher-level requirements inheriting their priority unless otherwise specified. Sections and requirements are sequentially numbered to facilitate easy navigation. Additionally, technical terms and acronyms are clearly defined in the Glossary to ensure clarity and understanding for all readers.
 
 \section{References and Acknowledgments}
 IEEE. IEEE Std 830-1998 IEEE Recommended Practice for Software Requirements Specifications. IEEE Computer Society, 1998.
+This document was prepared with the assistance of AI tools (e.g., ChatGPT 4.1) for drafting and review.
 
 
 \chapter{Overall Description}
 \section{Product Overview}
-% $<$Describe the context and origin of the product being specified in this SRS.  
-% For example, state whether this product is a follow-on member of a product 
-% family, a replacement for certain existing systems, or a new, self-contained 
-% product. If the SRS defines a component of a larger system, relate the 
-% requirements of the larger system to the functionality of this software and 
-% identify interfaces between the two. A simple diagram that shows the major 
-% components of the overall system, subsystem interconnections, and external 
-% interfaces can be helpful.$>$
+Kaiju Academy is a web-based e-learning platform that provides interactive programming education through modern LMS capabilities and specialized coding features, facilitating the learning of programming anytime and anywhere as long as you are connected to the internet.
 
-Kaiju Academy is a web-based e-learning platform that provides interactive programming education through modern LMS capabilities and specialized coding features, facilitating the learning of programming anytime and anywhere as long as you are connected to the internet.\\
-
-The platform serves as a comprehensive learning environment where students can engage with programming concepts through a structured curriculum. Users access the platform through web browsers, eliminating the need for software installation reducing the barrier to entry for users. \\
+The platform serves as a comprehensive learning environment where students can engage with programming concepts through a structured curriculum. Users access the platform through web browsers, eliminating the need for software installation and reducing the barrier to entry for users.
 
 The platform employs a module-based learning approach, where content is organized into discrete units that build upon each other. Each module typically contains:
 
@@ -195,32 +191,32 @@ The platform employs a module-based learning approach, where content is organize
     \item Progress assessments
 \end{itemize}
 
-Students can track their progress through a personalized dashboard, which displays completed modules, upcoming assignments, and achievement metrics. The integrated code editor allows students to practice coding directly within the browser, with immediate feedback and automated grading capabilities. \\
+Students can track their progress through a personalized user profile, which displays completed modules, registered courses, recommended courses, and achievement metrics. The integrated code assessment editor allows students to practice coding directly within the browser, with immediate feedback and automated grading capabilities.
 
-Educators can utilize the platform to create courses, manage course materials and provide targeted assistance where needed. They could also answer questions from students in the discussion forum. The system's analytics tools help identify areas where students may be struggling, enabling educators to provide additional teaching resources. The platform features automated grading and feedback for assignments, allowing educators to have more flexible arrangement. 
+Educators can utilize the platform to create courses, manage course materials, and monitor student progress. The system enables educators to update course modules, manage course content, and view taught courses with a sidebar of categories.
+
+A new platform feature is the credit system, which allows users to purchase course access via payment and credits.
 
 \section{Product Functionality}
 
 Kaiju Academy provides the following major functionalities:
-
 \begin{itemize}
-    \item User Management and Authentication
+    \item User Management and Authentication (including MFA if supported)
     \item Course Creation and Management
-    \item Interactive Learning Environment
+    \item Interactive Learning Environment (code assessment editor)
     \item Assessment and Progress Tracking
-    \item Community and Discussion Features
-    \item Administrative Tools
+    \item User Profile (view all/registered/recommended courses, progress)
+    \item Educator Profile (taught/manage courses, sidebar)
+    \item Course Credit and Payment System
 \end{itemize}
 
 \section{User Classes and Characteristics}
 
-Kaiju Academy serves four primary user classes:
-
+Kaiju Academy serves three primary user classes:
 \begin{description}
-    \item[Administrators:] System managers with full platform access for maintenance and monitoring
-    \item[Students:] Main users who access courses and track their learning progress
-    \item[Educators:] Subject matter experts who create and manage course content
-    \item[Content Moderators:] Forum managers who maintain community standards
+    \item[Admin:] Platform managers with full access for maintenance and monitoring.
+    \item[User:] Students who access courses, register, track learning progress, and manage credits.
+    \item[Teacher/Educator:] Subject matter experts who create/manage course content and monitor students.
 \end{description}
 
 \section{Design and Implementation Constraints}
@@ -230,25 +226,23 @@ The implementation of Kaiju Academy is governed by the following key constraints
 \begin{description}
     \item[Hardware Constraints]\mbox{}
         \begin{itemize}
-            \item We should able to run the platform with low memory usage
+            \item The platform should run with low memory usage.
         \end{itemize}
-    
     \item[Performance Constraints]\mbox{}
         \begin{itemize}
-            \item Page load time must not exceed 3 seconds
-            \item System must support at least 1000 concurrent users
-            \item Video streaming must adapt to user bandwidth
-            \item Code execution response time must be under 5 seconds
-            \item Database queries must complete within 1 second
+            \item Page load time must not exceed 3 seconds.
+            \item System must support at least 1000 concurrent users.
+            \item Video streaming must adapt to user bandwidth.
+            \item Code execution response time must be under 5 seconds.
+            \item Database queries must complete within 1 second.
         \end{itemize}
-    
     \item[Operational Constraints]\mbox{}
         \begin{itemize}
-            \item System must achieve 99.9\% uptime
-            \item Must implement automated backup systems
-            \item Must support horizontal scaling
-            \item Must implement monitoring and logging
-            \item Must provide disaster recovery procedures
+            \item System must achieve 99.9\% uptime.
+            \item Must implement automated backup systems.
+            \item Must support horizontal scaling.
+            \item Must implement monitoring and logging.
+            \item Must provide disaster recovery procedures.
         \end{itemize}
 \end{description}
 
@@ -256,8 +250,7 @@ The implementation of Kaiju Academy is governed by the following key constraints
 
 \subsection{Assumptions}
 \begin{itemize}
-    \item \textbf{Internet access:} Since the application relies on a web interface, users must have stable internet connectivity with minimum 5 Mbps bandwidth or access through institution's local network
-    
+    \item \textbf{Internet access:} Since the application relies on a web interface, users must have stable internet connectivity with minimum 5 Mbps bandwidth or access through institution's local network.
     \item \textbf{Minimum System Requirements:} All client devices must feature:
         \begin{itemize}
             \item Computer or mobile device with minimum 4GB RAM for smooth performance
@@ -277,7 +270,6 @@ The implementation of Kaiju Academy is governed by the following key constraints
             \item Video hosting platforms
             \item Code editor components (CodeMirror/Monaco)
         \end{itemize}
-    
     \item \textbf{Development Methodologies:}
         \begin{itemize}
             \item UML Modeling: System architecture documentation and design specifications
@@ -304,50 +296,48 @@ The implementation of Kaiju Academy is governed by the following key constraints
 \section{External Interface Requirements}
 \subsection{User Interfaces}
 
-Kaiju Academy will have a graphical user interface (GUI) designed for ease of use and accessibility across different roles, including students, educators, and administrators. The UI components include:
+Kaiju Academy provides a graphical user interface (GUI) tailored for users, educators, and admins. The UI components include:
+
 \begin{description}
-    \item[$\cdot$ Dashboard:] Upon login, users will be presented with a dashboard displaying their enrolled courses, upcoming deadlines, progress tracking, and notifications.
-    \item[$\cdot$ Navigation:] A global navigation bar providing quick access to Courses, Assessments, Calendar, Discussion Forum, and Profile settings.
-    \item[$\cdot$ Course Pages:] Each course contains a structured layout displaying modules, videos, PDFs, quizzes, and assessments with a progress tracker.
-    \item[$\cdot$ Assessment Interface:] Interactive assessment screens allowing multiple-choice (MC) questions with self-checking, short-answer autograded questions, and long-answer questions submitted for manual grading.
-    \item[$\cdot$ Progress Tracking:] A visual roadmap for students to track completed and pending modules and overall course progress.
-    \item[$\cdot$ Discussion Forum:] A interactive discussion forum with search, filter, and sort options.
-    \item[$\cdot$ Calendar:] An integrated calendar highlighting course schedules, assignment deadlines, and upcoming events.
-    \item[$\cdot$ Notifications:] A notification center alerting users about new content, deadlines, and updates.
-    \item[$\cdot$ Coding Environment] An embedded coding environment for practice exercises and coding competitions, similar to LeetCode.
-    \item[$\cdot$ Error Handling] Consistent error messages displayed in case of invalid input, failed login attempts, or system errors.
-    \item[$\cdot$ Keyboard Shortcuts] Common keyboard shortcuts for navigation and execution of commands, enhancing efficiency.
-    \item[$\cdot$ Mobile Compatibility:] A responsive design ensuring accessibility on desktops, tablets, and mobile devices.
+    \item[$\cdot$ Online Code Assessment Editor:] An interactive online editor for code assessment tasks, supporting in-browser code editing and running.
+    \item[$\cdot$ Course Pages:] Structured pages for each course, displaying modules, materials (videos, PDFs), and assessments.
+    \item[$\cdot$ User Profile:] View all available courses, registered courses (showing modules), recommended courses for registration, and progress tracking.
+    \item[$\cdot$ Educator Profile:] View taught courses (with modules), manage courses with a sidebar of categories.
+    \item[$\cdot$ Course Credit/Payment:] Users can purchase credits via payment to unlock course access.
+    \item[$\cdot$ Login/Register:] Login (with MFA if available) and registration forms.
+    \item[$\cdot$ Error Handling:] Consistent error messages for invalid inputs, failed logins, or system errors.
+    \item[$\cdot$ Responsive Design:] All interfaces are accessible on desktops, tablets, and mobile devices.
 \end{description}
 
 \subsection{Hardware Interfaces}
 
 The platform is designed to support various hardware components. Key considerations include:
+
 \begin{description}
-    \item[$\cdot$ User Devices:] The platform will be compatible with desktops, laptops, tablets, and smartphones supporting modern web browsers.
-    \item[$\cdot$ Server Infrastructure:] Hosted on cloud-based servers (AWS, Google Cloud, or Azure) with auto-scaling to accommodate user load.
-    \item[$\cdot$ Peripheral Support:] Users can interact using keyboards, mice, touchscreens, and audio devices for accessibility.
-    \item[$\cdot$ Network Requirements:] Requires a stable internet connection with minimum bandwidth to support video streaming and coding environment interaction.
+    \item[$\cdot$ User Devices:] Compatible with desktops, laptops, tablets, and smartphones supporting modern web browsers.
+    \item[$\cdot$ Server Infrastructure:] Hosted on cloud-based servers (AWS, Google Cloud, or Azure) with auto-scaling.
+    \item[$\cdot$ Peripheral Support:] Keyboards, mice, and touchscreens.
+    \item[$\cdot$ Network Requirements:] Requires a stable internet connection for streaming and online coding.
 \end{description}
 
 \subsection{Software Interfaces}
 
 The system will integrate with various software components to ensure smooth operation and functionality. These include:
+
 \begin{description}
     \item[$\cdot$ Operating Systems:] Compatible with Windows, macOS, Linux, Android, and iOS.
     \item[$\cdot$ Web Browsers:] Supports the latest versions of Google Chrome, Mozilla Firefox, Safari, and Microsoft Edge.
-    \item[$\cdot$ Database Management System:] Uses PostgreSQL or MySQL to store user data, course materials, progress tracking, and assessment records.
-    \item[$\cdot$ Authentication Services:] Integration with OAuth2 for third-party authentication (Google, GitHub, etc.) and two-factor authentication (2FA).
-    \item[$\cdot$ APIs:] RESTful APIs to connect frontend and backend services, including: User authentication and management, Course content retrieval and management, Assessment grading and tracking, Notification and messaging services, Code execution API for online coding exercises
-    \item[$\cdot$ Content Delivery Networks (CDN):] Utilized for efficient media delivery and reduced latency.
-    \item[$\cdot$ Notification Services:] Integration with email and push notification services for alerts and reminders.
-    \item[$\cdot$ Logging and Monitoring:] Implementation of centralized logging and monitoring tools for system health tracking.
+    \item[$\cdot$ Database Management System:] Uses PostgreSQL or MySQL.
+    \item[$\cdot$ Authentication Services:] Integration with OAuth2 and MFA where possible.
+    \item[$\cdot$ APIs:] RESTful APIs for frontend/backend communication (user management, course, assessment, payment).
+    \item[$\cdot$ Content Delivery Networks (CDN):] For efficient media delivery.
+    \item[$\cdot$ Payment Gateway:] Integrated to support course credit purchases.
+    \item[$\cdot$ Logging and Monitoring:] Centralized error and usage monitoring.
 \end{description}
-
 
 \section{Functional Requirements}
 
-Functional requirements capture the intended behavior of the system. This behavior may be expressed as services, tasks, or functions the system is required to perform. Below is a detailed list of product functions:
+The following table lists all functional requirements kept in scope (removed: dashboard, forum, code competition, notification, calendar, keyboard shortcuts, data backup, screen reader, color blindness):
 
 \begin{table}[h!]
     \centering
@@ -356,258 +346,223 @@ Functional requirements capture the intended behavior of the system. This behavi
     \textbf{Function ID} & \textbf{Function Name} & \textbf{Description} \\
     \hline
     FR01 & User Registration & Users can create an account by providing necessary details. \\
-    FR02 & User Login & Users can log in using credentials. \\
+    FR02 & User Login & Users can log in using credentials; MFA supported if available. \\
     FR03 & Profile Management & Users can update personal details and account settings. \\
-    FR04 & Role Management & Assign roles (Student, Educator, Admin) with specific permissions. \\
+    FR04 & Role Management & Assign roles (User, Teacher, Admin) with specific permissions. \\
     FR05 & Course Creation & Educators can create and manage courses. \\
-    FR06 & Course Enrollment & Students can enroll or drop courses. \\
+    FR06 & Course Enrollment & Users can register/enroll in courses (via credit/payment if required). \\
     FR07 & Course Content Management & Educators can upload and organize course materials. \\
-    FR08 & Quiz Management & Educators can create and assign quizzes. \\
-    FR09 & Automated Grading & System auto-grades multiple-choice and short-answer questions. \\
+    FR08 & Quiz/Code Assessment Management & Educators can create and assign coding/quiz assessments. \\
+    FR09 & Automated Grading & System auto-grades multiple-choice, short-answer, and code assessment questions. \\
     FR10 & Manual Grading & Educators grade long-answer questions. \\
-    FR11 & Progress Tracking & Users can track their learning progress. \\
-    FR12 & Notifications & System alerts users of deadlines, updates, and activities. \\
-    FR13 & Calendar Integration & Displays schedules, deadlines, and reminders. \\
-    FR14 & Discussion Forum & Users can post, reply, and discuss course-related topics. \\
-    FR15 & Online Coding Environment & Users can solve coding problems with real-time execution. \\
-    FR16 & Code Competitions & Users can participate in coding challenges with leaderboards. \\
-    FR17 & Search & Users can search and filter courses, quizzes, and discussions. \\
-    FR18 & Learning Recommendations & AI-based suggestions for personalized learning paths. \\
-    FR19 & Data Backup & System automatically backs up data periodically. \\
-    FR20 & Security & Implements authentication, authorization, and encryption. \\
+    FR11 & Progress Tracking & Users can track their learning progress in profile. \\
+    FR12 & Course Credit/Payment & Users can buy credits to unlock courses. \\
+    FR13 & Learning Recommendations & System recommends courses for registration. \\
+    FR14 & Security & Implements authentication, authorization, and encryption. \\
+    FR15 & Error Handling & Consistent user-facing error messages for invalid input, failed login, and system errors. \\
+    FR16 & Licence Management & Users must enter a valid licence key (e.g., AAAA-BBBB-CCCC-DDDD) to access the system. The system validates the key and restricts access if invalid or absent. \\
     \hline
     \end{tabular}
     \caption{Functional Requirements Table}
 \end{table}
 
 \section{Use Case Model}
-\subsection{Use Case 1: View Course Progress}
+\subsection{Use Case 1: Code Assessment}
 \subsubsection{Description}
-This use case describes how a student can view their progress in any course
+A user edits and runs code in an online editor as part of a course assessment.
 
 \subsubsection{Actors and Preconditions}
 \begin{itemize}
-    \item \textbf{Actors}: Student
-    \item \textbf{Preconditions}: The student must be logged in and enrolled in the course.
+    \item \textbf{Actors}: User (Student)
+    \item \textbf{Preconditions}: The user is logged in and enrolled in the course/module.
 \end{itemize}
 
 \subsubsection{Steps}
 \begin{enumerate}
-    \item The student navigates to the "Courses" section.
-    \item The student selects a course.
-    \item The system displays the course progress.
+    \item The user opens the code assessment in a course/module.
+    \item The user writes or edits code in the online editor.
+    \item The user runs code to see results/output.
+    \item The system provides immediate feedback or grading.
 \end{enumerate}
 
-\subsection{Use Case 2: Course Modification}
+\subsection{Use Case 2: Course Credit Purchase}
 \subsubsection{Description}
-This use case describes the process of an educator modifies a course on the Kaiju Academy platform.
+A user buys credits to unlock/register for a course.
 
 \subsubsection{Actors and Preconditions}
 \begin{itemize}
-    \item \textbf{Actors}: Educator
-    \item \textbf{Preconditions}: The educator must be logged in and have the necessary permissions to modify courses.
+    \item \textbf{Actors}: User (Student)
+    \item \textbf{Preconditions}: The user is logged in; has access to payment methods.
 \end{itemize}
 
 \subsubsection{Steps}
 \begin{enumerate}
-    \item The educator navigates to the "Course Management" section.
-    \item The educator enters course details (e.g., title, description, modules, and materials).
-    \item The system validates the course details.
-    \item The system adds the course to the platform and notifies enrolled students (if applicable).
+    \item The user navigates to the credit purchase page.
+    \item The user selects the amount of credits to buy.
+    \item The user completes payment.
+    \item Credits are added to the user’s account.
+    \item The user uses credits to register for a course.
 \end{enumerate}
 
-\subsubsection{Alternative Flow}
+\subsection{Use Case 3: Educator Course Management}
+\subsubsection{Description}
+An educator creates or manages courses and modules.
+
+\subsubsection{Actors and Preconditions}
 \begin{itemize}
-    \item \textbf{Step 4a}: If the educator provides invalid details (e.g., missing title), the system displays an error and prompts corrections.
-    \item \textbf{Step 5a}: If the educator cancels, the system discards the changes and returns to the "Course Management" section.
+    \item \textbf{Actors}: Teacher/Educator
+    \item \textbf{Preconditions}: The educator is logged in and authorized.
 \end{itemize}
+
+\subsubsection{Steps}
+\begin{enumerate}
+    \item The educator opens the manage courses page (with sidebar categories).
+    \item The educator creates/updates/deletes a course or module.
+    \item The system validates data and updates course content.
+    \item Students are notified of new/updated course materials (if applicable).
+\end{enumerate}
 
 \chapter{System Features}
-This sections serves to describe the functional requirements of the product by its major features. The features are described in detail, including their development priority, user interactions, and specific functions.
 
-\section{User Dashboard}
+This section describes the functional requirements of the product by its major features (all removed features are omitted):
 
+\section{Online Code Assessment Editor}
 
 \subsection{Description and Priority}
-The User Dashboard is the High Priority feature as the hub is where users can access their courses, track their progress, view upcoming deadlines, and receive notifications.
+The code assessment editor is a high-priority feature, providing an online text editor where users can write, edit, and run code for assignments and practice within the course module.
 
 \subsection{Stimulus/Response Sequences}
 \begin{itemize}
-    \item \textbf{User Action}: Logs into the system. \\
-          \textbf{System Response}: Displays the dashboard with course progress, deadlines, and notifications.
-    \item \textbf{User Action}: Clicks on a course. \\
-          \textbf{System Response}: Redirects to the course page, displaying modules, videos, and assessments.
-    \item \textbf{User Action}: Marks a module as completed. \\
-          \textbf{System Response}: Updates the progress tracker and highlights the next module.
+    \item \textbf{User Action}: Opens code assessment in a module.\\
+          \textbf{System Response}: Loads the online editor with problem description.
+    \item \textbf{User Action}: Edits code and runs it.\\
+          \textbf{System Response}: Executes code and displays result/output.
+    \item \textbf{User Action}: Submits code for grading.\\
+          \textbf{System Response}: Grades submission and provides feedback.
 \end{itemize}
 
 \subsection{Functional Requirements}
-\subsubsection{Functional Requirements}
 \begin{itemize}
-    \item \textbf{REQ-1}: The dashboard must display enrolled courses, progress, and deadlines upon login.
-    \item \textbf{REQ-2}: Users should be able to navigate to course pages directly from the dashboard.
-    \item \textbf{REQ-3}: Progress tracking must update in real-time when a module is marked as completed.
+    \item The code editor must support editing and running code in the browser.
+    \item Students must receive immediate feedback on code execution.
+    \item Submissions must be automatically graded.
 \end{itemize}
 
-\subsection{Course Management}
-\subsubsection{Description and Priority}
-The \textbf{Course Management} feature is the High Priority feature as the feature enables educators to create, update, and delete courses, as well as manage course materials such as videos, PDFs, and quizzes. It ensures that educators can efficiently organize and maintain course content, providing a structured learning experience.
+\section{Course Pages and Profile Features}
 
-\subsubsection{Stimulus/Response Sequences}
+\subsection{Course Pages}
 \begin{itemize}
-    \item \textbf{Educator Action}: Creates a new course. \\
-          \textbf{System Response}: Displays section to the educator to upload course materials and set deadlines.
-    \item \textbf{Educator Action}: Updates a course module. \\
-          \textbf{System Response}: Saves changes and notifies enrolled students of updates.
-    \item \textbf{Educator Action}: Deletes a course. \\
-          \textbf{System Response}: Removes the course and all associated materials from the system.
+    \item Display list of modules, materials, and assessments.
+    \item Allow access only to registered users (or after credit purchase).
 \end{itemize}
 
-\subsubsection{Functional Requirements}
+\subsection{User Profile}
 \begin{itemize}
-    \item \textbf{REQ-1}: Educators must be able to create, update, and delete courses.
-    \item \textbf{REQ-2}: Course materials (videos, PDFs, quizzes) must be uploaded and organized by modules.
-    \item \textbf{REQ-3}: Students should receive notifications when course materials are updated.
+    \item View all courses and registered courses (show modules).
+    \item View recommended courses for registration.
+    \item Track progress across all courses.
 \end{itemize}
 
-\subsection{Assessment and Grading}
-\subsubsection{Description and Priority}
-The \textbf{Assessment and Grading} feature allows educators to create quizzes and assessments, while students can complete them and receive grades. This feature is of \textbf{Medium Priority} as it supports the learning process but is secondary to content delivery. It provides a mechanism for evaluating student understanding and progress.
-
-\subsubsection{Stimulus/Response Sequences}
+\subsection{Educator Profile}
 \begin{itemize}
-    \item \textbf{Educator Action}: Creates a quiz with multiple-choice (MC) and short-answer questions. \\
-          \textbf{System Response}: Saves the quiz and makes it available to students.
-    \item \textbf{Student Action}: Completes a quiz. \\
-          \textbf{System Response}: Automatically grades MC questions and displays results.
-    \item \textbf{Educator Action}: Reviews and grades short-answer questions. \\
-          \textbf{System Response}: Updates the student's grade and provides feedback.
+    \item View taught courses and modules.
+    \item Manage course content (sidebar with categories).
 \end{itemize}
 
-\subsubsection{Functional Requirements}
-    \begin{itemize}
-    \item \textbf{REQ-1}: Educators must be able to create quizzes with MC and short-answer questions along with coding assessments with the test cases.
-    \item \textbf{REQ-2}: MC, and coding assessment questions must be automatically graded, and results displayed immediately.
-    \item \textbf{REQ-3}: Educators should be able to manually and use AI prompt grade short-answer questions and provide feedback.
+\section{Course Credit and Payment}
+
+\begin{itemize}
+    \item Users can purchase credits via integrated payment gateway.
+    \item Credits are used to register/unlock courses.
+    \item System tracks user balance and transaction history.
+\end{itemize}
+
+\section{Authentication}
+
+\begin{itemize}
+    \item Users can register and log in.
+    \item MFA is supported if available.
+\end{itemize}
+
+\section{Error Handling}
+\begin{itemize}
+    \item Consistent error messages for all invalid actions and system failures.
+    \item Error handling for payment, registration, login, and code execution.
+    \item Error handling is under the responsibility of Ankr.
+\end{itemize}
+
+\section{Frontend}
+\begin{itemize}
+    \item All frontend UI/UX development is overseen by Hazel and Daniel.
+    \item Ensure all features/pages are responsive and user-friendly.
 \end{itemize}
 
 \chapter{Other Nonfunctional Requirements}
 
 \section{Performance Requirements}
 \begin{itemize}
-    \item \textbf{Response Time:}
-    \begin{itemize}
-        \item The platform must load within \textbf{2 seconds} for 95\% of users under normal load conditions.
-        \item Code execution results must be returned within \textbf{5 seconds} for 99\% of submissions, even during peak usage.
-        \item Real-time collaboration features (if any) must have a latency of less than \textbf{200ms} for seamless interaction.
-    \end{itemize}
-
-    \item \textbf{Scalability:}
-    \begin{itemize}
-        \item The platform must support up to \textbf{10,000 concurrent users} without degradation in performance.
-    \end{itemize}
-
-    \item \textbf{Availability:}
-    \begin{itemize}
-        \item The platform must have an uptime of \textbf{99.9\%} (excluding scheduled maintenance).
-        \item Downtime for scheduled maintenance must not exceed \textbf{10 hours per month} and must be communicated to users at least \textbf{24 hours} in advance.
-    \end{itemize}
-
-    \item \textbf{Resource Usage:}
-    \begin{itemize}
-        \item Code execution environments must not exceed \textbf{10MB of memory} per user session.
-        \item The platform must handle \textbf{10,000 code submissions per minute} without performance degradation.
-    \end{itemize}
+    \item The platform must load within \textbf{2 seconds} for 95\% of users under normal load conditions.
+    \item Code execution results must be returned within \textbf{5 seconds} for 99\% of submissions.
+    \item The platform must support up to \textbf{10,000 concurrent users}.
+    \item The platform must have an uptime of \textbf{99.9\%}.
 \end{itemize}
 
 \section{Safety Requirements}
 \begin{itemize}
-    \item \textbf{User Safety:}
-    \begin{itemize}
-        \item The platform must prevent users from executing malicious code that could harm the system.
-        \item A sandboxed environment must be used for code execution.
-    \end{itemize}
-
-    \item \textbf{Data Safety:}
-    \begin{itemize}
-        \item Regular backups of user data must be performed daily and stored securely for at least \textbf{30 days}.
-        \item In case of data loss, user data must be restorable to a state no older than \textbf{24 hours}.
-    \end{itemize}
-
-    \item \textbf{Compliance:}
-    \begin{itemize}
-        \item The platform must comply with \textbf{GDPR} and \textbf{COPPA}.
-    \end{itemize}
+    \item The platform must prevent users from executing malicious code (sandboxing).
+    \item The platform must comply with \textbf{GDPR} and \textbf{COPPA}.
 \end{itemize}
 
 \section{Security Requirements}
 \begin{itemize}
-    \item \textbf{Authentication and Authorization:}
-    \begin{itemize}
-        \item Users must authenticate via \textbf{OAuth 2.0} or email/password with \textbf{MFA} support.
-        \item Role-based access control (RBAC) must be implemented.
-    \end{itemize}
-
-    \item \textbf{Data Security:}
-    \begin{itemize}
-        \item All sensitive data must be encrypted using \textbf{AES-256}.
-        \item All data in transit must be secured using \textbf{TLS 1.2} or higher.
-    \end{itemize}
-
-    \item \textbf{Prevention of Abuse:}
-    \begin{itemize}
-        \item The platform must prevent brute-force attacks, SQL injection, and XSS attacks.
-        \item Rate limiting must be implemented (e.g., max \textbf{10 submissions per minute} per user).
-    \end{itemize}
-
-    \item \textbf{Compliance:}
-    \begin{itemize}
-        \item The platform must comply with \textbf{ISO/IEC 27001} and \textbf{SOC 2 Type II}.
-    \end{itemize}
+    \item Users must authenticate via \textbf{OAuth 2.0} or email/password with \textbf{MFA} support.
+    \item Role-based access control (User, Teacher, Admin).
+    \item All sensitive data must be encrypted using \textbf{AES-256}.
+    \item All data in transit must be secured using \textbf{TLS 1.2} or higher.
+    \item The platform must prevent brute-force, SQL injection, and XSS attacks.
 \end{itemize}
 
 \section{Software Quality Attributes}
 \begin{itemize}
-    \item \textbf{Usability:}
-    \begin{itemize}
-        \item The platform must have an intuitive UI with a \textbf{90\% satisfaction rate}.
-        \item The learning curve for new users should not exceed \textbf{10 minutes}.
-    \end{itemize}
+    \item \textbf{Usability:} The platform must have an intuitive UI with a high satisfaction rate.
+    \item \textbf{Maintainability:} The codebase must follow modular design principles.
+    \item \textbf{Portability:} The platform must be compatible with major browsers and OSs.
+    \item \textbf{Performance:} The platform must support \textbf{10,000 concurrent users} with a response time of less than \textbf{2 seconds}.
+\end{itemize}
 
-    \item \textbf{Reliability:}
-    \begin{itemize}
-        \item The platform must have \textbf{99.9\% uptime} and recover from failures within \textbf{5 minutes}.
-    \end{itemize}
 
-    \item \textbf{Maintainability:}
-    \begin{itemize}
-        \item The codebase must follow modular design principles, with at least \textbf{80\% test coverage}.
-        \item The platform must support seamless updates with zero downtime.
-    \end{itemize}
 
-    \item \textbf{Portability:}
-    \begin{itemize}
-        \item The platform must be compatible with major browsers and OSs.
-        \item Mobile responsiveness must be ensured for screen sizes as small as \textbf{320px}.
-    \end{itemize}
+% In System Features, add a subsection at the end:
+\section{Licence Management}
 
-    \item \textbf{Performance:}
-    \begin{itemize}
-        \item The platform must support \textbf{10,000 concurrent users} with a response time of less than \textbf{2 seconds}.
-    \end{itemize}
+\subsection{Description and Priority}
+Licence management is a high-priority security and access control feature. Users must enter a valid licence key before accessing any features beyond the login screen.
+
+\subsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textbf{User Action}: Attempts to access the system without a licence key.\\
+          \textbf{System Response}: Prompts the user for a licence key.
+    \item \textbf{User Action}: Enters an invalid licence key.\\
+          \textbf{System Response}: Displays an error message and denies access.
+    \item \textbf{User Action}: Enters a valid licence key.\\
+          \textbf{System Response}: Grants access to the system.
+\end{itemize}
+
+\subsection{Functional Requirements}
+\begin{itemize}
+    \item The system must prompt for a licence key after login and before accessing course content.
+    \item Licence keys must be validated against a server-side list or algorithm.
+    \item Invalid or missing keys must result in denied access.
 \end{itemize}
 
 \section{Additional Requirements}
-This section defines additional requirements that are not covered elsewhere in the document.
-
 \begin{description}
     \item[$\cdot$ Database Requirements:] The system should support relational databases with ACID compliance.
     \item[$\cdot$ Internationalization:] The platform should support multiple languages, including English, Spanish, and Chinese.
-    \item[$\cdot$ Legal Compliance:] The platform must adhere to data protection regulations (e.g., GDPR, CCPA) and accessibility laws.
-    \item[$\cdot$ Reuse Objectives:] Modular architecture should be adopted to allow for code reuse across projects and facilitate easier maintenance.
+    \item[$\cdot$ Legal Compliance:] The platform must adhere to data protection regulations (e.g., GDPR, CCPA).
+    \item[$\cdot$ Reuse Objectives:] Modular architecture should be adopted to allow for code reuse across projects.
     \item[$\cdot$ Scalability Requirements:] The system should be designed to handle high concurrent users efficiently.
-    \item[$\cdot$ Backup and Recovery:] Automated daily backups must be implemented, with a recovery plan in place for data loss scenarios.
-    \item[$\cdot$ Customization and Extensibility:] The system should allow customization for branding and the addition of new features without major rework.
+    \item[$\cdot$ Customization and Extensibility:] The system should allow customization for branding and feature addition.
 \end{description}
 
 \end{document}
