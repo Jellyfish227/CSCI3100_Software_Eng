@@ -567,11 +567,11 @@ CSCI3100_Software_Eng/
 
 ## Contributors
 
-- **YU Ching Hei** – Backend, authentication, API design  
-- **Lei Hei Tung** – Frontend, UI/UX, educator dashboard  
-- **Ankhbayar Enkhtaivan** – Error handling, code assessment, documentation  
-- **Yum Ho Kan** – Frontend, user profile, testing  
-- **Leung Chung Wang** – Documentation, deployment, configuration
+- **YU Ching Hei** – Backend 
+- **Lei Hei Tung** – UI/UX Design
+- **Ankhbayar Enkhtaivan** – Deployment
+- **Yum Ho Kan** – Frontend 
+- **Leung Chung Wang** – Documentation
 
 ---
 
