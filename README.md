@@ -61,407 +61,102 @@ Kaiju Academy is a web-based e-learning platform for interactive programming edu
 
 ```
 CSCI3100_Software_Eng/
-│  .gitignore
-│  spec.pdf
+│  .gitignore               # Ignore files for git version control
+│  spec.pdf                 # Project specification document
 │
-├─app
-│  ├─backend
+├─app                       # Main application code (backend, frontend, API)
+│  ├─backend                # Core backend (Rust AWS Lambda & Node.js Lambda)
 │  │  │  .gitignore
-│  │  │  build-lambda.sh
-│  │  │  build.sh
-│  │  │  Cargo.toml
-│  │  │  Dockerfile
-│  │  │  README.md
-│  │  │  template.yaml
+│  │  │  build-lambda.sh    # Rust Lambda build script
+│  │  │  build.sh           # General backend build script
+│  │  │  Cargo.toml         # Rust project manifest
+│  │  │  Dockerfile         # Dockerfile for backend containerization
+│  │  │  README.md          # Backend setup and usage guide
+│  │  │  template.yaml      # AWS SAM/CloudFormation template for deployment
 │  │  │
-│  │  ├─nodejs-lambda
+│  │  ├─nodejs-lambda       # Node.js Lambda backend (alternative/legacy API)
 │  │  │  │  .gitignore
-│  │  │  │  build-and-deploy.sh
-│  │  │  │  frontend-upload-example.js
-│  │  │  │  local-secrets.template.json
+│  │  │  │  build-and-deploy.sh     # Node.js Lambda build & deploy script
+│  │  │  │  frontend-upload-example.js # Example script for frontend uploads
+│  │  │  │  local-secrets.template.json # Template for local secrets
 │  │  │  │  package-lock.json
 │  │  │  │  package.json
 │  │  │  │  packaged.yaml
-│  │  │  │  README.md
-│  │  │  │  template.yaml
-│  │  │  │  test-db.js
+│  │  │  │  README.md       # Node.js backend readme
+│  │  │  │  template.yaml   # AWS SAM template for Node.js Lambda
+│  │  │  │  test-db.js      # Test script for database connectivity
 │  │  │  │
 │  │  │  └─src
-│  │  │      │  API_DOCUMENTATION.md
-│  │  │      │  FRONTEND_AUTH_SETUP.md
-│  │  │      │  index.js
-│  │  │      │  local-server.js
+│  │  │      │  API_DOCUMENTATION.md     # Detailed API documentation (Node.js)
+│  │  │      │  FRONTEND_AUTH_SETUP.md   # Frontend auth integration guide
+│  │  │      │  index.js                 # Lambda entry point (Node.js)
+│  │  │      │  local-server.js          # Local dev server
 │  │  │      │
 │  │  │      ├─db
-│  │  │      │      dbinit.surql
+│  │  │      │      dbinit.surql         # SurrealDB schema/init scripts
 │  │  │      │
-│  │  │      ├─handlers
-│  │  │      │  ├─auth
-│  │  │      │  │      get-user.js
-│  │  │      │  │      index.js
-│  │  │      │  │      login.js
-│  │  │      │  │      register.js
-│  │  │      │  │      update-profile.js
-│  │  │      │  │      validate.js
-│  │  │      │  │
-│  │  │      │  ├─code-execution
-│  │  │      │  │      evaluate.js
-│  │  │      │  │      execute.js
-│  │  │      │  │      index.js
-│  │  │      │  │
-│  │  │      │  ├─courses
-│  │  │      │  │      assessments.js
-│  │  │      │  │      assignments.js
-│  │  │      │  │      content.js
-│  │  │      │  │      create.js
-│  │  │      │  │      delete.js
-│  │  │      │  │      enrollment.js
-│  │  │      │  │      featured.js
-│  │  │      │  │      get.js
-│  │  │      │  │      index.js
-│  │  │      │  │      list.js
-│  │  │      │  │      update.js
-│  │  │      │  │
-│  │  │      │  └─files
-│  │  │      │          index.js
+│  │  │      ├─handlers                  # Lambda handlers for different domains
+│  │  │      │  ├─auth                   # Auth endpoints (login, register, etc.)
+│  │  │      │  ├─code-execution         # Code execution/evaluation endpoints
+│  │  │      │  ├─courses                # Course CRUD, enrollment, assignments
+│  │  │      │  └─files                  # File uploads API
 │  │  │      │
 │  │  │      ├─middleware
-│  │  │      │      auth.js
-│  │  │      │
-│  │  │      ├─models
-│  │  │      │      Course.js
-│  │  │      │      User.js
-│  │  │      │
-│  │  │      ├─scripts
-│  │  │      │      create-tables.js
-│  │  │      │      seed-db.js
-│  │  │      │
-│  │  │      └─utils
-│  │  │              db.js
-│  │  │              response.js
+│  │  │      │      auth.js              # Auth middleware
+│  │  │      ├─models                    # DB models (User, Course)
+│  │  │      ├─scripts                   # Utility scripts (table creation, seed)
+│  │  │      └─utils                     # Helper functions (db, response)
 │  │  │
 │  │  └─src
-│  │      │  main.rs
+│  │      │  main.rs                     # Main Rust Lambda entry point
 │  │      │
-│  │      ├─common
-│  │      │      auth.rs
-│  │      │      config.rs
-│  │      │      db.rs
-│  │      │      error.rs
-│  │      │      logger.rs
-│  │      │      mod.rs
-│  │      │
-│  │      ├─db
-│  │      │      test.js
-│  │      │
-│  │      ├─lambda
-│  │      │  │  mod.rs
-│  │      │  │
-│  │      │  ├─auth
-│  │      │  │      login.rs
-│  │      │  │      mod.rs
-│  │      │  │      register.rs
-│  │      │  │      verify.rs
-│  │      │  │
-│  │      │  ├─code_execution
-│  │      │  │      evaluate.rs
-│  │      │  │      execute.rs
-│  │      │  │      mod.rs
-│  │      │  │      submission.rs
-│  │      │  │
-│  │      │  ├─course
-│  │      │  │      create.rs
-│  │      │  │      delete.rs
-│  │      │  │      get.rs
-│  │      │  │      list.rs
-│  │      │  │      mod.rs
-│  │      │  │      update.rs
-│  │      │  │
-│  │      │  ├─forum
-│  │      │  │      mod.rs
-│  │      │  │
-│  │      │  ├─quiz
-│  │      │  │      mod.rs
-│  │      │  │
-│  │      │  └─user
-│  │      │          mod.rs
-│  │      │
-│  │      └─models
-│  │          │  course.rs
-│  │          │  forum.rs
-│  │          │  mod.rs
-│  │          │  quiz.rs
-│  │          │  submission.rs
-│  │          │  user.rs
-│  │          │
-│  │          └─user
-│  │                  index.js
+│  │      ├─common                       # Shared code (auth, config, error, etc.)
+│  │      ├─db                           # Database code/tests
+│  │      ├─lambda                       # Lambda functions (auth, course, exec, etc.)
+│  │      └─models                       # Rust domain models (user, course, etc.)
 │  │
-│  ├─kaiju-coding
+│  ├─kaiju-coding                # Frontend code (React + TypeScript)
 │  │  │  .gitignore
-│  │  │  API_DOCUMENTATION.md
+│  │  │  API_DOCUMENTATION.md    # API docs for frontend integration
 │  │  │  bun.lockb
-│  │  │  cloudfront-function.js
+│  │  │  cloudfront-function.js  # SPA routing handler for CloudFront
 │  │  │  components.json
-│  │  │  deploy.sh
-│  │  │  DEPLOYMENT.md
+│  │  │  deploy.sh               # Frontend deployment script (S3/CloudFront)
+│  │  │  DEPLOYMENT.md           # Step-by-step deployment guide (frontend)
 │  │  │  eslint.config.js
-│  │  │  index.html
+│  │  │  index.html              # Main HTML entry point
 │  │  │  package-lock.json
 │  │  │  package.json
-│  │  │  README.md
-│  │  │  s3-policy.json
+│  │  │  README.md               # Frontend dev notes and setup
+│  │  │  s3-policy.json          # Example S3 policy for static hosting
 │  │  │  test.txt
-│  │  │  tsconfig.app.json
-│  │  │  tsconfig.json
-│  │  │  tsconfig.node.json
+│  │  │  tsconfig*.json
 │  │  │  vite-env.d.ts
-│  │  │  vite.config.production.ts
-│  │  │  vite.config.ts
+│  │  │  vite.config*.ts
 │  │  │
-│  │  ├─public
-│  │  │      vite.svg
-│  │  │
-│  │  └─src
-│  │      │  App.css
-│  │      │  App.tsx
-│  │      │  index.css
-│  │      │  main.tsx
-│  │      │
-│  │      ├─assets
-│  │      │      react.svg
-│  │      │
-│  │      ├─components
-│  │      │  │  footer.tsx
-│  │      │  │  hero.tsx
-│  │      │  │  main-nav.tsx
-│  │      │  │  user-nav.tsx
-│  │      │  │
-│  │      │  └─ui
-│  │      │          accordion.tsx
-│  │      │          alert.tsx
-│  │      │          avatar.tsx
-│  │      │          badge.tsx
-│  │      │          button.tsx
-│  │      │          card.tsx
-│  │      │          checkbox.tsx
-│  │      │          dropdown-menu.tsx
-│  │      │          input.tsx
-│  │      │          label.tsx
-│  │      │          progress.tsx
-│  │      │          radio-group.tsx
-│  │      │          select.tsx
-│  │      │          sheet.tsx
-│  │      │          tabs.tsx
-│  │      │          textarea.tsx
-│  │      │          toast.tsx
-│  │      │          toaster.tsx
-│  │      │          use-toast.tsx
-│  │      │
-│  │      ├─lib
-│  │      │      auth.tsx
-│  │      │      utils.ts
-│  │      │
-│  │      ├─pages
-│  │      │  │  course-content.tsx
-│  │      │  │  course-overview.tsx
-│  │      │  │  dashboard.tsx
-│  │      │  │
-│  │      │  ├─assessment
-│  │      │  │      assessment-form.tsx
-│  │      │  │      assessment-page.tsx
-│  │      │  │      assessment-view.tsx
-│  │      │  │      grade-submission.tsx
-│  │      │  │
-│  │      │  ├─auth
-│  │      │  │      password-reset.tsx
-│  │      │  │      sign-in.tsx
-│  │      │  │      sign-up.tsx
-│  │      │  │
-│  │      │  ├─course
-│  │      │  │      course-card.tsx
-│  │      │  │      course-editor.tsx
-│  │      │  │      course-form.tsx
-│  │      │  │      course-management.tsx
-│  │      │  │      course-search.tsx
-│  │      │  │      course-tabs.tsx
-│  │      │  │
-│  │      │  ├─educator
-│  │      │  │      course-content-management.tsx
-│  │      │  │      course-management.tsx
-│  │      │  │
-│  │      │  ├─profile
-│  │      │  │      StudentProfile.tsx
-│  │      │  │      TeacherProfile.tsx
-│  │      │  │
-│  │      │  └─student
-│  │      │          content-detail.tsx
-│  │      │          course-content.tsx
-│  │      │          enrolled-courses.tsx
-│  │      │          quiz.tsx
-│  │      │
-│  │      ├─services
-│  │      │      apiService.ts
-│  │      │      assessment-service.ts
-│  │      │
-│  │      └─types
-│  │              course.ts
-│  │              courseContent.ts
+│  │  ├─public                   # Static assets for frontend
+│  │  └─src                      # Frontend source code (React components, pages, services)
 │  │
-│  └─KaijuAcademyAPI
+│  └─KaijuAcademyAPI             # API test collections (Bruno, etc.)
 │          bruno.json
 │          Check.bru
 │
-├─docs
+├─docs                            # Documentation, reports, diagrams
 │  │  .gitignore
 │  │
-│  ├─design_impl
-│  │  │  GroupA2_Design_Implementation.pdf
-│  │  │  GroupA2_Design_Implementation.tex
-│  │  │  impl.sty
-│  │  │
-│  │  ├─diagrams
-│  │  │      admin_account_actions.mmd
-│  │  │      admin_managing_users.mmd
-│  │  │      admin_user_listing.mmd
-│  │  │      admin_user_management.mmd
-│  │  │      api_domains.mmd
-│  │  │      Arch.mmd
-│  │  │      backend_architecture.mmd
-│  │  │      code_assessment_autograding.mmd
-│  │  │      code_assessment_grading.mmd
-│  │  │      code_assessment_history.mmd
-│  │  │      code_assessment_solving.mmd
-│  │  │      code_assessment_starting.mmd
-│  │  │      component_relationships.mmd
-│  │  │      database_schema.mmd
-│  │  │      educator_content_management.mmd
-│  │  │      educator_course_creation.mmd
-│  │  │      educator_course_publishing.mmd
-│  │  │      educator_managing_courses.mmd
-│  │  │      general_sequence.mmd
-│  │  │      moderator_actions.mmd
-│  │  │      moderator_dashboard.mmd
-│  │  │      moderator_forum_settings.mmd
-│  │  │      moderator_managing_forum.mmd
-│  │  │      moderator_reviewing_content.mmd
-│  │  │      README.md
-│  │  │      render_mermaid.js
-│  │  │      render_mermaid.py
-│  │  │      security_implementation.mmd
-│  │  │      student_accessing_course.mmd
-│  │  │      student_completing_course.mmd
-│  │  │      student_purchasing_course.mmd
-│  │  │      student_purchasing_course_browse.mmd
-│  │  │      student_purchasing_course_enrollment.mmd
-│  │  │      student_purchasing_course_payment.mmd
-│  │  │      student_taking_course.mmd
-│  │  │      student_viewing_materials.mmd
-│  │  │      temp_render.html
-│  │  │      temp_render_save.html
-│  │  │      user_authentication.mmd
-│  │  │
-│  │  ├─example
-│  │  │  │  index.html
-│  │  │  │
-│  │  │  └─img
-│  │  │          10_quality_tree.png
-│  │  │          3.1_business-context(1).png
-│  │  │          3.2_technical-context(1).png
-│  │  │          5.0_level0.png
-│  │  │          5.1_level1-biking_api.png
-│  │  │          5.2_level2-bikes.png
-│  │  │          5.2_level2-bikingPictures.png
-│  │  │          5.2_level2-galleryPictures.png
-│  │  │          5.2_level2-locations.png
-│  │  │          5.2_level2-tracks.png
-│  │  │          5.2_level2-trips.png
-│  │  │          6.1_creating-new-tracks.png
-│  │  │          6.2_fetching-biking-pictures-from-dailyfratze.png
-│  │  │          7_deployment.png
-│  │  │          8.1_domain-model.png
-│  │  │          8.1_er-diagram.png
-│  │  │          arc42-logo.png
-│  │  │
-│  │  ├─img
-│  │  │  │  admin_managing_users.png
-│  │  │  │  api_domains.png
-│  │  │  │  backend_architecture.png
-│  │  │  │  class_diagram.png
-│  │  │  │  code_assessment_autograding.png
-│  │  │  │  code_grade.png
-│  │  │  │  component_relationships.png
-│  │  │  │  credit_purchase_flow.png
-│  │  │  │  database_schema.png
-│  │  │  │  data_flow.png
-│  │  │  │  educator_managing_courses.png
-│  │  │  │  eduContentMan.png
-│  │  │  │  moderator_managing_forum.png
-│  │  │  │  security_implementation.png
-│  │  │  │  serverless_deployment.png
-│  │  │  │  student_access_course.png
-│  │  │  │  student_purchasing_course.png
-│  │  │  │  student_taking_course.png
-│  │  │  │  user_authentication.png
-│  │  │  │
-│  │  │  └─UI
-│  │  │          CourseDetail.jpg
-│  │  │          description.md
-│  │  │          eduFlow.jpg
-│  │  │          modFlow.jpg
-│  │  │          myCourse.jpg
-│  │  │          SignIn.jpg
-│  │  │          SignUp.jpg
-│  │  │          StudentAssessment.jpg
-│  │  │          StudentProfile.jpg
-│  │  │          stuFlow.jpg
-│  │  │          TeacherAssessment.jpg
-│  │  │          TeacherCreateAssessment.jpg
-│  │  │          TeacherEditCourse.jpg
-│  │  │          TeacherManageCourse.jpg
-│  │  │          TeacherProfile.jpg
-│  │  │          UI flow.svg
-│  │  │          UI_flow.png
-│  │  │
-│  │  └─svg_source
-│  │          Backend.md
-│  │          backend_architecture.svg
-│  │          component design part.md
-│  │          component_relationships.svg
-│  │          Database.md
-│  │          database_schema.svg
-│  │          data_flow.svg
-│  │          front_end.md
-│  │          KaijuAcademyArchitecture-ClassDiagram.svg
-│  │          KaijuAcademyAWSServerlessDeploymentArchitectureDiagram.svg
-│  │          markdown.md
-│  │          security_implementation.svg
-│  │          svgtopng.zip
+│  ├─design_impl                  # Design & Implementation docs (PDF, LaTeX, etc.)
+│  │  ├─diagrams                  # Architecture, ER, sequence diagrams (Mermaid/.svg/.png)
+│  │  ├─example                   # Example UI images, screenshots
+│  │  ├─img                       # PNG/JPG diagram exports for docs
+│  │  └─svg_source                # SVG/Markdown sources for diagrams & design docs
 │  │
-│  ├─release_notes
-│  │      GroupA2_Release_Notes.pdf
-│  │      GroupA2_Release_Notes.tex
-│  │      releasenotes.sty
-│  │
-│  ├─srs
-│  │      GroupA2_Requirements_Specification.pdf
-│  │      GroupA2_Requirements_Specification.tex
-│  │      srs.sty
-│  │
-│  └─testing
-│          GroupA2_Testing.pdf
-│          GroupA2_Testing.tex
-│          testing.sty
+│  ├─release_notes                # Release notes, history
+│  ├─srs                          # Software Requirements Specification (SRS)
+│  └─testing                      # Test plan, test reports, QA documentation
 │
-└─user_manual
-        GroupA2_User_Manual.aux
-        GroupA2_User_Manual.log
-        GroupA2_User_Manual.out
-        GroupA2_User_Manual.pdf
-        GroupA2_User_Manual.synctex.gz
-        GroupA2_User_Manual.tex
-        GroupA2_User_Manual.toc
-        releasenotes.sty
+└─user_manual                     # User manual (PDF, LaTeX, auxiliary files)
+        GroupA2_User_Manual.pdf   # Main user manual
+        ... (LaTeX auxiliary files)
 ```
 
 ---
