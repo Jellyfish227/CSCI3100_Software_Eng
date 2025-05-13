@@ -1,7 +1,8 @@
-
 # Kaiju Academy: Full Stack E-Learning Platform
 
 > **CSCI3100 Software Engineering Project – Group A2**
+
+[**GitHub Repository**](https://github.com/Jellyfish227/CSCI3100_Software_Eng.git)
 
 ---
 
@@ -20,6 +21,7 @@
 - [API Documentation](#api-documentation)
 - [Testing & Quality](#testing--quality)
 - [Documentation](#documentation)
+- [GitHub Branch Overview](#github-branch-overview)
 - [Contributors](#contributors)
 
 ---
@@ -260,6 +262,30 @@ CSCI3100_Software_Eng/
 
 ---
 
+## GitHub Branch Overview
+
+The project repository is hosted at:  
+👉 **[https://github.com/Jellyfish227/CSCI3100_Software_Eng.git](https://github.com/Jellyfish227/CSCI3100_Software_Eng.git)**
+
+### Main Branches:
+
+- **`main`**  
+  The stable branch containing the latest, production-ready code and documentation.
+
+- **`docs`**  
+  Contains all documentation and LaTeX/PDF sources, including requirements, design, release notes, and user manuals. Use this branch if you need to reference or update the official documentation.
+
+- **`feature/backend`**  
+  Dedicated to the development and experimental features of the Rust backend. New backend features, refactoring, and service integrations are typically developed here before merging into `main`.
+
+- **`feature/frontedend-daniel`**  
+  Branch for Daniel's (Lei Hei Tung) advanced frontend development. This branch may include experimental UI, new React components, and UI/UX improvements before integration into the main frontend.
+
+- **`develop`**  
+  Legacy branch that contains the old version of the backend and documentation. Useful for referencing previous designs, deprecated code, or earlier project phases.
+
+---
+
 ## Contributors
 
 - **YU Ching Hei** – Backend 
@@ -281,5 +307,6 @@ CSCI3100_Software_Eng/
 
 This project is for educational purposes only.
 ```
-This README gives an overview, technology stack, features, directory map, deployment and documentation pointers, and contributor credits, tailored for developers, testers, and stakeholders. Adjust and expand as needed for your course or future contributions!
+This README gives an overview, technology stack, features, directory map, deployment and documentation pointers, contributor credits, **and the official GitHub repository link and branch summary**.  
+For more details, visit: [https://github.com/Jellyfish227/CSCI3100_Software_Eng.git](https://github.com/Jellyfish227/CSCI3100_Software_Eng.git)
 ```
